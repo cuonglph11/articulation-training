@@ -1,0 +1,1532 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Articulation Trainer · Luyện phát âm</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗣️</text></svg>">
+<style>
+:root{--bg:#0d1020;--panel:#151a30;--panel2:#1c2240;--line:#2a3158;--text:#e8ebff;--muted:#9aa1c8;--acc:#7c5cff;--acc2:#22d3ee;--ok:#22c55e;--near:#f59e0b;--tone:#c084fc;--bad:#f43f5e;--r:16px}
+*{box-sizing:border-box}
+html,body{margin:0;color:var(--text);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body{min-height:100vh;background:radial-gradient(1100px 600px at 5% -10%,#2a1f6b66,transparent),radial-gradient(900px 500px at 105% 5%,#0e5d6b44,transparent),var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding:16px 16px 40px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;padding:6px 0 14px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px}
+.brand .sub{font-size:12px;font-weight:500;color:var(--muted)}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center;font-size:22px;box-shadow:0 6px 24px #7c5cff55}
+.hdr-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--muted);padding:8px 14px;border-radius:999px;font:inherit;font-weight:650;cursor:pointer;white-space:nowrap}
+.seg button.on{background:linear-gradient(135deg,var(--acc),#5b8cff);color:#fff}
+.seg.sm button{padding:4px 10px;font-size:13px}
+.streak{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-weight:800}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;scrollbar-width:none}
+nav.tabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 14px;border-radius:12px;font:inherit;font-weight:650;cursor:pointer}
+nav.tabs button.on{color:#fff;border-color:transparent;background:linear-gradient(135deg,#3b2f8f,#1f4d7a)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.intro{color:var(--muted);margin:0 0 14px}
+.notice{background:#3a2a0c;border:1px solid #7a5a12;color:#ffe2a8;border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:14px}
+.notice.err{background:#3a0f1c;border-color:#7a1d36;color:#ffc2cf}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:11px 16px;border-radius:12px;font:inherit;font-weight:650;cursor:pointer;transition:transform .05s,background .2s}
+.btn:hover:not(:disabled){background:#252c55}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:linear-gradient(135deg,var(--acc),#5b8cff);border-color:transparent;color:#fff}
+.btn.rec{background:linear-gradient(135deg,#f43f5e,#fb7185);border-color:transparent;color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #f43f5e88}50%{box-shadow:0 0 0 10px #f43f5e00}}
+.btn.sm{padding:6px 11px;font-size:14px}
+.btn.ghost{background:transparent}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;color:var(--muted);padding:6px 12px;border-radius:999px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.chip.on{background:#2b2f63;color:#fff;border-color:#4b4fa0}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.navx{display:flex;align-items:center;gap:6px;color:var(--muted);font-weight:600}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.badge{font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:#232a52;color:#c9cdf5}
+.badge.lv1{background:#12392a;color:#86efac}.badge.lv2{background:#3b2f0c;color:#fcd34d}.badge.lv3{background:#3d1220;color:#fda4af}
+.badge.best{background:#2c2350;color:#e9d5ff}
+.target{font-size:clamp(22px,3.6vw,32px);line-height:1.6;font-weight:650;letter-spacing:.2px;margin:6px 0 10px}
+.practice.read .target{font-size:clamp(17px,2.2vw,21px);font-weight:500;line-height:1.8}
+.target .line+.line{margin-top:4px}
+.w{border-radius:6px;padding:0 2px;transition:background .15s,color .15s}
+.w.speaking{background:#7c5cff55;color:#fff}
+.w.ok{color:#86efac}
+.w.near{color:#fcd34d;text-decoration:underline wavy #f59e0b88}
+.w.tone{color:#e9d5ff;background:#c084fc33;text-decoration:underline wavy var(--tone)}
+.w.sub{color:#fda4af;background:#f43f5e22;text-decoration:underline wavy var(--bad)}
+.w.miss{color:#fda4af99;text-decoration:line-through;text-decoration-color:var(--bad)}
+.tip{background:#18203d;border-left:3px solid var(--acc2);padding:10px 12px;border-radius:8px;color:#cfe9f3;font-size:14.5px;margin-bottom:14px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.opts{display:flex;gap:16px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14px;margin:8px 0}
+.opts label{display:flex;align-items:center;gap:6px}
+.chk{cursor:pointer}
+input[type=range]{accent-color:var(--acc);width:110px}
+input[type=checkbox]{accent-color:var(--acc);width:16px;height:16px}
+.meter{height:6px;background:#0f1430;border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--near),var(--bad));transition:width .06s}
+.live{min-height:24px;color:var(--muted);font-style:italic;font-size:15px}
+.result{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}
+.score-row{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.ring{--p:0;--c:var(--ok);width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),#232a52 0);display:grid;place-items:center;flex:0 0 auto}
+.ring b{width:76px;height:76px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:24px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-width:110px}
+.stat small{display:block;color:var(--muted);font-size:12px}
+.stat b{font-size:18px}
+.fb{margin:10px 0;font-weight:600}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:8px 0}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.heardbox{background:#0f1430;border-radius:10px;padding:8px 12px;color:#cdd2f5;font-size:14.5px;margin:8px 0}
+.fixes{margin:6px 0 0;padding-left:18px;font-size:14.5px}
+.fixes li{margin:3px 0}
+.fixes b{color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.pg{text-align:left;cursor:pointer;color:var(--text);font:inherit;transition:border-color .2s,transform .05s}
+.pg:hover{border-color:#5b5fc0}
+.pg-h{font-weight:800;font-size:17px;margin-bottom:4px}
+.pg-ex{color:var(--muted);font-size:14px}
+.pg-best{margin-top:8px;font-size:13px;color:#e9d5ff}
+.pair-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.pair-prog{color:var(--muted);font-weight:650}
+.words{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+.word{min-width:110px;text-align:center;padding:16px 18px;border-radius:14px;border:2px solid var(--line);background:var(--panel2);font-size:26px;font-weight:750;color:var(--muted)}
+.word.target{border-color:var(--acc);color:#fff;background:#2a2366;box-shadow:0 0 0 4px #7c5cff33}
+button.word{cursor:pointer;color:var(--text);font-family:inherit}
+button.word:hover:not(:disabled){border-color:#5b5fc0}
+.word.right{border-color:var(--ok);background:#12392a;color:#bbf7d0}
+.word.wrong{border-color:var(--bad);background:#3d1220;color:#fecdd3}
+.center{text-align:center}
+.pfb{min-height:28px;font-weight:700;text-align:center;margin:8px 0}
+.pfb.ok{color:#86efac}.pfb.bad{color:#fda4af}.pfb.meh{color:#fcd34d}
+.wu{display:grid;grid-template-columns:260px 1fr;gap:14px}
+@media(max-width:720px){.wu{grid-template-columns:1fr}}
+.wu-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.wu-list li{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:14.5px}
+.wu-list li b{flex:1;font-weight:600}
+.wu-list li em{color:var(--muted);font-style:normal;font-size:13px}
+.wu-list li.cur{border-color:var(--acc);background:#221d55}
+.wu-list li.done{opacity:.55}
+.wu-list li.done b::after{content:" ✓";color:var(--ok)}
+.wu-stage{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.wu-ring{position:relative;width:170px;height:170px}
+.wu-ring svg{transform:rotate(-90deg)}
+.wu-ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;font-weight:800}
+.wu-name{font-size:24px;font-weight:800}
+.wu-how{color:#cdd2f5;max-width:520px}
+textarea{width:100%;min-height:160px;background:#0f1430;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;resize:vertical}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.tile b{font-size:28px;display:block}
+.tile small{color:var(--muted)}
+.heat{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+.heat i{width:22px;height:22px;border-radius:5px;background:#1d2347;display:block}
+.heat i.l1{background:#3b3486}.heat i.l2{background:#5a4bd1}.heat i.l3{background:#7c5cff}.heat i.l4{background:#a78bfa}
+.heat i.today{outline:2px solid var(--acc2);outline-offset:1px}
+.hl{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.hl i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.list{display:flex;flex-direction:column;gap:6px}
+.item{display:flex;align-items:center;gap:10px;background:var(--panel2);border-radius:10px;padding:8px 12px;font-size:14.5px}
+.item .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .sc{font-weight:800}
+.sec-title{font-weight:800;margin:18px 0 8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.cols{grid-template-columns:1fr}}
+footer{margin-top:28px;color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:8px}
+footer .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#222a55;border:1px solid var(--line);padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;z-index:9}
+#toast.show{opacity:1;transform:translateX(-50%)}
+.hidden{display:none!important}
+.subtabs{margin-bottom:12px}
+.topic{font-size:clamp(20px,3vw,27px);font-weight:750;line-height:1.35;margin:4px 0 10px}
+.bigtimer{font-size:44px;font-weight:800;font-variant-numeric:tabular-nums;text-align:center;margin:6px 0}
+.bigtimer.over{color:var(--bad)}
+.cam{width:100%;max-width:340px;aspect-ratio:3/4;object-fit:cover;border-radius:14px;background:#000;display:block;margin:8px auto;transform:scaleX(-1)}
+video.play{width:100%;max-width:420px;border-radius:14px;background:#000;display:block;margin:6px auto 12px}
+.taboo{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 10px;font-size:14px;color:var(--muted)}
+.taboo span{background:#3d1220;color:#fecdd3;border-radius:999px;padding:3px 10px;font-weight:650}
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:12px 0}
+.skill{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.skill .sk-h{display:flex;justify-content:space-between;font-weight:700}
+.skill small{color:var(--muted);font-size:12px;display:block;margin-top:4px}
+.bar{height:8px;background:#0f1430;border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;border-radius:99px}
+.prep{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:10px 0}
+.prep label{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px}
+.prep textarea{min-height:70px;font-size:15px;font-weight:400}
+.checks{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.checks span{border-radius:999px;padding:5px 11px;font-size:14px;font-weight:650;background:#3d1220;color:#fecdd3}
+.checks span.yes{background:#12392a;color:#bbf7d0}
+.checks span.opt{background:#232a52;color:#c9cdf5}
+.trx{background:#0f1430;border-radius:10px;padding:10px 12px;font-size:15px;line-height:1.7;color:#cdd2f5}
+.trx div+div{margin-top:4px}
+.trx mark{background:#f59e0b33;color:#fcd34d;border-radius:4px;padding:0 3px}
+.qrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0;flex-wrap:wrap}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.steps button{flex:1;min-width:150px;text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:12px;padding:10px 12px;font:inherit;cursor:pointer}
+.steps button b{display:block;color:var(--text)}
+.steps button.on{border-color:var(--acc);background:#221d55}
+.steps button.done b::after{content:" ✓";color:var(--ok)}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media(max-width:720px){.ba{grid-template-columns:1fr}}
+.ba div{background:var(--panel2);border-radius:12px;padding:10px 12px;font-size:14.5px}
+.ba b{display:block;margin-bottom:4px}
+.row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.row2 input[type=text]{flex:1;min-width:180px;background:#0f1430;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div id="toast"></div>
+<script>
+'use strict';
+/* ============================== helpers ============================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const SRClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+const HAS_TTS = 'speechSynthesis' in window;
+const LS_KEY = 'artic.v1', SET_KEY = 'artic.settings';
+const ROUNDS = 10;
+
+/* ============================== i18n ============================== */
+const I18N = {
+  vi: {
+    appName: 'Articulation Training', tagline: 'Luyện nói rõ ý · Tiếng Anh & Tiếng Việt',
+    practiceLang: 'Ngôn ngữ luyện', uiLang: 'Ngôn ngữ giao diện',
+    tab_warmup: '🔥 Khởi động', tab_twister: '🌀 Câu xoắn lưỡi', tab_pairs: '🎯 Cặp âm dễ nhầm', tab_read: '📖 Đọc to', tab_progress: '📈 Tiến độ',
+    lvl0: 'Tất cả', lvl1: 'Dễ', lvl2: 'Vừa', lvl3: 'Khó', random: 'Ngẫu nhiên',
+    focus: 'Trọng tâm', best: 'Kỷ lục',
+    listen: '🔊 Nghe mẫu', record: '🎙 Ghi âm & chấm', stop: '⏹ Dừng & chấm', busy: '⏳ Đang chấm…', playback: '▶ Nghe lại giọng mình',
+    speed: 'Tốc độ mẫu', repeat3: 'Lặp ×3 (thử thách)', metronome: 'Máy đếm nhịp',
+    listening: 'Đang nghe… nói đi 🎙',
+    accuracy: 'Độ chính xác', wpm_en: 'từ/phút', wpm_vi: 'âm tiết/phút', duration: 'Thời gian nói', heard: 'Máy nghe được', fixes: 'Cần sửa',
+    heardAs: 'nghe thành', missed: 'bị nuốt / thiếu', toneErr: 'sai thanh điệu', nearErr: 'gần đúng',
+    lg_ok: 'Đúng', lg_near: 'Gần đúng', lg_tone: 'Sai thanh', lg_sub: 'Sai', lg_miss: 'Thiếu',
+    fb_great: 'Tuyệt vời! Phát âm rõ ràng. Thử bật "Lặp ×3" hoặc tăng tốc độ.', fb_good: 'Khá tốt! Luyện lại các chữ được tô màu thêm vài lần.', fb_low: 'Chậm lại một chút, mở khẩu hình rộng hơn, bật rõ phụ âm đầu và âm cuối.',
+    pace_slow: 'hơi chậm', pace_ok: 'tốc độ tốt', pace_fast: 'nhanh',
+    noSR: 'Trình duyệt này chưa hỗ trợ nhận diện giọng nói nên không chấm điểm tự động được. Dùng Chrome/Edge trên máy tính hoặc Safari trên Mac/iPhone. Bạn vẫn ghi âm, nghe lại và tự đánh giá được.',
+    noVoice: 'Máy chưa có giọng đọc {lang} nên nút "Nghe mẫu" có thể đọc sai. macOS: System Settings → Accessibility → Spoken Content → System Voice → Manage Voices (tải giọng {hint}). Windows: Settings → Time & Language → Speech.',
+    micDenied: 'Không mở được micro. Hãy cho phép quyền micro cho trang (biểu tượng 🔒 trên thanh địa chỉ) rồi thử lại.',
+    srNetwork: 'Nhận diện giọng nói cần internet (Chrome gửi âm thanh tới máy chủ Google để nhận diện). Kiểm tra mạng rồi thử lại.',
+    srBlocked: 'Trình duyệt chặn nhận diện giọng nói. Nếu đang mở file trực tiếp (file://), hãy chạy "python3 -m http.server" trong thư mục chứa file rồi mở http://localhost:8000 — hoặc cấp quyền micro rồi thử lại.',
+    srLang: 'Trình duyệt không hỗ trợ nhận diện {lang}.',
+    noSpeech: 'Máy chưa nghe được gì. Nói to, rõ và gần micro hơn nhé.',
+    selfRate: 'Tự đánh giá sau khi nghe lại:', rate1: '😕 Chưa rõ', rate2: '🙂 Ổn', rate3: '🤩 Rất rõ', saved: 'Đã lưu!',
+    noTTS: 'Trình duyệt không hỗ trợ đọc mẫu.',
+    warmupIntro: 'Khoảng {min} phút làm nóng hơi thở, môi, lưỡi, hàm trước khi luyện. Bấm Bắt đầu và làm theo đồng hồ.',
+    start: '▶ Bắt đầu khởi động', pause: '⏸ Tạm dừng', resume: '▶ Tiếp tục', skip: 'Bỏ qua ⏭', reset: '↺ Làm lại',
+    speakGuide: 'Đọc to hướng dẫn', warmupDone: 'Xong khởi động! Cơ miệng đã sẵn sàng.', goTwister: '🌀 Sang câu xoắn lưỡi', ready: 'Sẵn sàng?',
+    pairsIntro: 'Luyện các âm hay bị nhầm. 🎙 Nói: đọc đúng từ được tô sáng, máy kiểm tra xem nghe ra từ nào. 👂 Nghe: máy đọc một từ, bạn chọn từ đúng. Mỗi lượt 10 câu.',
+    modeSay: '🎙 Nói', modeHear: '👂 Nghe & chọn', back: '‹ Các nhóm',
+    sayThis: 'Hãy đọc từ được tô sáng:', whichHeard: 'Bạn nghe thấy từ nào?', play: '🔊 Phát', sayRec: '🎙 Nói', listenTarget: '🔊 Nghe mẫu',
+    correct: 'Chính xác! ✓', wrongSaid: 'Máy nghe thành “{w}” ✗', wrongPick: 'Chưa đúng ✗ — máy đọc “{w}”', unclear: 'Máy nghe: “{w}” — chưa khớp, thử lại nhé.',
+    next: 'Tiếp ⏭', skipRound: 'Bỏ qua', round: 'Câu {i}/{n}', correctCount: 'Đúng {c}',
+    pairDone: 'Hoàn thành! Điểm: {s}%', again: '↻ Lượt mới', otherGroup: 'Chọn nhóm khác',
+    readIntro: 'Đọc to như đang thuyết trình: ngắt nghỉ ở dấu câu, nhấn rõ từ khoá. Tốc độ tự nhiên: tiếng Anh ~130–160 từ/phút, tiếng Việt ~180–230 âm tiết/phút.',
+    custom: '✍️ Văn bản của bạn', customPh: 'Dán kịch bản video, bài thuyết trình, đoạn văn… để luyện đọc.', useText: 'Dùng văn bản này', editText: '✏️ Sửa văn bản',
+    streakDays: 'ngày liên tiếp', sessions: 'lượt luyện', avg7: 'điểm TB 7 ngày', minutes: 'phút đã nói', activity: 'Hoạt động 4 tuần qua', weakest: 'Cần luyện thêm', recent: 'Gần đây',
+    none: 'Chưa có dữ liệu — luyện vài câu là có thống kê ngay!', clear: '🗑 Xoá dữ liệu', confirmClear: 'Xoá toàn bộ tiến độ? Không thể hoàn tác.', practiceBtn: 'Luyện', byLang: 'Điểm TB theo ngôn ngữ (30 ngày)', less: 'Ít', more: 'Nhiều', times: 'lượt', noWeak: 'Chưa có bài nào dưới 85% — giỏi lắm!',
+    m_twister: 'Xoắn lưỡi', m_read: 'Đọc to', m_pairs: 'Cặp âm', m_warmup: 'Khởi động',
+    shortcuts: 'Phím tắt: Space = ghi âm/dừng · L = nghe mẫu · → = câu tiếp',
+    privacy: 'Tiến độ chỉ lưu trên trình duyệt của bạn. Khi chấm điểm, trình duyệt gửi âm thanh tới dịch vụ nhận diện giọng nói của trình duyệt (Google/Apple).',
+    lang_en: 'tiếng Anh', lang_vi: 'tiếng Việt'    ,
+    tab_today: '⭐ Hôm nay', tab_minute: '⏱ Nói 1 phút', tab_prep: '🧱 Cấu trúc ý', tab_eli5: '🧒 Giải thích đơn giản', tab_review: '🎥 Quay & xem lại', tab_voice: '🗣 Phát âm',
+    sk_clarity: 'Rõ ràng', sk_structure: 'Cấu trúc', sk_conciseness: 'Ngắn gọn', sk_fluency: 'Trôi chảy',
+    skd_clarity: 'Tốc độ vừa phải, máy nghe rõ, không lạm dụng thuật ngữ', skd_structure: 'Có quan điểm, lý do, ví dụ, kết luận', skd_conciseness: 'Đúng thời lượng, không lặp ý', skd_fluency: 'Ít từ đệm (ừm, à, kiểu…), ít ngắt quãng dài',
+    whatIs: 'Articulation Training là luyện biến suy nghĩ trong đầu thành lời nói rõ ràng, mạch lạc, có cấu trúc và dễ hiểu. Gợi ý: luyện 15 phút mỗi ngày.',
+    before: 'Trước khi luyện', after: 'Sau khi luyện',
+    beforeEx: '“Mình nghĩ AI sẽ ảnh hưởng đến ngành software engineering, vì hiện tại AI code khá tốt rồi, nhưng mà mình nghĩ vẫn còn nhiều vấn đề, ví dụ như chất lượng code, rồi maintainability…”',
+    afterEx: '“Mình nghĩ AI sẽ thay đổi ngành software engineering theo hai hướng. Thứ nhất, chi phí viết code sẽ giảm đáng kể. Thứ hai, vai trò của kỹ sư sẽ dịch chuyển từ người viết code sang người thiết kế giải pháp và kiểm soát chất lượng.”',
+    step1: '1 · Cấu trúc suy nghĩ', step2: '2 · Nói trước camera', step3: '3 · Xem lại & cải thiện', min5: '5 phút',
+    step1Hint: 'Đọc chủ đề, ghi nhanh 4 ý theo khung Quan điểm → Lý do → Ví dụ → Kết luận. Chỉ ghi từ khoá, đừng viết cả câu.',
+    step2Hint: 'Nói trước camera, KHÔNG nhìn ghi chú. Khoảng 60–90 giây. Có thể quay lại nhiều lần, bản cuối cùng sẽ được dùng để xem lại.',
+    step3Hint: 'Xem lại video, đọc nhận xét và chọn 1–2 điểm để cải thiện lần sau.',
+    nextStep: 'Tiếp ›', prevStep: '‹ Quay lại', timerStart: '▶ Bấm giờ 5 phút', timerPause: '⏸ Dừng giờ', newTopic: '🎲 Chủ đề khác',
+    finishDay: '✅ Hoàn thành buổi hôm nay', dayDone: 'Đã hoàn thành buổi luyện hôm nay! 🎉 Mai luyện tiếp để giữ chuỗi ngày.',
+    recordedOk: 'Đã quay xong {s} giây. Có thể quay lại, hoặc sang bước 3 để xem lại.', noRecording: 'Chưa có bản quay — hãy quay ở bước 2 trước nhé.',
+    pPoint: 'Quan điểm', pReason: 'Lý do', pExample: 'Ví dụ', pConclusion: 'Kết luận', pSequence: 'Từ nối thứ tự',
+    phPoint: 'Tôi cho rằng…', phReason: 'Lý do là…', phExample: 'Ví dụ…', phConclusion: 'Tóm lại…',
+    minuteIntro: 'Nói liên tục 1 phút về một chủ đề ngẫu nhiên. Không viết script. Tập trung diễn đạt trọn vẹn MỘT ý.',
+    minuteHint: 'Mẹo: câu đầu tiên nói luôn ý chính, sau đó giải thích bằng lý do và ví dụ, cuối cùng chốt lại.',
+    prepIntro: 'Trình bày một quan điểm theo khung: Quan điểm → Lý do → Ví dụ → Kết luận. Đồng ý hay phản đối đều được, miễn là rõ ràng.',
+    prepHint: 'Dùng từ nối để người nghe thấy cấu trúc: “Tôi cho rằng…”, “Lý do là…”, “Ví dụ…”, “Tóm lại…”.',
+    prepTimer: '⏱ 60 giây chuẩn bị', prepGo: 'Hết giờ chuẩn bị — nói thôi!',
+    eli5Intro: 'Giải thích một khái niệm phức tạp sao cho người không có chuyên môn cũng hiểu. Tránh các “từ cấm”, dùng so sánh đời thường.',
+    eli5Ask: 'Giải thích “{c}”', eli5For: '👂 Người nghe: {a}', taboo: '🚫 Từ cấm:',
+    reviewIntro: 'Quay video bài nói, xem lại và tự đánh giá: Có lan man không? Có lặp ý không? Có truyền tải đúng thông điệp không?',
+    customTopic: 'Hoặc tự nhập chủ đề của bạn…', use: 'Dùng',
+    startTalk: '🎙 Bắt đầu nói', startVideo: '🎥 Bắt đầu quay', stopTalk: '⏹ Dừng & phân tích', watch: '▶ Xem lại',
+    target: 'Mục tiêu {s}', overall: 'Điểm diễn đạt',
+    words_en: 'Số từ', words_vi: 'Số âm tiết', fillers: 'Từ đệm', longPauses: 'Ngắt dài >1.5s', durationVs: 'Thời lượng',
+    fillerNote: 'Máy nhận diện có thể tự lọc bớt “ừm/à”, nên số thật có thể cao hơn — hãy nghe lại.',
+    structCheck: 'Khung cấu trúc', repeats: 'Cụm lặp lại', tips: 'Gợi ý cải thiện', transcript: 'Lời nói (mỗi dòng là một đoạn giữa các lần ngắt)',
+    selfReview: 'Tự đánh giá', q1: 'Có lan man không?', q2: 'Có lặp ý không?', q3: 'Có truyền tải đúng thông điệp không?', yes: 'Có', no: 'Không',
+    improve: '1–2 điểm cần cải thiện lần sau…', saveReview: '💾 Lưu đánh giá', copyAI: '📋 Copy để nhờ AI nhận xét', copied: 'Đã copy! Dán vào ChatGPT/Claude để nhận góp ý chi tiết.',
+    tooShort: 'Bài nói quá ngắn để phân tích. Hãy nói ít nhất vài câu nhé.',
+    tip_fillers: 'Có {n} từ đệm ({top}). Thay bằng một khoảng lặng ngắn — im lặng nửa giây nghe tự tin hơn “ừm”.',
+    tip_pauses: 'Có {n} chỗ ngắt dài. Chốt sẵn ý chính và câu kết trước khi nói để không bị khựng.',
+    tip_point: 'Chưa nghe thấy câu nêu quan điểm. Mở đầu bằng ý chính: “Tôi cho rằng…”.',
+    tip_reason: 'Thiếu lý do. Thêm: “Lý do là…” / “Vì…”.',
+    tip_example: 'Thiếu ví dụ. Một ví dụ cụ thể làm ý dễ hiểu hơn nhiều: “Ví dụ, …”.',
+    tip_conclusion: 'Thiếu câu chốt. Kết thúc bằng “Tóm lại, …” để người nghe nhớ thông điệp.',
+    tip_repeat: 'Cụm “{g}” lặp {n} lần — có thể đang lặp ý.',
+    tip_over: 'Vượt thời lượng {s} giây. Chọn 1 ý chính, bỏ bớt chi tiết phụ.',
+    tip_short: 'Dừng sớm (mới {s} giây). Phát triển ý thêm bằng lý do và ví dụ.',
+    tip_fast: 'Nói hơi nhanh ({w}/phút). Chậm lại ở ý chính và nghỉ ở cuối câu.',
+    tip_slow: 'Nói hơi chậm ({w}/phút). Thử nói liền mạch hơn.',
+    tip_taboo: 'Đã dùng từ cấm: {w}. Thử thay bằng hình ảnh so sánh đời thường.',
+    tip_good: 'Rất tốt! Thử chủ đề khó hơn hoặc rút ngắn thời gian.',
+    skillsAvg: 'Kỹ năng diễn đạt (TB 30 ngày)', notes: 'Điểm cần cải thiện đã ghi', noNotes: 'Chưa có ghi chú.',
+    m_minute: 'Nói 1 phút', m_prep: 'Cấu trúc ý', m_eli5: 'Giải thích đơn giản', m_review: 'Quay & xem lại', m_daily: 'Buổi 15 phút',
+    aiPrompt: 'Đây là lời nói của tôi (bài tập: {ex}, chủ đề: “{topic}”, {sec} giây), do máy nhận diện giọng nói ghi lại:\n\n“{tr}”\n\nHãy nhận xét theo 4 tiêu chí: Rõ ràng, Cấu trúc, Ngắn gọn, Trôi chảy. Chỉ ra 2 điểm quan trọng nhất cần cải thiện, rồi viết lại một phiên bản tốt hơn theo khung Quan điểm → Lý do → Ví dụ → Kết luận, giữ đúng ý của tôi.',
+    voiceIntro: 'Luyện phát âm & khẩu hình (voice training) — bổ trợ cho articulation.',
+    camOff: 'Không mở được camera — chuyển sang chỉ ghi âm.', noWeakVoice: 'Mục này theo dõi các bài luyện phát âm (tab 🗣 Phát âm).'
+  },
+  en: {
+    appName: 'Articulation Training', tagline: 'Say what you mean, clearly · English & Vietnamese',
+    practiceLang: 'Practice language', uiLang: 'Interface language',
+    tab_warmup: '🔥 Warm-up', tab_twister: '🌀 Tongue twisters', tab_pairs: '🎯 Minimal pairs', tab_read: '📖 Read aloud', tab_progress: '📈 Progress',
+    lvl0: 'All', lvl1: 'Easy', lvl2: 'Medium', lvl3: 'Hard', random: 'Random',
+    focus: 'Focus', best: 'Best',
+    listen: '🔊 Listen', record: '🎙 Record & score', stop: '⏹ Stop & score', busy: '⏳ Scoring…', playback: '▶ Play my recording',
+    speed: 'Model speed', repeat3: 'Repeat ×3 (challenge)', metronome: 'Metronome',
+    listening: 'Listening… go ahead 🎙',
+    accuracy: 'Accuracy', wpm_en: 'words/min', wpm_vi: 'syllables/min', duration: 'Speaking time', heard: 'What it heard', fixes: 'To fix',
+    heardAs: 'heard as', missed: 'dropped / missing', toneErr: 'wrong tone', nearErr: 'close',
+    lg_ok: 'Correct', lg_near: 'Close', lg_tone: 'Wrong tone', lg_sub: 'Wrong', lg_miss: 'Missing',
+    fb_great: 'Excellent — crisp and clear! Try "Repeat ×3" or speed it up.', fb_good: 'Good! Drill the highlighted words a few more times.', fb_low: 'Slow down a bit, open your mouth more, and hit the first and last consonants clearly.',
+    pace_slow: 'a bit slow', pace_ok: 'good pace', pace_fast: 'fast',
+    noSR: 'This browser has no speech recognition, so automatic scoring is off. Use Chrome/Edge on desktop or Safari on Mac/iPhone. You can still record, play back and rate yourself.',
+    noVoice: 'No {lang} voice is installed, so "Listen" may sound wrong. macOS: System Settings → Accessibility → Spoken Content → System Voice → Manage Voices (get {hint}). Windows: Settings → Time & Language → Speech.',
+    micDenied: 'Could not open the microphone. Allow mic access for this page (🔒 icon in the address bar) and try again.',
+    srNetwork: 'Speech recognition needs an internet connection (Chrome sends audio to Google to transcribe). Check your network and retry.',
+    srBlocked: 'The browser blocked speech recognition. If you opened the file directly (file://), run "python3 -m http.server" in its folder and open http://localhost:8000 — or allow the mic and retry.',
+    srLang: 'This browser cannot recognise {lang}.',
+    noSpeech: 'Nothing was heard. Speak louder, clearer and closer to the mic.',
+    selfRate: 'Rate yourself after playback:', rate1: '😕 Unclear', rate2: '🙂 OK', rate3: '🤩 Crisp', saved: 'Saved!',
+    noTTS: 'This browser cannot read text aloud.',
+    warmupIntro: 'About {min} minutes to warm up breath, lips, tongue and jaw before practising. Press Start and follow the timer.',
+    start: '▶ Start warm-up', pause: '⏸ Pause', resume: '▶ Resume', skip: 'Skip ⏭', reset: '↺ Restart',
+    speakGuide: 'Read instructions aloud', warmupDone: 'Warm-up complete! Your articulators are ready.', goTwister: '🌀 Go to tongue twisters', ready: 'Ready?',
+    pairsIntro: 'Train sounds that are easy to confuse. 🎙 Say: pronounce the highlighted word and the app checks what it heard. 👂 Listen: the app says one word, you pick it. 10 items per round.',
+    modeSay: '🎙 Say', modeHear: '👂 Listen & pick', back: '‹ All groups',
+    sayThis: 'Say the highlighted word:', whichHeard: 'Which word did you hear?', play: '🔊 Play', sayRec: '🎙 Speak', listenTarget: '🔊 Model',
+    correct: 'Correct! ✓', wrongSaid: 'Heard as “{w}” ✗', wrongPick: 'Not quite ✗ — it said “{w}”', unclear: 'Heard: “{w}” — no match, try again.',
+    next: 'Next ⏭', skipRound: 'Skip', round: 'Item {i}/{n}', correctCount: '{c} correct',
+    pairDone: 'Round complete! Score: {s}%', again: '↻ New round', otherGroup: 'Pick another group',
+    readIntro: 'Read aloud like you are presenting: pause at punctuation, stress key words. Natural pace: English ~130–160 wpm, Vietnamese ~180–230 syllables/min.',
+    custom: '✍️ Your own text', customPh: 'Paste a video script, a talk, any paragraph… to practise reading it.', useText: 'Use this text', editText: '✏️ Edit text',
+    streakDays: 'day streak', sessions: 'sessions', avg7: '7-day avg score', minutes: 'minutes spoken', activity: 'Last 4 weeks', weakest: 'Needs work', recent: 'Recent',
+    none: 'No data yet — practise a few lines to see stats!', clear: '🗑 Clear data', confirmClear: 'Delete all progress? This cannot be undone.', practiceBtn: 'Practise', byLang: 'Average by language (30 days)', less: 'Less', more: 'More', times: 'sessions', noWeak: 'Nothing under 85% — great job!',
+    m_twister: 'Twister', m_read: 'Read aloud', m_pairs: 'Pairs', m_warmup: 'Warm-up',
+    shortcuts: 'Shortcuts: Space = record/stop · L = listen · → = next',
+    privacy: 'Progress is stored only in your browser. When scoring, the browser sends audio to its speech service (Google/Apple).',
+    lang_en: 'English', lang_vi: 'Vietnamese'    ,
+    tab_today: '⭐ Today', tab_minute: '⏱ 1-minute talk', tab_prep: '🧱 Structure', tab_eli5: '🧒 Explain simply', tab_review: '🎥 Record & review', tab_voice: '🗣 Pronunciation',
+    sk_clarity: 'Clarity', sk_structure: 'Structure', sk_conciseness: 'Conciseness', sk_fluency: 'Fluency',
+    skd_clarity: 'Steady pace, clearly recognised, little jargon', skd_structure: 'Point, reason, example, conclusion', skd_conciseness: 'On time, no repeated ideas', skd_fluency: 'Few fillers (um, like…), few long pauses',
+    whatIs: 'Articulation training turns the thoughts in your head into speech that is clear, coherent, structured and easy to follow. Aim for 15 minutes a day.',
+    before: 'Before training', after: 'After training',
+    beforeEx: '“I think AI will affect software engineering, because AI writes pretty good code now, but I think there are still a lot of problems, like code quality, and maintainability…”',
+    afterEx: '“I think AI will change software engineering in two ways. First, the cost of writing code will drop sharply. Second, engineers will shift from writing code to designing solutions and controlling quality.”',
+    step1: '1 · Structure your thoughts', step2: '2 · Speak to camera', step3: '3 · Review & improve', min5: '5 min',
+    step1Hint: 'Read the topic and jot four notes: Point → Reason → Example → Conclusion. Keywords only, not full sentences.',
+    step2Hint: 'Speak to the camera WITHOUT looking at your notes, for about 60–90 seconds. Retake as often as you like; the last take is used for review.',
+    step3Hint: 'Watch your video, read the feedback and pick 1–2 things to improve next time.',
+    nextStep: 'Next ›', prevStep: '‹ Back', timerStart: '▶ Start 5-min timer', timerPause: '⏸ Pause timer', newTopic: '🎲 Another topic',
+    finishDay: '✅ Finish today’s session', dayDone: 'Today’s session is done! 🎉 Come back tomorrow to keep the streak.',
+    recordedOk: 'Recorded {s} seconds. Retake, or go to step 3 to review.', noRecording: 'No recording yet — record in step 2 first.',
+    pPoint: 'Point', pReason: 'Reason', pExample: 'Example', pConclusion: 'Conclusion', pSequence: 'Sequencing words',
+    phPoint: 'I believe…', phReason: 'The reason is…', phExample: 'For example…', phConclusion: 'In short…',
+    minuteIntro: 'Talk non-stop for one minute on a random topic. No script. Focus on expressing ONE complete idea.',
+    minuteHint: 'Tip: say your main point in the first sentence, explain with a reason and an example, then wrap up.',
+    prepIntro: 'Argue a position using Point → Reason → Example → Conclusion. Agree or disagree — just be clear.',
+    prepHint: 'Use signposts so listeners hear the structure: “I believe…”, “The reason is…”, “For example…”, “In short…”.',
+    prepTimer: '⏱ 60-second prep', prepGo: 'Prep time is up — start talking!',
+    eli5Intro: 'Explain a complex idea so someone with no background understands it. Avoid the “taboo” words — use everyday comparisons.',
+    eli5Ask: 'Explain “{c}”', eli5For: '👂 Your listener: {a}', taboo: '🚫 Taboo words:',
+    reviewIntro: 'Record a video, watch it back and rate yourself: Did I ramble? Did I repeat myself? Did my message land?',
+    customTopic: 'Or type your own topic…', use: 'Use',
+    startTalk: '🎙 Start talking', startVideo: '🎥 Start recording', stopTalk: '⏹ Stop & analyse', watch: '▶ Watch back',
+    target: 'Target {s}', overall: 'Articulation score',
+    words_en: 'Words', words_vi: 'Syllables', fillers: 'Fillers', longPauses: 'Long pauses >1.5s', durationVs: 'Duration',
+    fillerNote: 'Speech recognition may silently drop “um/uh”, so the real count can be higher — listen back.',
+    structCheck: 'Structure check', repeats: 'Repeated phrases', tips: 'How to improve', transcript: 'What you said (one line per stretch between pauses)',
+    selfReview: 'Self-review', q1: 'Did I ramble?', q2: 'Did I repeat myself?', q3: 'Did my message land?', yes: 'Yes', no: 'No',
+    improve: '1–2 things to improve next time…', saveReview: '💾 Save review', copyAI: '📋 Copy for AI feedback', copied: 'Copied! Paste into ChatGPT/Claude for detailed feedback.',
+    tooShort: 'Too short to analyse. Say at least a few sentences.',
+    tip_fillers: '{n} fillers ({top}). Replace them with a short pause — half a second of silence sounds more confident than “um”.',
+    tip_pauses: '{n} long pauses. Decide your main point and closing line before you start.',
+    tip_point: 'No clear point heard. Open with it: “I believe…”.',
+    tip_reason: 'No reason given. Add: “The reason is…” / “Because…”.',
+    tip_example: 'No example. One concrete example makes an idea much easier to grasp: “For example, …”.',
+    tip_conclusion: 'No wrap-up. Close with “In short, …” so the message sticks.',
+    tip_repeat: '“{g}” came up {n} times — you may be repeating an idea.',
+    tip_over: '{s} seconds over time. Keep one main idea and cut side details.',
+    tip_short: 'Stopped early ({s} s). Develop the idea with a reason and an example.',
+    tip_fast: 'A bit fast ({w}/min). Slow down on key points and pause at sentence ends.',
+    tip_slow: 'A bit slow ({w}/min). Try to keep a steadier flow.',
+    tip_taboo: 'Used taboo words: {w}. Swap them for an everyday comparison.',
+    tip_good: 'Great job! Try a harder topic or a shorter time limit.',
+    skillsAvg: 'Articulation skills (30-day avg)', notes: 'Your improvement notes', noNotes: 'No notes yet.',
+    m_minute: '1-minute talk', m_prep: 'Structure', m_eli5: 'Explain simply', m_review: 'Record & review', m_daily: '15-min session',
+    aiPrompt: 'Here is what I said (exercise: {ex}, topic: “{topic}”, {sec} seconds), transcribed by speech recognition:\n\n“{tr}”\n\nPlease give feedback on four criteria: Clarity, Structure, Conciseness, Fluency. Point out the 2 most important things to improve, then rewrite a better version using Point → Reason → Example → Conclusion while keeping my ideas.',
+    voiceIntro: 'Pronunciation & mouth-shape drills (voice training) — a companion to articulation.',
+    camOff: 'Could not open the camera — recording audio only.', noWeakVoice: 'This tracks your pronunciation drills (🗣 Pronunciation tab).'
+  }
+};
+function t(k, vars) {
+  let s = (I18N[S.ui] && I18N[S.ui][k]) ?? I18N.en[k] ?? k;
+  if (vars) for (const [a, b] of Object.entries(vars)) s = s.split('{' + a + '}').join(b);
+  return s;
+}
+
+/* ============================== content ============================== */
+const TIPS = {
+  en: {
+    'r-l': { label: 'R / L', vi: 'R: cong nhẹ đầu lưỡi về sau, KHÔNG chạm vòm miệng, môi hơi tròn. L: đầu lưỡi chạm lợi ngay sau răng cửa trên.', en: 'R: curl the tongue tip back without touching the roof, lips slightly rounded. L: touch the ridge right behind your top teeth.' },
+    'th': { label: 'TH /θ/ /ð/', vi: 'TH: đặt đầu lưỡi giữa hai hàm răng rồi thổi hơi. /θ/ (think) không rung, /ð/ (the) có rung dây thanh. Đừng đọc thành "t" hay "s".', en: 'TH: put the tongue tip between your teeth and blow. /θ/ (think) is voiceless, /ð/ (the) is voiced. Don’t turn it into "t" or "s".' },
+    's-sh': { label: 'S / SH', vi: 'S: răng gần khít, môi bè sang hai bên, hơi xì mảnh. SH: chu tròn môi ra trước, lưỡi lùi nhẹ, hơi dày và ấm hơn.', en: 'S: teeth close, lips spread, a thin hiss. SH: push rounded lips forward, tongue slightly back, a fuller hush.' },
+    'p-b': { label: 'P / B', vi: 'P bật hơi mạnh (để tay trước miệng sẽ thấy luồng hơi). B rung dây thanh, gần như không bật hơi.', en: 'P has a strong puff of air (feel it on your hand). B is voiced with almost no puff.' },
+    'w-v': { label: 'W / V / B', vi: 'V: răng trên chạm nhẹ môi dưới và rung. W: chu tròn môi, không chạm răng. B: mím hai môi rồi bật.', en: 'V: top teeth lightly on the lower lip, voiced. W: rounded lips, no teeth. B: lips together, then release.' },
+    'vowels': { label: '/ɪ/ – /iː/', vi: '/iː/ (sheep) dài, căng, kéo môi sang hai bên như cười. /ɪ/ (ship) ngắn, thả lỏng, miệng mở hơn một chút.', en: '/iː/ (sheep) is long and tense with a smile. /ɪ/ (ship) is short and relaxed, mouth slightly more open.' },
+    'diph': { label: 'Diphthongs', vi: 'Nguyên âm đôi (/ɔɪ/ toy, /oʊ/ boat, /juː/ new): trượt rõ từ âm đầu sang âm sau, đừng đọc thành một âm phẳng.', en: 'Diphthongs (/ɔɪ/ toy, /oʊ/ boat, /juː/ new): glide clearly from the first sound to the second; don’t flatten them.' },
+    'u': { label: '/ʊ/ – /uː/', vi: '/uː/ (fool) dài, môi tròn chặt. /ʊ/ (full) ngắn, môi thả lỏng.', en: '/uː/ (fool) is long with tightly rounded lips. /ʊ/ (full) is short and relaxed.' },
+    't': { label: 'T / D', vi: 'T giữa từ (butter, better): chạm nhanh đầu lưỡi lên lợi — giọng Mỹ gần như "đ" nhẹ. Đừng bỏ mất âm.', en: 'Middle T (butter, better): a quick tap of the tongue tip on the ridge — American English makes it a light "d". Don’t drop it.' },
+    'final': { label: 'Final consonants', vi: 'Bật rõ phụ âm cuối (-s, -z, -t, -d, -k, -g). Người Việt hay nuốt âm cuối — hãy kết thúc từng từ dứt khoát.', en: 'Release final consonants (-s, -z, -t, -d, -k, -g) clearly. Finish every word crisply.' },
+    'clusters': { label: 'Consonant clusters', vi: 'Cụm phụ âm (scr, sl, sks, ksth): đừng chèn nguyên âm vào giữa. Tập chậm từng cụm rồi ghép dần.', en: 'Clusters (scr, sl, sks, ksth): don’t insert extra vowels. Drill each cluster slowly, then join them.' },
+    'ae-e': { label: '/æ/ – /e/', vi: '/æ/ (bad) hạ hàm thấp, miệng mở rộng như "e" kéo về "a". /e/ (bed) miệng mở vừa.', en: '/æ/ (bad) drops the jaw wide open. /e/ (bed) is mid-open.' }
+  },
+  vi: {
+    'l-n': { label: 'L / N', vi: 'L: đầu lưỡi chạm lợi trên, hơi thoát ra hai bên lưỡi, miệng mở. N: hơi đi qua mũi — bịt mũi thử, N sẽ bị nghẹt còn L thì không.', en: 'L: tongue tip on the gum ridge, air flows around the sides. N: air goes through the nose — pinch your nose and N gets blocked, L does not.' },
+    's-x': { label: 'S / X', vi: 'S: uốn đầu lưỡi lên (âm quặt), hơi dày. X: lưỡi phẳng, đầu lưỡi sát răng dưới, hơi mảnh.', en: 'S: curl the tongue tip up (retroflex), fuller hiss. X: flat tongue, tip near the lower teeth, thinner hiss.' },
+    'tr-ch': { label: 'TR / CH', vi: 'TR: uốn đầu lưỡi chạm vòm cứng rồi bật. CH: mặt lưỡi phẳng áp vào vòm, không uốn.', en: 'TR: curl the tongue tip to the hard palate, then release. CH: flat tongue blade against the palate, no curl.' },
+    'r-d-gi': { label: 'R / D / GI', vi: 'R: rung hoặc uốn đầu lưỡi. D, GI: lưỡi phẳng (giọng Bắc đều đọc như "z"). Máy nhận diện đôi khi không phân biệt được D/GI.', en: 'R: trill or curl the tongue tip. D and GI: flat tongue (both sound like "z" in the Northern accent). Recognisers may not separate D/GI.' },
+    'tones': { label: 'Thanh điệu · Tones', vi: 'Ngang: phẳng · Sắc: lên cao · Huyền: thấp, đi xuống · Hỏi: xuống rồi lên · Ngã: lên, gãy giữa · Nặng: thấp, ngắt gọn.', en: 'Level: flat · Sắc: rising · Huyền: low falling · Hỏi: dipping then rising · Ngã: rising with a break · Nặng: low and clipped.' },
+    'hoi-nga': { label: 'Hỏi / Ngã', vi: 'Hỏi: giọng đi xuống rồi vòng lên nhẹ, liền mạch. Ngã: giọng vút lên, có chỗ gãy/khựng ở giữa.', en: 'Hỏi: falls then gently rises, smooth. Ngã: rises sharply with a glottal break in the middle.' },
+    'final': { label: '-N/-NG · -T/-C', vi: '-n, -t: đầu lưỡi chạm lợi trên để kết thúc. -ng, -c: cuống lưỡi nâng chạm vòm mềm, đầu lưỡi để yên.', en: '-n, -t: end with the tongue tip on the gum ridge. -ng, -c: raise the back of the tongue to the soft palate.' },
+    'b': { label: 'B', vi: 'B: mím chặt hai môi rồi bật ra, có rung dây thanh. Giữ đều lực cho từng âm.', en: 'B: press both lips together and release, voiced. Keep each one equally strong.' },
+    'dd': { label: 'Đ / N', vi: 'Đ: đầu lưỡi chạm chân răng trên, bật mạnh, hơi hút vào trong. N: cùng vị trí nhưng hơi ra mũi.', en: 'Đ: tongue tip at the upper teeth, strong implosive release. N: same place, but air through the nose.' },
+    'th': { label: 'TH', vi: 'TH là T có bật hơi: thêm một luồng hơi rõ khi bật. So sánh "ta" và "tha".', en: 'TH is an aspirated T: add a clear puff of air. Compare "ta" vs "tha".' },
+    'ng': { label: 'NG / NGH', vi: 'NG/NGH: cuống lưỡi nâng chạm vòm mềm, hơi ra mũi, miệng không khép.', en: 'NG/NGH: back of the tongue to the soft palate, air through the nose, mouth stays open.' },
+    'h': { label: 'H', vi: 'H: thở hơi nhẹ từ cổ họng trước nguyên âm, đừng nuốt mất âm H.', en: 'H: a light breath from the throat before the vowel; don’t swallow it.' },
+    'vowel': { label: 'ƯƠ / UÔ', vi: 'Nguyên âm đôi ươ/uô: trượt rõ từ âm đầu sang âm sau. "bưởi" môi bè, "buổi" môi tròn.', en: 'Diphthongs ươ/uô: glide clearly. "bưởi" has spread lips, "buổi" rounded lips.' }
+  }
+};
+
+const CONTENT = {
+  en: {
+    twisters: [
+      { id: 'en-t01', level: 1, tip: 'r-l', text: 'Red lorry, yellow lorry, red lorry, yellow lorry.' },
+      { id: 'en-t02', level: 1, tip: 'diph', text: 'Toy boat, toy boat, toy boat.' },
+      { id: 'en-t03', level: 1, tip: 's-sh', text: 'Fresh fried fish, fresh fried fish.' },
+      { id: 'en-t04', level: 1, tip: 'diph', text: 'Unique New York, you know you need unique New York.' },
+      { id: 'en-t05', level: 1, tip: 'clusters', text: 'Six slippery snails slid slowly seaward.' },
+      { id: 'en-t06', level: 2, tip: 's-sh', text: 'She sells seashells by the seashore.' },
+      { id: 'en-t07', level: 2, tip: 'p-b', text: 'Peter Piper picked a peck of pickled peppers.' },
+      { id: 'en-t08', level: 2, tip: 'u', text: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?' },
+      { id: 'en-t09', level: 2, tip: 't', text: 'Betty Botter bought some butter, but she said the butter is bitter.' },
+      { id: 'en-t10', level: 2, tip: 'p-b', text: 'A proper copper coffee pot.' },
+      { id: 'en-t11', level: 2, tip: 'clusters', text: 'I scream, you scream, we all scream for ice cream.' },
+      { id: 'en-t12', level: 2, tip: 'w-v', text: 'Which witch wished which wicked wish?' },
+      { id: 'en-t13', level: 3, tip: 'clusters', text: 'The sixth sick sheik’s sixth sheep’s sick.' },
+      { id: 'en-t14', level: 3, tip: 'clusters', text: 'Irish wristwatch, Swiss wristwatch.' },
+      { id: 'en-t15', level: 3, tip: 'r-l', text: 'Truly rural, truly rural, truly rural.' },
+      { id: 'en-t16', level: 3, tip: 'th', text: 'Lesser leather never weathered wetter weather better.' },
+      { id: 'en-t17', level: 3, tip: 'final', text: 'Pad kid poured curd pulled cod.' },
+      { id: 'en-t18', level: 3, tip: 'th', text: 'Thin sticks, thick bricks, thin sticks, thick bricks.' }
+    ],
+    pairs: [
+      { id: 'en-p-i', tip: 'vowels', sets: [['ship', 'sheep'], ['live', 'leave'], ['bit', 'beat'], ['fill', 'feel'], ['sit', 'seat'], ['hit', 'heat']] },
+      { id: 'en-p-th', tip: 'th', sets: [['think', 'sink'], ['thin', 'tin'], ['three', 'tree'], ['thank', 'tank'], ['mouth', 'mouse'], ['path', 'pass']] },
+      { id: 'en-p-rl', tip: 'r-l', sets: [['light', 'right'], ['lock', 'rock'], ['lead', 'read'], ['glass', 'grass'], ['collect', 'correct'], ['fly', 'fry']] },
+      { id: 'en-p-vw', tip: 'w-v', sets: [['very', 'berry'], ['vest', 'best'], ['vine', 'wine'], ['vote', 'boat'], ['van', 'ban']] },
+      { id: 'en-p-ae', tip: 'ae-e', sets: [['bad', 'bed'], ['man', 'men'], ['sat', 'set'], ['pan', 'pen'], ['bag', 'beg']] },
+      { id: 'en-p-fin', tip: 'final', sets: [['rice', 'rise'], ['cap', 'cab'], ['back', 'bag'], ['price', 'prize'], ['seat', 'seed'], ['white', 'wide']] },
+      { id: 'en-p-ssh', tip: 's-sh', sets: [['sea', 'she'], ['sip', 'ship'], ['save', 'shave'], ['sort', 'short'], ['seat', 'sheet']] },
+      { id: 'en-p-u', tip: 'u', sets: [['full', 'fool'], ['pull', 'pool'], ['look', 'Luke'], ['soot', 'suit']] }
+    ],
+    passages: [
+      { id: 'en-r1', title: 'Morning', text: 'Every morning, I open the window and take a slow, deep breath. The street below is already busy: bicycles rattle past, a vendor calls out prices, and the smell of fresh bread drifts from the bakery on the corner. I stretch, drink a glass of water, and read a few pages of a good book. These small habits help me start the day calm, clear, and ready to speak with confidence.' },
+      { id: 'en-r2', title: 'Presentation', text: 'Good afternoon, everyone. Thank you for being here. Today I want to share three simple ideas that changed the way our team works. First, we write things down. Second, we ship small improvements every week. Third, we listen to our customers before we build anything new. By the end of this talk, I hope you will try at least one of these ideas yourself.' },
+      { id: 'en-r3', title: 'The lighthouse', text: 'On a rocky island far from the mainland stood an old lighthouse. Every night, the keeper climbed the long spiral staircase to light the lamp. Ships passing through the storm relied on that steady beam to find their way home. Nobody thanked him, and he never asked them to. He simply believed that a small, reliable light could make all the difference.' }
+    ]
+  },
+  vi: {
+    twisters: [
+      { id: 'vi-t01', level: 1, tip: 'dd', text: 'Nồi đồng nấu ốc, nồi đất nấu ếch.' },
+      { id: 'vi-t02', level: 1, tip: 'vowel', text: 'Buổi trưa ăn bưởi chua.' },
+      { id: 'vi-t03', level: 1, tip: 'b', text: 'Bà Ba béo bán bánh bèo bên bờ biển.' },
+      { id: 'vi-t04', level: 1, tip: 'tr-ch', text: 'Trên trời trăng tròn trong trẻo.' },
+      { id: 'vi-t05', level: 2, tip: 'l-n', text: 'Lúa nếp là lúa nếp làng, lúa lên lớp lớp lòng nàng lâng lâng.' },
+      { id: 'vi-t06', level: 2, tip: 'l-n', text: 'Lan leo lên lầu, Lan lấy lưỡi lam. Lan lấy lộn lưỡi liềm, Lan leo lên lầu lấy lại.' },
+      { id: 'vi-t07', level: 2, tip: 's-x', text: 'Sáng sớm sương sa, xe xanh xuống xóm xa.' },
+      { id: 'vi-t08', level: 2, tip: 'r-d-gi', text: 'Rổ rá rơi rớt, rau răm rậm rạp ruộng rẫy.' },
+      { id: 'vi-t09', level: 2, tip: 'th', text: 'Thằng Thịnh thích thả thuyền thong thả.' },
+      { id: 'vi-t10', level: 2, tip: 'tr-ch', text: 'Chú chuột chũi chạy chậm, chui chuồng chật chội.' },
+      { id: 'vi-t11', level: 2, tip: 'hoi-nga', text: 'Bé nghĩ mãi, nghỉ một chút rồi sửa lại hộp sữa cũ.' },
+      { id: 'vi-t12', level: 3, tip: 'l-n', text: 'Năm nàng nằm nắng nóng nực, nói năng nhỏ nhẹ, nết na nền nã.' },
+      { id: 'vi-t13', level: 3, tip: 'tr-ch', text: 'Chị Trang trồng tre, chị Châu chở chè, chẳng chịu trao tre.' },
+      { id: 'vi-t14', level: 3, tip: 'h', text: 'Hai hàng hoa hồng, hai hàng hoa huệ, hương hoa hòa hợp hây hẩy hơi hè.' },
+      { id: 'vi-t15', level: 3, tip: 'ng', text: 'Nghe người ngồi nghĩ ngợi ngẩn ngơ, ngắm nghía ngọn ngô.' },
+      { id: 'vi-t16', level: 3, tip: 'r-d-gi', text: 'Dì Dung dạy dỗ, gì gì giữ gìn, giỏi giang dịu dàng.' },
+      { id: 'vi-t17', level: 3, tip: 'dd', text: 'Đêm đông đốt đuốc đi đâu, đến đồng đất đỏ đợi đò.' }
+    ],
+    pairs: [
+      { id: 'vi-p-ln', tip: 'l-n', sets: [['lên', 'nên'], ['lửa', 'nửa'], ['lối', 'nối'], ['lo', 'no'], ['lấp', 'nấp'], ['lặng', 'nặng']] },
+      { id: 'vi-p-sx', tip: 's-x', sets: [['sinh', 'xinh'], ['sa', 'xa'], ['sâu', 'xâu'], ['sông', 'xông'], ['sẻ', 'xẻ']] },
+      { id: 'vi-p-trch', tip: 'tr-ch', sets: [['trâu', 'châu'], ['tre', 'che'], ['trung', 'chung'], ['trán', 'chán'], ['trí', 'chí']] },
+      { id: 'vi-p-rd', tip: 'r-d-gi', sets: [['ra', 'da', 'gia'], ['rễ', 'dễ'], ['rời', 'dời'], ['rao', 'dao'], ['rỗi', 'dỗi']] },
+      { id: 'vi-p-tone', tip: 'tones', sets: [['ma', 'má', 'mà', 'mả', 'mã', 'mạ'], ['bao', 'báo', 'bào', 'bảo', 'bão', 'bạo'], ['la', 'lá', 'là', 'lả', 'lã', 'lạ'], ['mua', 'múa', 'mùa']] },
+      { id: 'vi-p-hn', tip: 'hoi-nga', sets: [['nghỉ', 'nghĩ'], ['sửa', 'sữa'], ['củ', 'cũ'], ['đổ', 'đỗ'], ['mỏ', 'mõ']] },
+      { id: 'vi-p-fin', tip: 'final', sets: [['tan', 'tang'], ['bàn', 'bàng'], ['lan', 'lang'], ['mắt', 'mắc'], ['bát', 'bác'], ['cắt', 'cắc']] }
+    ],
+    passages: [
+      { id: 'vi-r1', title: 'Buổi sáng', text: 'Mỗi sáng, tôi mở cửa sổ và hít một hơi thật sâu. Ngoài phố, tiếng xe máy rộn ràng, tiếng rao bánh mì vang lên đầu ngõ, mùi cà phê thơm lừng từ quán nhỏ bên đường. Tôi uống một cốc nước, vươn vai và đọc vài trang sách. Những thói quen nhỏ ấy giúp tôi bắt đầu ngày mới thật nhẹ nhàng, tỉnh táo và tự tin.' },
+      { id: 'vi-r2', title: 'Mở đầu thuyết trình', text: 'Xin chào tất cả mọi người. Cảm ơn các bạn đã có mặt hôm nay. Tôi muốn chia sẻ ba ý tưởng đơn giản đã thay đổi cách làm việc của nhóm chúng tôi. Thứ nhất, chúng tôi ghi chép mọi thứ. Thứ hai, mỗi tuần chúng tôi cải tiến một chút. Thứ ba, chúng tôi lắng nghe khách hàng trước khi làm bất cứ điều gì mới.' },
+      { id: 'vi-r3', title: 'Ngọn hải đăng', text: 'Trên hòn đảo đá xa đất liền có một ngọn hải đăng cũ. Mỗi tối, người gác đèn leo lên chiếc cầu thang xoắn ốc để thắp sáng ngọn đèn. Những con tàu đi qua cơn bão nhờ vào luồng sáng ấy để tìm đường về nhà. Không ai cảm ơn ông, và ông cũng chưa bao giờ đòi hỏi. Ông chỉ tin rằng một ngọn đèn nhỏ nhưng bền bỉ có thể tạo nên khác biệt.' }
+    ]
+  }
+};
+
+const VOWELS = { en: 'A – E – I – O – U', vi: 'a – ă – â – e – ê – i – o – ô – ơ – u – ư' };
+const WARMUPS = [
+  { icon: '🌬️', secs: 30, name: { vi: 'Thở bụng', en: 'Belly breathing' }, how: { vi: 'Hít vào bằng mũi 4 giây cho bụng phình ra, thở ra bằng miệng 6 giây với âm "sss" thật đều.', en: 'Breathe in through the nose for 4 seconds so the belly expands, then out for 6 seconds on a steady "sss".' } },
+  { icon: '😮', secs: 20, name: { vi: 'Thả lỏng hàm', en: 'Jaw release' }, how: { vi: 'Xoa nhẹ khớp hàm theo vòng tròn, há miệng thật rộng rồi khép lại thật chậm.', en: 'Massage the jaw joints in small circles, open wide, then close very slowly.' } },
+  { icon: '💋', secs: 20, name: { vi: 'Rung môi', en: 'Lip trills' }, how: { vi: 'Khép hờ môi, thổi hơi cho môi rung "brrr", lên xuống cao độ như tiếng còi xe.', en: 'Loosely close your lips and blow so they buzz "brrr", sliding the pitch up and down like a siren.' } },
+  { icon: '😁', secs: 20, name: { vi: 'Cười – Chu môi', en: 'Smile – pucker' }, how: { vi: 'Cười thật rộng "iii" rồi chu môi "uuu", luân phiên thật rõ và đều.', en: 'Smile wide on "eee", then pucker on "ooo", alternating clearly and evenly.' } },
+  { icon: '👅', secs: 30, name: { vi: 'Xoay lưỡi', en: 'Tongue circles' }, how: { vi: 'Ngậm miệng, đưa lưỡi xoay vòng giữa răng và môi: 10 vòng xuôi, 10 vòng ngược.', en: 'With your mouth closed, circle the tongue between teeth and lips: 10 times clockwise, 10 counter-clockwise.' } },
+  { icon: '🥁', secs: 30, metro: 100, name: { vi: 'Pa – Ta – Ka', en: 'Pa – Ta – Ka' }, how: { vi: 'Nói "pa-ta-ka" thật rõ theo nhịp máy đếm, bắt đầu chậm rồi tăng dần tốc độ mà vẫn giữ rõ từng âm.', en: 'Say "pa-ta-ka" crisply with the metronome, start slow and speed up while keeping every sound clean.' } },
+  { icon: '🐝', secs: 20, name: { vi: 'Ngân "mmm"', en: 'Humming' }, how: { vi: 'Ngậm miệng ngân "mmm", cảm nhận rung ở môi và mũi, rồi mở ra "mmm–aaa".', en: 'Hum "mmm" with closed lips and feel the buzz in lips and nose, then open into "mmm–aaa".' } },
+  { icon: '🔤', secs: 30, name: { vi: 'Nguyên âm', en: 'Vowels' }, how: { vi: 'Đọc to, mở khẩu hình thật rõ: {vowels}', en: 'Say these aloud, exaggerating each mouth shape: {vowels}' } }
+];
+
+/* ============================== articulation content ============================== */
+const ARTIC = {
+  vi: {
+    topics: ['AI có thay thế lập trình viên không?', 'Một thói quen giúp bạn làm việc hiệu quả hơn', 'Công cụ AI bạn dùng nhiều nhất và vì sao', 'Điều bạn học được trong tuần này', 'Người đi làm nên học tiếng Anh như thế nào', 'Làm việc từ xa: ưu và nhược điểm', 'Một cuốn sách hoặc video đã thay đổi suy nghĩ của bạn', 'Vì sao nên viết code sạch', 'Bạn sẽ làm gì nếu có thêm 1 giờ mỗi ngày', 'Giới thiệu bản thân trong 1 phút', 'Một sai lầm trong công việc và bài học rút ra', 'Mạng xã hội: lợi hay hại', 'Có nên làm side project không', 'Kỹ năng quan trọng nhất của kỹ sư phần mềm', 'Bạn ra quyết định thế nào khi bế tắc', 'Tương lai của việc học khi có AI', 'Một sản phẩm công nghệ bạn thích và vì sao', 'Làm sao để giữ động lực lâu dài', 'Bạn định nghĩa thành công như thế nào', 'Khi còn trẻ nên tiết kiệm hay đầu tư', 'Kể về một ngày làm việc lý tưởng', 'Prompt engineering có phải là một kỹ năng thật sự', 'Vì sao nhiều dự án phần mềm bị trễ hạn', 'Lời khuyên cho chính bạn 5 năm trước'],
+    claims: ['AI sẽ thay đổi vai trò của kỹ sư phần mềm.', 'Ai cũng nên học ít nhất một ngôn ngữ lập trình.', 'Làm việc từ xa hiệu quả hơn làm ở văn phòng.', 'Doanh nghiệp nhỏ nên ứng dụng AI ngay từ bây giờ.', 'Đọc sách vẫn quan trọng trong thời đại video ngắn.', 'Nên chọn công việc vì cơ hội học hỏi hơn là vì lương.', 'Trẻ em nên được học về AI từ tiểu học.', 'Quay video chia sẻ kiến thức là cách học nhanh nhất.', 'Họp ít đi sẽ giúp nhóm làm việc tốt hơn.', 'Code review là bước không thể bỏ qua.', 'Freelance là lựa chọn tốt cho người mới đi làm.', 'Dùng AI để viết email công việc là hoàn toàn ổn.', 'Kỹ năng giao tiếp quan trọng hơn kỹ năng chuyên môn.', 'Mạng xã hội nên giới hạn độ tuổi người dùng.', 'Ai cũng nên có quỹ dự phòng 6 tháng chi tiêu.', 'Học online hiệu quả không kém học trực tiếp.'],
+    concepts: [
+      { c: 'Trí tuệ nhân tạo (AI)', taboo: ['thuật toán', 'mô hình', 'dữ liệu', 'neural', 'machine learning', 'học máy'] },
+      { c: 'Blockchain', taboo: ['phi tập trung', 'hash', 'node', 'sổ cái', 'mã hóa', 'token'] },
+      { c: 'API', taboo: ['giao diện', 'endpoint', 'request', 'server', 'giao thức'] },
+      { c: 'Lạm phát', taboo: ['tiền tệ', 'cpi', 'chỉ số', 'ngân hàng trung ương', 'sức mua'] },
+      { c: 'Điện toán đám mây', taboo: ['máy chủ', 'server', 'hạ tầng', 'data center'] },
+      { c: 'Lãi kép', taboo: ['lãi suất', 'phần trăm', 'hàm mũ'] },
+      { c: 'Internet hoạt động thế nào', taboo: ['giao thức', 'ip', 'router', 'gói tin', 'tcp'] },
+      { c: 'Mô hình ngôn ngữ lớn (như ChatGPT)', taboo: ['token', 'tham số', 'transformer', 'xác suất', 'neural'] },
+      { c: 'Mã hóa dữ liệu', taboo: ['thuật toán', 'khóa', 'encrypt', 'hash'] },
+      { c: 'Vaccine', taboo: ['kháng thể', 'miễn dịch', 'kháng nguyên'] },
+      { c: 'Cổ phiếu', taboo: ['vốn hóa', 'cổ tức', 'sàn', 'chứng khoán'] },
+      { c: 'Bug trong phần mềm', taboo: ['code', 'lỗi logic', 'debug', 'compile'] }
+    ],
+    audiences: ['một đứa trẻ 8 tuổi', 'bà ngoại', 'một người bạn không làm công nghệ', 'một khách hàng đang rất vội']
+  },
+  en: {
+    topics: ['Will AI replace software engineers?', 'One habit that makes you more productive', 'The AI tool you use most and why', 'Something you learned this week', 'How working adults should learn a new language', 'Remote work: pros and cons', 'A book or video that changed your thinking', 'Why clean code matters', 'What you would do with one extra hour a day', 'Introduce yourself in one minute', 'A mistake at work and what you learned', 'Is social media good or bad for us?', 'Should everyone have a side project?', 'The most important skill for a software engineer', 'How you make decisions when you are stuck', 'The future of education with AI', 'A tech product you love and why', 'How to stay motivated in the long run', 'How you define success', 'Save or invest when you are young?', 'Describe your ideal workday', 'Is prompt engineering a real skill?', 'Why software projects are often late', 'Advice to yourself five years ago'],
+    claims: ['AI will change the role of software engineers.', 'Everyone should learn at least one programming language.', 'Remote work is more productive than office work.', 'Small businesses should adopt AI right now.', 'Reading books still matters in the age of short videos.', 'Choose a job for learning, not for salary.', 'Kids should learn about AI in primary school.', 'Making videos is the fastest way to learn something.', 'Fewer meetings make teams better.', 'Code review should never be skipped.', 'Freelancing is a good choice for new graduates.', 'It is fine to use AI to write work emails.', 'Communication skills matter more than technical skills.', 'Social media should have age limits.', 'Everyone should have a six-month emergency fund.', 'Online learning is as effective as in-person learning.'],
+    concepts: [
+      { c: 'Artificial intelligence (AI)', taboo: ['algorithm', 'model', 'data', 'neural', 'machine learning', 'training'] },
+      { c: 'Blockchain', taboo: ['decentralized', 'hash', 'node', 'ledger', 'encryption', 'token'] },
+      { c: 'API', taboo: ['interface', 'endpoint', 'request', 'server', 'protocol'] },
+      { c: 'Inflation', taboo: ['monetary', 'cpi', 'index', 'central bank', 'purchasing power'] },
+      { c: 'Cloud computing', taboo: ['server', 'infrastructure', 'data center', 'virtual'] },
+      { c: 'Compound interest', taboo: ['interest rate', 'percent', 'exponential'] },
+      { c: 'How the internet works', taboo: ['protocol', 'ip', 'router', 'packet', 'tcp'] },
+      { c: 'Large language models (like ChatGPT)', taboo: ['token', 'parameter', 'transformer', 'probability', 'neural'] },
+      { c: 'Encryption', taboo: ['algorithm', 'key', 'cipher', 'hash'] },
+      { c: 'Vaccines', taboo: ['antibody', 'immune', 'antigen'] },
+      { c: 'Stocks', taboo: ['equity', 'dividend', 'market cap', 'exchange'] },
+      { c: 'Software bugs', taboo: ['code', 'logic error', 'debug', 'compile'] }
+    ],
+    audiences: ['an 8-year-old', 'your grandmother', 'a friend who does not work in tech', 'a client in a hurry']
+  }
+};
+const FILLERS = {
+  vi: ['ừm', 'ừ', 'ờ', 'ơ', 'à', 'ầy', 'kiểu như', 'kiểu', 'nói chung là', 'nói chung', 'thật ra là', 'thực ra là', 'đại loại là', 'đại loại', 'các thứ', 'vân vân', 'gì gì đó', 'thì là', 'rồi thì', 'nói thật là', 'hiểu không', 'đúng không'],
+  en: ['um', 'umm', 'uh', 'uhh', 'erm', 'er', 'ah', 'hmm', 'like', 'you know', 'i mean', 'basically', 'actually', 'literally', 'kind of', 'sort of', 'so yeah', 'or something', 'stuff like that', 'you see']
+};
+const MARKERS = {
+  vi: {
+    point: ['tôi nghĩ', 'mình nghĩ', 'em nghĩ', 'theo tôi', 'theo mình', 'quan điểm của tôi', 'quan điểm của mình', 'tôi tin', 'mình tin', 'tôi cho rằng', 'mình cho rằng', 'ý chính là', 'điểm chính là', 'câu trả lời là', 'tôi đồng ý', 'tôi không đồng ý', 'mình đồng ý', 'mình không đồng ý'],
+    reason: ['vì', 'bởi vì', 'tại vì', 'lý do', 'nguyên nhân', 'bởi'],
+    example: ['ví dụ', 'chẳng hạn', 'cụ thể là', 'cụ thể', 'như là', 'trường hợp', 'hãy tưởng tượng', 'giống như'],
+    conclusion: ['tóm lại', 'vì vậy', 'vì thế', 'do đó', 'kết luận', 'cho nên', 'tổng kết', 'như vậy', 'nói tóm lại'],
+    sequence: ['thứ nhất', 'thứ hai', 'thứ ba', 'đầu tiên', 'tiếp theo', 'sau đó', 'cuối cùng', 'một là', 'hai là']
+  },
+  en: {
+    point: ['i think', 'i believe', 'in my opinion', 'my point is', 'the main idea', 'the key point', 'my view is', 'the answer is', 'i would say', 'i agree', 'i disagree', 'i dont think'],
+    reason: ['because', 'the reason', 'since', 'due to', 'thats why'],
+    example: ['for example', 'for instance', 'such as', 'imagine', 'lets say', 'like when', 'its like'],
+    conclusion: ['in conclusion', 'to sum up', 'in short', 'therefore', 'to summarize', 'the bottom line', 'overall', 'so in the end', 'all in all'],
+    sequence: ['first', 'firstly', 'second', 'secondly', 'third', 'next', 'then', 'finally', 'lastly']
+  }
+};
+const PREP_KEYS = ['point', 'reason', 'example', 'conclusion'];
+const PREP_LABEL = { point: 'pPoint', reason: 'pReason', example: 'pExample', conclusion: 'pConclusion', sequence: 'pSequence' };
+
+/* ============================== state & storage ============================== */
+function loadJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }
+const S = Object.assign({ lang: 'en', ui: 'vi', tab: 'today', vtab: 'twister', mi: { en: 0, vi: 0 }, pi: { en: 0, vi: 0 }, ei: { en: 0, vi: 0 }, level: 0, rate: 0.9, bpm: 90, repeat: false, speakGuide: true, tw: { en: 0, vi: 0 }, rd: { en: 0, vi: 0 }, custom: { en: '', vi: '' } }, loadJSON(SET_KEY, {}));
+S.metro = false; S.editCustom = false; S.topicOverride = {};
+if (['warmup', 'twister', 'pairs', 'read'].includes(S.tab)) { S.vtab = S.tab; S.tab = 'voice'; }
+if (!['today', 'minute', 'prep', 'eli5', 'review', 'voice', 'progress'].includes(S.tab)) S.tab = 'today';
+const view = () => S.tab === 'voice' ? S.vtab : S.tab;
+function saveS() {
+  const { lang, ui, tab, vtab, mi, pi, ei, level, rate, bpm, repeat, speakGuide, tw, rd, custom } = S;
+  localStorage.setItem(SET_KEY, JSON.stringify({ lang, ui, tab, vtab, mi, pi, ei, level, rate, bpm, repeat, speakGuide, tw, rd, custom }));
+}
+const store = {
+  get() { const d = loadJSON(LS_KEY, null); return d && Array.isArray(d.history) ? d : { history: [] }; },
+  add(e) { const d = this.get(); const ts = Date.now(); d.history.push({ t: ts, ...e }); if (d.history.length > 1000) d.history = d.history.slice(-1000); localStorage.setItem(LS_KEY, JSON.stringify(d)); const st = $('.streak'); if (st) st.textContent = '🔥 ' + streak(); return ts; },
+  patchAt(ts, obj) { const d = this.get(); const e = d.history.find(h => h.t === ts); if (!e) return; Object.assign(e, obj); localStorage.setItem(LS_KEY, JSON.stringify(d)); },
+  clear() { localStorage.removeItem(LS_KEY); }
+};
+const dayKey = ts => new Date(ts).toLocaleDateString('sv');
+function streak() {
+  const days = new Set(store.get().history.map(h => dayKey(h.t)));
+  const d = new Date();
+  if (!days.has(dayKey(d))) d.setDate(d.getDate() - 1);
+  let n = 0;
+  while (days.has(dayKey(d))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function bestScore(lang, mode, id) {
+  const xs = store.get().history.filter(h => h.lang === lang && h.mode === mode && h.id === id && h.score != null);
+  return xs.length ? Math.max(...xs.map(x => x.score)) : null;
+}
+
+/* ============================== text scoring ============================== */
+function norm(s) {
+  return String(s).normalize('NFC').toLowerCase().replace(/[’'`]/g, '').replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(Boolean);
+}
+const toneless = w => w.normalize('NFD').replace(/[\u0300\u0301\u0303\u0309\u0323]/g, '').normalize('NFC');
+function lev(a, b) {
+  const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+const charSim = (a, b) => 1 - lev(a, b) / Math.max(a.length, b.length, 1);
+function classify(t, h, lang) {
+  if (t === h) return 'ok';
+  if (lang === 'vi' && toneless(t) === toneless(h)) return 'tone';
+  if (charSim(t, h) >= 0.75) return 'near';
+  return 'sub';
+}
+const CREDIT = { ok: 1, near: 0.7, tone: 0.5, sub: 0, miss: 0 };
+/** Align target words with recognised words. Returns per display-word classes + score. */
+function scoreText(target, heard, lang) {
+  const disp = target.split(/\s+/).filter(Boolean);
+  const T = disp.map((w, i) => ({ i, n: norm(w).join(''), w })).filter(x => x.n);
+  // merge split compounds the recogniser may produce ("sea shells" -> "seashells")
+  const tset = new Set(T.map(x => x.n)); const H = [];
+  for (const w of norm(heard)) { const prev = H[H.length - 1]; if (prev && !tset.has(w) && tset.has(prev + w)) H[H.length - 1] = prev + w; else if (prev && tset.has(prev + w) && !tset.has(prev)) H[H.length - 1] = prev + w; else H.push(w); }
+  const n = T.length, m = H.length;
+  const cost = (a, b) => { if (a === b) return 0; const c = classify(a, b, lang); return c === 'tone' ? 0.4 : c === 'near' ? 0.5 : (charSim(a, b) >= 0.5 ? 0.8 : 1); };
+  const D = Array.from({ length: n + 1 }, (_, i) => { const r = new Array(m + 1).fill(0); r[0] = i; return r; });
+  for (let j = 0; j <= m; j++) D[0][j] = j;
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
+    D[i][j] = Math.min(D[i - 1][j - 1] + cost(T[i - 1].n, H[j - 1]), D[i - 1][j] + 1, D[i][j - 1] + 1);
+  const map = {}; let extras = 0; let i = n, j = m;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && Math.abs(D[i][j] - (D[i - 1][j - 1] + cost(T[i - 1].n, H[j - 1]))) < 1e-9) {
+      map[T[i - 1].i] = { cls: classify(T[i - 1].n, H[j - 1], lang), heard: H[j - 1] }; i--; j--;
+    } else if (i > 0 && Math.abs(D[i][j] - (D[i - 1][j] + 1)) < 1e-9) {
+      map[T[i - 1].i] = { cls: 'miss' }; i--;
+    } else { extras++; j--; }
+  }
+  const credit = T.reduce((a, x) => a + CREDIT[map[x.i].cls], 0);
+  const score = n ? Math.round(100 * credit / n) : 0;
+  const errors = T.filter(x => map[x.i].cls !== 'ok').map(x => ({ word: x.w.replace(/[^\p{L}\p{N}’'-]/gu, ''), ...map[x.i] }));
+  return { map, score, n, extras, errors };
+}
+function judgePair(alts, target, set) {
+  const tgt = norm(target).join(' ');
+  const others = set.filter(w => w !== target).map(w => norm(w).join(' '));
+  const has = (alt, w) => { const toks = norm(alt); return toks.includes(w) || toks.join(' ') === w; };
+  if (!alts.length) return { res: 'none' };
+  const first = alts[0];
+  if (has(first, tgt)) return { res: 'ok', heard: first };
+  const o1 = others.find(o => has(first, o));
+  if (o1) return { res: 'wrong', heard: o1 };
+  if (alts.some(a => has(a, tgt))) return { res: 'ok', heard: first };
+  const o2 = others.find(o => alts.some(a => has(a, o)));
+  if (o2) return { res: 'wrong', heard: o2 };
+  return { res: 'unclear', heard: first };
+}
+
+/* ============================== audio: TTS, beeps, metronome ============================== */
+let voices = [];
+function loadVoices() { if (HAS_TTS) voices = speechSynthesis.getVoices(); }
+function pickVoice(lang) {
+  const pref = lang === 'vi' ? 'vi' : 'en';
+  const list = voices.filter(v => v.lang.toLowerCase().replace('_', '-').startsWith(pref));
+  if (!list.length) return null;
+  const sc = v => (/(premium|enhanced|natural|neural)/i.test(v.name) ? 4 : 0) + (/google|microsoft|siri/i.test(v.name) ? 2 : 0) + (v.lang.toLowerCase().replace('_', '-').startsWith(pref === 'en' ? 'en-us' : 'vi-vn') ? 1 : 0);
+  return list.slice().sort((a, b) => sc(b) - sc(a))[0];
+}
+function speak(text, lang, rate = 1, onBoundary) {
+  return new Promise(res => {
+    if (!HAS_TTS) return res();
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = pickVoice(lang); if (v) u.voice = v;
+    u.lang = lang === 'vi' ? 'vi-VN' : 'en-US'; u.rate = rate;
+    if (onBoundary) u.onboundary = e => { if (e.name === 'word' || e.name === undefined) onBoundary(e.charIndex); };
+    u.onend = u.onerror = () => res();
+    setTimeout(() => speechSynthesis.speak(u), 60);
+  });
+}
+let actx = null;
+function getCtx() { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); return actx; }
+function tone(freq, dur = 0.06, vol = 0.25) {
+  try {
+    const c = getCtx(), o = c.createOscillator(), g = c.createGain();
+    o.frequency.value = freq; g.gain.setValueAtTime(vol, c.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+    o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime + dur + 0.02);
+  } catch { }
+}
+const Metro = {
+  timer: null,
+  start(bpm) { this.stop(); let n = 0; const tick = () => tone(n++ % 4 === 0 ? 1600 : 1050, 0.05, 0.2); tick(); this.timer = setInterval(tick, 60000 / bpm); },
+  stop() { clearInterval(this.timer); this.timer = null; },
+  get running() { return !!this.timer; }
+};
+
+/* ============================== recorder + recognition ============================== */
+const Rec = {
+  active: false, stopping: null,
+  async start(o) {
+    this.o = o; this.final = []; this.alts = []; this.confs = []; this.pauses = []; this.sess = {}; this.firstVoice = 0; this.lastVoice = 0; this.isVideo = false;
+    this.srError = null; this.srBlocked = false; this.srRunning = false; this.stopping = null;
+    const aud = { echoCancellation: true, noiseSuppression: true };
+    if (o.video) {
+      try { this.stream = await navigator.mediaDevices.getUserMedia({ audio: aud, video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 960 } } }); this.isVideo = true; }
+      catch (e) { toast(t('camOff')); }
+    }
+    if (!this.stream || !this.isVideo) this.stream = await navigator.mediaDevices.getUserMedia({ audio: aud });
+    o.onStream && o.onStream(this.stream, this.isVideo);
+    this.chunks = [];
+    try { this.mr = new MediaRecorder(this.stream); this.mr.ondataavailable = e => { if (e.data.size) this.chunks.push(e.data); }; this.mr.start(); } catch { this.mr = null; }
+    try {
+      const c = getCtx(); this.src = c.createMediaStreamSource(this.stream); this.an = c.createAnalyser(); this.an.fftSize = 1024; this.src.connect(this.an);
+    } catch { this.an = null; }
+    const buf = this.an ? new Float32Array(this.an.fftSize) : null;
+    this.t0 = performance.now(); this.active = true;
+    const loop = () => {
+      if (!this.active) return;
+      const now = performance.now();
+      if (this.an) {
+        this.an.getFloatTimeDomainData(buf); let s = 0; for (let k = 0; k < buf.length; k++) s += buf[k] * buf[k];
+        const rms = Math.sqrt(s / buf.length);
+        if (rms > 0.02) { if (this.lastVoice && now - this.lastVoice > 1500) this.pauses.push((now - this.lastVoice) / 1000); if (!this.firstVoice) this.firstVoice = now; this.lastVoice = now; }
+        o.onLevel && o.onLevel(Math.min(1, rms * 7));
+      }
+      if (o.maxSec && now - this.t0 > o.maxSec * 1000) { o.onEnd && o.onEnd(); return; }
+      this.raf = requestAnimationFrame(loop);
+    };
+    loop();
+    if (SRClass) this.startSR();
+  },
+  flush() {
+    Object.keys(this.sess).map(Number).sort((a, b) => a - b).forEach(k => { this.final.push(this.sess[k].t); this.alts.push(this.sess[k].alts); if (this.sess[k].c) this.confs.push(this.sess[k].c); });
+    this.sess = {};
+  },
+  startSR() {
+    const o = this.o, r = new SRClass(); this.sr = r;
+    r.lang = o.lang === 'vi' ? 'vi-VN' : 'en-US'; r.continuous = !o.single; r.interimResults = true; r.maxAlternatives = 5;
+    r.onresult = e => {
+      let interim = '';
+      for (let k = 0; k < e.results.length; k++) {
+        const res = e.results[k];
+        if (res.isFinal) this.sess[k] = { t: res[0].transcript, alts: Array.from(res, a => a.transcript), c: res[0].confidence || 0 };
+        else interim += res[0].transcript;
+      }
+      const sessText = Object.keys(this.sess).map(Number).sort((a, b) => a - b).map(k => this.sess[k].t).join(' ');
+      o.onInterim && o.onInterim([this.final.join(' '), sessText, interim].join(' ').replace(/\s+/g, ' ').trim());
+    };
+    r.onerror = e => { this.srError = e.error; if (['not-allowed', 'service-not-allowed', 'language-not-supported', 'network'].includes(e.error)) this.srBlocked = true; };
+    r.onend = () => {
+      this.srRunning = false; this.flush();
+      if (this.active && !this.stopping) {
+        if (o.single || this.srBlocked) { if (o.single) o.onEnd && o.onEnd(); }
+        else { try { this.startSR(); } catch { } }
+      } else if (this.srDone) { this.srDone(); }
+    };
+    try { r.start(); this.srRunning = true; } catch (e) { this.srError = 'start'; }
+  },
+  stop() {
+    if (this.stopping) return this.stopping;
+    this.active = false;
+    this.stopping = (async () => {
+      const t1 = performance.now();
+      cancelAnimationFrame(this.raf);
+      const srP = new Promise(res => {
+        if (!this.sr || !this.srRunning) return res();
+        this.srDone = res; try { this.sr.stop(); } catch { res(); } setTimeout(res, 2500);
+      });
+      const mrP = new Promise(res => { if (!this.mr || this.mr.state === 'inactive') return res(); this.mr.onstop = res; try { this.mr.stop(); } catch { res(); } });
+      await Promise.all([srP, mrP]);
+      this.srDone = null; this.flush();
+      try { this.src && this.src.disconnect(); } catch { }
+      this.stream.getTracks().forEach(tr => tr.stop());
+      const url = this.chunks.length ? URL.createObjectURL(new Blob(this.chunks, { type: (this.mr && this.mr.mimeType) || 'audio/webm' })) : null;
+      const total = (t1 - this.t0) / 1000;
+      const speech = this.lastVoice > this.firstVoice ? (this.lastVoice - this.firstVoice) / 1000 + 0.2 : total;
+      const conf = this.confs.length ? this.confs.reduce((a, b) => a + b, 0) / this.confs.length : 0;
+      return { transcript: this.final.join(' ').replace(/\s+/g, ' ').trim(), chunks: this.final.map(x => x.trim()).filter(Boolean), pauses: this.pauses.slice(), conf, isVideo: this.isVideo, alts: this.alts.flat(), total, speech: Math.min(speech, total), url, srOk: !!SRClass && !this.srBlocked, srError: this.srError };
+    })();
+    return this.stopping;
+  }
+};
+let recToken = 0;
+let talkTick = null;
+function abortRec() { clearInterval(talkTick); talkTick = null; if (Rec.active) { recToken++; Rec.stop(); } }
+
+/* ============================== UI helpers ============================== */
+let toastT;
+function toast(msg) { const el = $('#toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3500); }
+let P = {};       // current practice card
+let PG = null;    // current pairs session
+let player = null;
+function stopAudio() { if (HAS_TTS) speechSynthesis.cancel(); if (player) { player.pause(); player = null; } }
+function stopAll() { stopAudio(); abortRec(); wuStop(); Metro.stop(); S.metro = false; clearInterval(prepTick); prepTick = null; stopDTimer(); }
+function srErrMsg(r) {
+  const L = t('lang_' + S.lang);
+  if (r.srError === 'network') return t('srNetwork');
+  if (r.srError === 'language-not-supported') return t('srLang', { lang: L });
+  if (r.srError === 'not-allowed' || r.srError === 'service-not-allowed' || r.srError === 'start') return t('srBlocked');
+  return t('noSR');
+}
+
+/* ============================== rendering ============================== */
+const TABS = ['today', 'minute', 'prep', 'eli5', 'review', 'voice', 'progress'];
+function render() {
+  document.documentElement.lang = S.ui;
+  document.title = t('appName') + ' · Articulation';
+  $('#app').innerHTML = `
+  <header>
+    <div class="brand"><div class="logo">🗣️</div><div><div>${t('appName')}</div><div class="sub">${t('tagline')}</div></div></div>
+    <div class="hdr-right">
+      <div class="seg" role="group" aria-label="${t('practiceLang')}" title="${t('practiceLang')}">
+        <button data-act="lang" data-v="en" class="${S.lang === 'en' ? 'on' : ''}">🇬🇧 English</button>
+        <button data-act="lang" data-v="vi" class="${S.lang === 'vi' ? 'on' : ''}">🇻🇳 Tiếng Việt</button>
+      </div>
+      <div class="streak" title="${t('streakDays')}">🔥 ${streak()}</div>
+    </div>
+  </header>
+  <div id="notices"></div>
+  <nav class="tabs">${TABS.map(k => `<button data-act="tab" data-v="${k}" class="${S.tab === k ? 'on' : ''}">${t('tab_' + k)}</button>`).join('')}</nav>
+  <main id="main"></main>
+  <footer>
+    <div class="row">${t('uiLang')}: <div class="seg sm"><button data-act="ui" data-v="vi" class="${S.ui === 'vi' ? 'on' : ''}">Tiếng Việt</button><button data-act="ui" data-v="en" class="${S.ui === 'en' ? 'on' : ''}">English</button></div></div>
+    <div>⌨️ ${t('shortcuts')}</div>
+    <div>🔒 ${t('privacy')}</div>
+  </footer>`;
+  renderMain();
+}
+function renderNotices() {
+  const box = $('#notices'); if (!box) return;
+  const out = [];
+  if (!SRClass && S.tab !== 'progress' && view() !== 'warmup') out.push(`<div class="notice">${t('noSR')}</div>`);
+  if (HAS_TTS && voices.length && !pickVoice(S.lang) && S.tab === 'voice')
+    out.push(`<div class="notice">${t('noVoice', { lang: t('lang_' + S.lang), hint: S.lang === 'vi' ? 'Linh (Tiếng Việt)' : 'Samantha / Ava (English)' })}</div>`);
+  box.innerHTML = out.join('');
+}
+function renderMain() {
+  const m = $('#main'); if (!m) return;
+  m.innerHTML = { today: renderToday, minute: renderMinute, prep: renderPrep, eli5: renderEli5, review: renderReview, voice: renderVoice, progress: renderProgress }[S.tab]();
+  renderNotices();
+}
+
+/* ---------- practice card (twisters + read aloud) ---------- */
+function practiceHTML(item, o) {
+  const rep = o.repeatable && S.repeat;
+  const target = rep ? [item.text, item.text, item.text].join('\n') : item.text;
+  P = { item, mode: o.mode, target, url: null };
+  let wi = 0;
+  const lines = target.split('\n').map(line => `<div class="line">${line.split(/\s+/).filter(Boolean).map(w => `<span class="w" data-i="${wi++}">${esc(w)}</span>`).join(' ')}</div>`).join('');
+  const tip = item.tip ? TIPS[S.lang][item.tip] : null;
+  const best = bestScore(S.lang, o.mode, item.id);
+  return `<section class="card practice ${o.mode}">
+    <div class="meta">
+      ${tip ? `<span class="badge">${t('focus')}: ${esc(tip.label)}</span>` : ''}
+      ${item.level ? `<span class="badge lv${item.level}">${t('lvl' + item.level)}</span>` : ''}
+      ${item.title ? `<span class="badge">${esc(item.title)}</span>` : ''}
+      ${rep ? `<span class="badge">×3</span>` : ''}
+      ${best != null ? `<span class="badge best">🏆 ${t('best')}: ${best}%</span>` : ''}
+    </div>
+    <div class="target" lang="${S.lang}">${lines}</div>
+    ${tip ? `<div class="tip">💡 ${esc(tip[S.ui])}</div>` : ''}
+    <div class="controls">
+      <button class="btn" data-act="listen">${t('listen')}</button>
+      <button class="btn primary" id="recBtn" data-act="rec">${t('record')}</button>
+      <button class="btn" id="playBtn" data-act="play" disabled>${t('playback')}</button>
+    </div>
+    <div class="opts">
+      <label>${t('speed')} <input type="range" id="rate" min="0.5" max="1.3" step="0.05" value="${S.rate}"> <b id="rateV">${S.rate.toFixed(2)}×</b></label>
+      ${o.repeatable ? `<label class="chk"><input type="checkbox" id="repeat" ${S.repeat ? 'checked' : ''}> ${t('repeat3')}</label>` : ''}
+      ${o.mode === 'twister' ? `<label class="chk"><input type="checkbox" id="metro" ${S.metro ? 'checked' : ''}> ${t('metronome')}</label><label><input type="range" id="bpm" min="50" max="180" step="5" value="${S.bpm}"> <b id="bpmV">${S.bpm}</b>&nbsp;BPM</label>` : ''}
+    </div>
+    <div class="meter"><i id="lvl"></i></div>
+    <div class="live" id="live"></div>
+    <div id="result"></div>
+  </section>`;
+}
+function setRecBtn(state) {
+  const b = $('#recBtn'); if (!b) return;
+  b.classList.toggle('rec', state === 'rec'); b.classList.toggle('primary', state !== 'rec');
+  b.disabled = state === 'busy';
+  b.textContent = state === 'rec' ? t('stop') : state === 'busy' ? t('busy') : (P.mode === 'pairs' ? t('sayRec') : t('record'));
+}
+function listen() {
+  if (!HAS_TTS) return toast(t('noTTS'));
+  if (Rec.active) return;
+  if (voices.length && !pickVoice(S.lang)) toast(t('noVoice', { lang: t('lang_' + S.lang), hint: S.lang === 'vi' ? 'Linh' : 'Samantha' }));
+  const spoken = P.target.replace(/\n/g, ' ');
+  const offs = []; spoken.replace(/\S+/g, (mm, idx) => { offs.push(idx); return mm; });
+  const clear = () => $$('.target .w.speaking').forEach(x => x.classList.remove('speaking'));
+  speak(spoken, S.lang, S.rate, ci => {
+    let k = 0; while (k + 1 < offs.length && offs[k + 1] <= ci) k++;
+    clear(); const sp = $(`.target .w[data-i="${k}"]`); sp && sp.classList.add('speaking');
+  }).then(clear);
+}
+async function toggleRec() {
+  if (Rec.active) return finishRec();
+  stopAudio();
+  $$('.target .w').forEach(x => { x.className = 'w'; x.removeAttribute('title'); });
+  $('#result').innerHTML = ''; $('#live').textContent = t('listening');
+  const tok = ++recToken;
+  try {
+    await Rec.start({
+      lang: S.lang, maxSec: P.mode === 'read' ? 300 : 75,
+      onInterim: txt => { const l = $('#live'); if (l && tok === recToken) l.textContent = txt || t('listening'); },
+      onLevel: v => { const l = $('#lvl'); if (l) l.style.width = (v * 100).toFixed(0) + '%'; },
+      onEnd: () => { if (tok === recToken) finishRec(); }
+    });
+  } catch (e) { $('#live').textContent = ''; return toast(t('micDenied')); }
+  setRecBtn('rec');
+}
+async function finishRec() {
+  if (!Rec.active) return;
+  const tok = recToken;
+  setRecBtn('busy');
+  const r = await Rec.stop();
+  if (tok !== recToken) return;
+  setRecBtn('idle');
+  const lvl = $('#lvl'); if (lvl) lvl.style.width = '0';
+  P.url = r.url; const pb = $('#playBtn'); if (pb) pb.disabled = !r.url;
+  $('#live').textContent = '';
+  const box = $('#result');
+  if (!r.srOk || (r.srError && !r.transcript && r.srError !== 'no-speech' && r.srError !== 'aborted')) {
+    box.innerHTML = `<div class="result"><div class="notice err">${esc(srErrMsg(r))}</div>${selfRateHTML()}</div>`; return;
+  }
+  if (!r.transcript) { box.innerHTML = `<div class="result"><div class="notice">${t('noSpeech')}</div>${selfRateHTML()}</div>`; return; }
+  const res = scoreText(P.target, r.transcript, S.lang);
+  const wpm = Math.round(res.n / (Math.max(r.speech, 0.5) / 60));
+  const [slow, fast] = S.lang === 'vi' ? [150, 240] : [110, 175];
+  const pace = wpm < slow ? t('pace_slow') : wpm > fast ? t('pace_fast') : t('pace_ok');
+  $$('.target .w').forEach(sp => {
+    const w = res.map[sp.dataset.i]; if (!w) return;
+    sp.className = 'w ' + w.cls;
+    if (w.cls === 'miss') sp.title = t('missed'); else if (w.heard && w.cls !== 'ok') sp.title = t('heardAs') + ' “' + w.heard + '”';
+  });
+  const color = res.score >= 90 ? 'var(--ok)' : res.score >= 70 ? 'var(--near)' : 'var(--bad)';
+  const fb = res.score >= 90 ? t('fb_great') : res.score >= 70 ? t('fb_good') : t('fb_low');
+  const errs = res.errors.slice(0, 10).map(e => `<li><b>${esc(e.word)}</b> — ${e.cls === 'miss' ? t('missed') : e.cls === 'tone' ? `${t('toneErr')}: ${t('heardAs')} “${esc(e.heard)}”` : e.cls === 'near' ? `${t('nearErr')}: “${esc(e.heard)}”` : `${t('heardAs')} “${esc(e.heard)}”`}</li>`).join('');
+  box.innerHTML = `<div class="result">
+    <div class="score-row">
+      <div class="ring" style="--p:${res.score};--c:${color}"><b>${res.score}%</b></div>
+      <div class="stats">
+        <div class="stat"><small>${t('accuracy')}</small><b>${res.score}%</b></div>
+        <div class="stat"><small>${S.lang === 'vi' ? t('wpm_vi') : t('wpm_en')}</small><b>${wpm}</b> <small style="display:inline">${pace}</small></div>
+        <div class="stat"><small>${t('duration')}</small><b>${r.speech.toFixed(1)}s</b></div>
+      </div>
+    </div>
+    <div class="fb">${fb}</div>
+    <div class="legend"><span style="--c:var(--ok)">${t('lg_ok')}</span><span style="--c:var(--near)">${t('lg_near')}</span>${S.lang === 'vi' ? `<span style="--c:var(--tone)">${t('lg_tone')}</span>` : ''}<span style="--c:var(--bad)">${t('lg_sub')} / ${t('lg_miss')}</span></div>
+    <div class="heardbox"><small style="color:var(--muted)">${t('heard')}:</small> ${esc(r.transcript)}</div>
+    ${errs ? `<div class="sec-title">${t('fixes')}</div><ul class="fixes">${errs}</ul>` : ''}
+  </div>`;
+  store.add({ lang: S.lang, mode: P.mode, id: P.item.id, title: (P.item.title || P.item.text).slice(0, 60), score: res.score, wpm, sec: Math.round(r.speech), rep: !!(S.repeat && P.mode === 'twister') });
+}
+function selfRateHTML() {
+  return `<div style="margin-top:10px">${t('selfRate')}</div><div class="controls">
+    <button class="btn sm" data-act="self" data-v="40">${t('rate1')}</button>
+    <button class="btn sm" data-act="self" data-v="70">${t('rate2')}</button>
+    <button class="btn sm" data-act="self" data-v="90">${t('rate3')}</button></div>`;
+}
+function playRec() { if (!P.url) return; stopAudio(); player = new Audio(P.url); player.play(); }
+
+/* ---------- twisters ---------- */
+function twList() { const all = CONTENT[S.lang].twisters; return S.level ? all.filter(x => x.level === S.level) : all; }
+function renderTwister() {
+  const list = twList(); let i = S.tw[S.lang] || 0; if (i >= list.length || i < 0) i = 0; S.tw[S.lang] = i;
+  return `<div class="toolbar">
+    <div class="chips">${[0, 1, 2, 3].map(l => `<button class="chip ${S.level === l ? 'on' : ''}" data-act="level" data-v="${l}">${t('lvl' + l)}</button>`).join('')}</div>
+    <div class="navx"><button class="btn sm ghost" data-act="tw" data-v="-1" aria-label="prev">‹</button><span>${i + 1} / ${list.length}</span><button class="btn sm ghost" data-act="tw" data-v="1" aria-label="next">›</button><button class="btn sm ghost" data-act="tw" data-v="rand" title="${t('random')}">🎲</button></div>
+  </div>` + practiceHTML(list[i], { mode: 'twister', repeatable: true });
+}
+
+/* ---------- read aloud ---------- */
+function renderRead() {
+  const ps = CONTENT[S.lang].passages; let sel = S.rd[S.lang];
+  if (sel !== 'custom' && !(sel >= 0 && sel < ps.length)) sel = S.rd[S.lang] = 0;
+  const chips = `<div class="chips" style="margin-bottom:12px">${ps.map((p, i) => `<button class="chip ${sel === i ? 'on' : ''}" data-act="rd" data-v="${i}">${esc(p.title)}</button>`).join('')}<button class="chip ${sel === 'custom' ? 'on' : ''}" data-act="rd" data-v="custom">${t('custom')}</button></div>`;
+  let body;
+  if (sel === 'custom') {
+    const txt = S.custom[S.lang];
+    if (!txt || S.editCustom) body = `<section class="card"><textarea id="customTxt" lang="${S.lang}" placeholder="${esc(t('customPh'))}">${esc(txt)}</textarea><div class="controls"><button class="btn primary" data-act="useCustom">${t('useText')}</button></div></section>`;
+    else body = practiceHTML({ id: 'custom', title: t('custom').replace(/^\S+\s/, ''), text: txt }, { mode: 'read' }) + `<div class="controls"><button class="btn sm ghost" data-act="editCustom">${t('editText')}</button></div>`;
+  } else body = practiceHTML(ps[sel], { mode: 'read' });
+  return `<p class="intro">${t('readIntro')}</p>${chips}${body}`;
+}
+
+/* ---------- minimal pairs ---------- */
+function groupLabel(g) { return TIPS[S.lang][g.tip].label; }
+function renderPairs() {
+  const groups = CONTENT[S.lang].pairs;
+  if (!PG) return `<p class="intro">${t('pairsIntro')}</p><div class="grid">${groups.map((g, i) => {
+    const best = bestScore(S.lang, 'pairs', g.id);
+    return `<button class="card pg" data-act="pg" data-v="${i}"><div class="pg-h">${esc(groupLabel(g))}</div><div class="pg-ex" lang="${S.lang}">${g.sets.slice(0, 3).map(s => esc(s.join(' – '))).join(' · ')}</div>${best != null ? `<div class="pg-best">🏆 ${t('best')}: ${best}%</div>` : ''}</button>`;
+  }).join('')}</div>`;
+  const g = groups[PG.gi]; const tip = TIPS[S.lang][g.tip];
+  P = { mode: 'pairs', item: { id: g.id } };
+  const head = `<div class="pair-head">
+      <button class="btn sm ghost" data-act="pgBack">${t('back')}</button>
+      <b style="font-size:18px">${esc(tip.label)}</b>
+      <div class="seg sm"><button data-act="pgMode" data-v="say" class="${PG.mode === 'say' ? 'on' : ''}">${t('modeSay')}</button><button data-act="pgMode" data-v="hear" class="${PG.mode === 'hear' ? 'on' : ''}">${t('modeHear')}</button></div>
+    </div>`;
+  if (PG.state === 'done') {
+    const s = Math.round(100 * PG.correct / ROUNDS);
+    return `${head}<section class="card center"><div class="ring" style="--p:${s};--c:${s >= 80 ? 'var(--ok)' : s >= 60 ? 'var(--near)' : 'var(--bad)'};margin:10px auto"><b>${s}%</b></div><div class="fb">${t('pairDone', { s })}</div><div class="controls" style="justify-content:center"><button class="btn primary" data-act="pgAgain">${t('again')}</button><button class="btn" data-act="pgBack">${t('otherGroup')}</button></div></section><div class="tip" style="margin-top:12px">💡 ${esc(tip[S.ui])}</div>`;
+  }
+  const prog = `<div class="pair-prog center">${t('round', { i: PG.round + 1, n: ROUNDS })} · ${t('correctCount', { c: PG.correct })}</div>`;
+  let body;
+  if (PG.mode === 'say') {
+    body = `<div class="center" style="color:var(--muted)">${t('sayThis')}</div>
+      <div class="words" lang="${S.lang}">${PG.set.map(w => `<div class="word ${w === PG.target ? 'target' : ''} ${PG.answered && w === PG.target ? (PG.ok ? 'right' : 'wrong') : ''}">${esc(w)}</div>`).join('')}</div>
+      <div class="controls" style="justify-content:center">
+        <button class="btn" data-act="pgListen">${t('listenTarget')}</button>
+        <button class="btn primary" id="recBtn" data-act="pgRec" ${PG.answered ? 'disabled' : ''}>${t('sayRec')}</button>
+        <button class="btn" id="playBtn" data-act="play" ${P.url || PG.url ? '' : 'disabled'}>${t('playback')}</button>
+      </div>
+      <div class="meter" style="max-width:360px;margin:10px auto"><i id="lvl"></i></div>`;
+  } else {
+    body = `<div class="center" style="color:var(--muted)">${t('whichHeard')}</div>
+      <div class="controls" style="justify-content:center;margin-top:12px"><button class="btn primary" data-act="pgListen">${t('play')}</button></div>
+      <div class="words" lang="${S.lang}">${PG.set.map(w => `<button class="word ${PG.answered ? (w === PG.target ? 'right' : w === PG.picked ? 'wrong' : '') : ''}" data-act="pgPick" data-v="${esc(w)}" ${PG.answered ? 'disabled' : ''}>${esc(w)}</button>`).join('')}</div>`;
+  }
+  const fbCls = PG.msgType === 'ok' ? 'ok' : PG.msgType === 'bad' ? 'bad' : 'meh';
+  return `${head}<section class="card">${prog}${body}
+    <div class="pfb ${fbCls}" id="pfb">${PG.msg ? esc(PG.msg) : ''}</div>
+    <div class="controls" style="justify-content:center">${PG.answered ? `<button class="btn primary" data-act="pgNext">${t('next')}</button>` : `<button class="btn sm ghost" data-act="pgSkip">${t('skipRound')}</button>`}</div>
+  </section><div class="tip" style="margin-top:12px">💡 ${esc(tip[S.ui])}</div>`;
+}
+function pgNewRound() {
+  const g = CONTENT[S.lang].pairs[PG.gi];
+  let set; do { set = g.sets[Math.floor(Math.random() * g.sets.length)]; } while (g.sets.length > 1 && set === PG.set);
+  PG.set = set; PG.target = set[Math.floor(Math.random() * set.length)];
+  PG.answered = false; PG.ok = false; PG.picked = null; PG.msg = ''; PG.msgType = ''; PG.url = null; P.url = null;
+}
+function pgStart(gi, mode) {
+  PG = { gi, mode: mode || (PG && PG.mode) || 'say', round: 0, correct: 0, state: 'ask' };
+  pgNewRound(); renderMain();
+  if (PG.mode === 'hear') pgSpeak();
+}
+function pgSpeak() { speak(PG.target, S.lang, Math.min(S.rate, 1)); }
+function pgAnswer(ok, msg) {
+  PG.answered = true; PG.ok = ok; if (ok) PG.correct++;
+  PG.msg = msg; PG.msgType = ok ? 'ok' : 'bad';
+  tone(ok ? 880 : 220, 0.12, 0.15);
+  renderMain();
+}
+function pgNext() {
+  PG.round++;
+  if (PG.round >= ROUNDS) {
+    PG.state = 'done';
+    const g = CONTENT[S.lang].pairs[PG.gi];
+    store.add({ lang: S.lang, mode: 'pairs', id: g.id, title: groupLabel(g) + ' · ' + (PG.mode === 'say' ? 'say' : 'listen'), score: Math.round(100 * PG.correct / ROUNDS), sub: PG.mode });
+    renderMain(); return;
+  }
+  pgNewRound(); renderMain();
+  if (PG.mode === 'hear') pgSpeak();
+}
+async function pgRec() {
+  if (Rec.active) return pgFinish();
+  stopAudio();
+  const tok = ++recToken;
+  PG.msg = t('listening'); PG.msgType = ''; const f = $('#pfb'); if (f) { f.textContent = PG.msg; f.className = 'pfb meh'; }
+  try {
+    await Rec.start({
+      lang: S.lang, single: true, maxSec: 6,
+      onLevel: v => { const l = $('#lvl'); if (l) l.style.width = (v * 100).toFixed(0) + '%'; },
+      onEnd: () => { if (tok === recToken) pgFinish(); }
+    });
+  } catch { return toast(t('micDenied')); }
+  setRecBtn('rec');
+}
+async function pgFinish() {
+  if (!Rec.active) return;
+  const tok = recToken; setRecBtn('busy');
+  const r = await Rec.stop();
+  if (tok !== recToken || !PG) return;
+  PG.url = P.url = r.url;
+  if (!r.srOk) { PG.msg = srErrMsg(r); PG.msgType = 'bad'; renderMain(); return; }
+  const j = judgePair([r.transcript, ...r.alts].filter(Boolean), PG.target, PG.set);
+  if (j.res === 'ok') return pgAnswer(true, t('correct'));
+  if (j.res === 'wrong') return pgAnswer(false, t('wrongSaid', { w: j.heard }));
+  PG.msg = j.res === 'none' ? t('noSpeech') : t('unclear', { w: j.heard }); PG.msgType = 'meh';
+  renderMain();
+}
+
+/* ---------- warm-up ---------- */
+const W = { i: -1, remain: 0, timer: null, paused: false };
+const RING_C = 2 * Math.PI * 76;
+function wuHow(s) { return s.how[S.ui].replace('{vowels}', VOWELS[S.lang]); }
+function renderWarmup() {
+  const total = WARMUPS.reduce((a, s) => a + s.secs, 0);
+  const cur = W.i >= 0 && W.i < WARMUPS.length ? WARMUPS[W.i] : null;
+  const done = W.i >= WARMUPS.length;
+  let stage;
+  if (done) stage = `<div style="font-size:54px">🎉</div><div class="wu-name">${t('warmupDone')}</div><div class="controls"><button class="btn primary" data-act="vtab" data-v="twister">${t('goTwister')}</button><button class="btn" data-act="wuReset">${t('reset')}</button></div>`;
+  else if (cur) {
+    const frac = W.remain / cur.secs;
+    stage = `<div class="wu-ring"><svg width="170" height="170"><circle cx="85" cy="85" r="76" stroke="#232a52" stroke-width="10" fill="none"/><circle id="wuArc" cx="85" cy="85" r="76" stroke="url(#gr)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="${RING_C}" stroke-dashoffset="${RING_C * (1 - frac)}"/><defs><linearGradient id="gr"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs></svg><div class="num" id="wuNum">${W.remain}</div></div>
+      <div class="wu-name">${cur.icon} ${esc(cur.name[S.ui])}</div><div class="wu-how">${esc(wuHow(cur))}</div>
+      <div class="controls"><button class="btn primary" data-act="wuPause">${W.paused ? t('resume') : t('pause')}</button><button class="btn" data-act="wuSkip">${t('skip')}</button><button class="btn ghost" data-act="wuReset">${t('reset')}</button></div>`;
+  } else stage = `<div style="font-size:54px">🧘</div><div class="wu-name">${t('ready')}</div><div class="wu-how">${t('warmupIntro', { min: Math.round(total / 60) })}</div><div class="controls"><button class="btn primary" data-act="wuStart">${t('start')}</button></div>`;
+  return `<p class="intro">${t('warmupIntro', { min: Math.round(total / 60) })}</p>
+  <div class="wu"><ol class="wu-list">${WARMUPS.map((s, k) => `<li class="${k < W.i ? 'done' : k === W.i ? 'cur' : ''}"><span>${s.icon}</span><b>${esc(s.name[S.ui])}</b><em>${s.secs}s</em></li>`).join('')}</ol>
+  <section class="card wu-stage">${stage}<label class="chk opts"><input type="checkbox" id="speakGuide" ${S.speakGuide ? 'checked' : ''}> ${t('speakGuide')}</label></section></div>`;
+}
+function wuStop() { clearInterval(W.timer); W.timer = null; }
+function wuStep() {
+  const s = WARMUPS[W.i]; W.remain = s.secs; W.paused = false;
+  if (s.metro) Metro.start(s.metro); else Metro.stop();
+  renderMain();
+  if (S.speakGuide && HAS_TTS && pickVoice(S.ui)) speak(s.name[S.ui] + '. ' + wuHow(s), S.ui, 1);
+  wuStop();
+  W.timer = setInterval(() => {
+    if (W.paused) return;
+    W.remain--;
+    const n = $('#wuNum'), a = $('#wuArc');
+    if (n) n.textContent = Math.max(W.remain, 0);
+    if (a) a.setAttribute('stroke-dashoffset', RING_C * (1 - Math.max(W.remain, 0) / s.secs));
+    if (W.remain > 0 && W.remain <= 3) tone(660, 0.05, 0.12);
+    if (W.remain <= 0) { tone(990, 0.2, 0.2); wuAdvance(); }
+  }, 1000);
+}
+function wuAdvance() {
+  wuStop(); W.i++;
+  if (W.i < WARMUPS.length) wuStep();
+  else { Metro.stop(); store.add({ lang: S.lang, mode: 'warmup', id: 'warmup', title: t('m_warmup'), sec: WARMUPS.reduce((a, s) => a + s.secs, 0) }); renderMain(); }
+}
+
+/* ---------- progress ---------- */
+function renderProgress() {
+  const h = store.get().history;
+  if (!h.length) return `<section class="card center"><div style="font-size:48px">📈</div><p>${t('none')}</p></section>`;
+  const now = Date.now();
+  const scored = h.filter(x => x.mode !== 'warmup' && x.score != null);
+  const wk = scored.filter(x => now - x.t < 7 * 864e5);
+  const avg = xs => xs.length ? Math.round(xs.reduce((a, x) => a + x.score, 0) / xs.length) : '–';
+  const mins = Math.round(h.reduce((a, x) => a + (x.sec || 0), 0) / 60);
+  const counts = {}; h.forEach(x => { const k = dayKey(x.t); counts[k] = (counts[k] || 0) + 1; });
+  const cells = []; const fmt = new Intl.DateTimeFormat(S.ui === 'vi' ? 'vi-VN' : 'en-GB', { day: '2-digit', month: '2-digit' });
+  for (let k = 27; k >= 0; k--) {
+    const d = new Date(); d.setDate(d.getDate() - k); const c = counts[dayKey(d)] || 0;
+    const lv = c === 0 ? 0 : c < 3 ? 1 : c < 6 ? 2 : c < 10 ? 3 : 4;
+    cells.push(`<i class="l${lv} ${k === 0 ? 'today' : ''}" title="${fmt.format(d)}: ${c} ${t('times')}"></i>`);
+  }
+  const m30 = scored.filter(x => now - x.t < 30 * 864e5);
+  const byId = {};
+  scored.filter(x => (x.mode === 'twister' || x.mode === 'read') && x.id !== 'custom').forEach(x => { const k = x.lang + '|' + x.mode + '|' + x.id; (byId[k] = byId[k] || []).push(x); });
+  const pairsBy = {};
+  scored.filter(x => x.mode === 'pairs').forEach(x => { const k = x.lang + '|pairs|' + x.id; (pairsBy[k] = pairsBy[k] || []).push(x); });
+  const weak = Object.entries({ ...byId, ...pairsBy }).map(([k, xs]) => { const last = xs.slice(-3); return { k, title: xs[xs.length - 1].title, lang: xs[0].lang, mode: xs[0].mode, s: avg(last) }; })
+    .filter(x => x.s < 85).sort((a, b) => a.s - b.s).slice(0, 6);
+  const recent = h.slice(-12).reverse();
+  const tf = new Intl.DateTimeFormat(S.ui === 'vi' ? 'vi-VN' : 'en-GB', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const flag = l => l === 'vi' ? '🇻🇳' : '🇬🇧';
+  const scColor = s => s >= 90 ? 'var(--ok)' : s >= 70 ? 'var(--near)' : 'var(--bad)';
+  return `<div class="tiles">
+      <div class="tile"><b>🔥 ${streak()}</b><small>${t('streakDays')}</small></div>
+      <div class="tile"><b>${h.length}</b><small>${t('sessions')}</small></div>
+      <div class="tile"><b>${avg(wk)}${wk.length ? '%' : ''}</b><small>${t('avg7')}</small></div>
+      <div class="tile"><b>${mins}</b><small>${t('minutes')}</small></div>
+    </div>
+    <section class="card">
+      <div class="sec-title" style="margin-top:0">${t('activity')}</div>
+      <div class="heat">${cells.join('')}</div>
+      <div class="hl">${t('less')} <i style="background:#1d2347"></i><i style="background:#3b3486"></i><i style="background:#5a4bd1"></i><i style="background:#7c5cff"></i><i style="background:#a78bfa"></i> ${t('more')}</div>
+      <div class="sec-title">${t('byLang')}</div>
+      <div class="stats">${['en', 'vi'].map(l => { const xs = m30.filter(x => x.lang === l); return `<div class="stat"><small>${flag(l)} ${t('lang_' + l)}</small><b>${avg(xs)}${xs.length ? '%' : ''}</b> <small style="display:inline">· ${xs.length} ${t('times')}</small></div>`; }).join('')}</div>
+    </section>
+    ${(() => { const sk = m30.filter(x => x.skills); const notes = h.filter(x => x.note).slice(-6).reverse();
+      const av = k => Math.round(sk.reduce((a, x) => a + x.skills[k], 0) / sk.length);
+      return `<div class="cols" style="margin-top:14px"><section class="card"><div class="sec-title" style="margin-top:0">${t('skillsAvg')}</div>${sk.length ? `<div class="skills" style="grid-template-columns:1fr 1fr">${['clarity', 'structure', 'conciseness', 'fluency'].map(k => { const v = av(k); return `<div class="skill"><div class="sk-h"><span>${t('sk_' + k)}</span><span>${v}</span></div><div class="bar"><i style="width:${v}%;background:${skColor(v)}"></i></div></div>`; }).join('')}</div>` : `<div class="intro">${t('none')}</div>`}</section>
+      <section class="card"><div class="sec-title" style="margin-top:0">${t('notes')}</div><div class="list">${notes.length ? notes.map(x => `<div class="item"><span class="tt" style="white-space:normal"><small style="color:var(--muted)">${tf.format(new Date(x.t))} · ${t('m_' + x.mode)}</small><br>${esc(x.note)}</span></div>`).join('') : `<div class="intro">${t('noNotes')}</div>`}</div></section></div>`; })()}
+    <div class="cols" style="margin-top:14px">
+      <section class="card"><div class="sec-title" style="margin-top:0">${t('weakest')}</div><div class="list">${weak.length ? weak.map(x => `<div class="item"><span>${flag(x.lang)}</span><span class="tt" title="${esc(x.title)}">${esc(x.title)}</span><span class="sc" style="color:${scColor(x.s)}">${x.s}%</span><button class="btn sm" data-act="jump" data-v="${esc(x.k)}">${t('practiceBtn')}</button></div>`).join('') : `<div class="intro">${Object.keys(byId).length + Object.keys(pairsBy).length ? t('noWeak') : t('noWeakVoice')}</div>`}</div></section>
+      <section class="card"><div class="sec-title" style="margin-top:0">${t('recent')}</div><div class="list">${recent.map(x => `<div class="item"><span>${flag(x.lang)}</span><span class="tt" title="${esc(x.title || '')}"><small style="color:var(--muted)">${tf.format(new Date(x.t))} · ${t('m_' + x.mode)}</small><br>${esc(x.title || '')}</span>${x.score != null ? `<span class="sc" style="color:${scColor(x.score)}">${x.score}%</span>` : '<span>✓</span>'}</div>`).join('')}</div></section>
+    </div>
+    <div class="controls" style="margin-top:14px"><button class="btn sm ghost" data-act="clear">${t('clear')}</button></div>`;
+}
+function jump(key) {
+  const [lang, mode, id] = key.split('|');
+  stopAll(); S.lang = lang;
+  S.tab = 'voice';
+  if (mode === 'twister') { S.level = 0; S.tw[lang] = Math.max(0, CONTENT[lang].twisters.findIndex(x => x.id === id)); S.vtab = 'twister'; }
+  else if (mode === 'read') { S.rd[lang] = Math.max(0, CONTENT[lang].passages.findIndex(x => x.id === id)); S.vtab = 'read'; }
+  else if (mode === 'pairs') { S.vtab = 'pairs'; saveS(); render(); pgStart(Math.max(0, CONTENT[lang].pairs.findIndex(x => x.id === id))); return; }
+  saveS(); render();
+}
+
+/* ============================== articulation: analysis ============================== */
+const nPhrase = p => norm(p).join(' ');
+function countPhrases(text, phrases) {
+  let s = ' ' + text + ' '; const found = {}; let total = 0;
+  [...new Set(phrases.map(nPhrase))].filter(Boolean).sort((a, b) => b.length - a.length).forEach(p => {
+    const pat = ' ' + p + ' '; let idx, n = 0;
+    while ((idx = s.indexOf(pat)) !== -1) { n++; s = s.slice(0, idx) + ' ¦ ' + s.slice(idx + pat.length); }
+    if (n) { found[p] = n; total += n; }
+  });
+  return { found, total };
+}
+const fmtTime = sec => { const neg = sec < 0; sec = Math.abs(Math.round(sec)); return (neg ? '+' : '') + Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
+const clamp = v => Math.max(0, Math.min(100, Math.round(v)));
+const skColor = v => v >= 80 ? 'var(--ok)' : v >= 60 ? 'var(--near)' : 'var(--bad)';
+function analyze(r, cfg, lang) {
+  const toks = norm(r.transcript); const text = toks.join(' '); const words = toks.length;
+  if (words < 8) return { tooShort: true, words };
+  const speech = Math.max(r.speech, 1), mins = speech / 60;
+  const wpm = Math.round(words / mins);
+  const fill = countPhrases(text, FILLERS[lang]); const fpm = fill.total / mins;
+  const longP = (r.pauses || []).filter(p => p >= 1.5).length, ppm = longP / mins;
+  const mk = {}; for (const [k, list] of Object.entries(MARKERS[lang])) mk[k] = Object.keys(countPhrases(text, list).found);
+  const tab = cfg.taboo ? countPhrases(text, cfg.taboo).found : {};
+  const tabooN = Object.values(tab).reduce((a, b) => a + b, 0);
+  const fillSet = new Set(FILLERS[lang].map(nPhrase));
+  const grams = {};
+  for (let i = 0; i + 3 <= toks.length; i++) { const g = toks.slice(i, i + 3); if (g.some(w => fillSet.has(w))) continue; const k = g.join(' '); grams[k] = (grams[k] || 0) + 1; }
+  const repeats = [];
+  Object.entries(grams).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).forEach(([g, n]) => {
+    const w = g.split(' ');
+    if (repeats.length < 3 && !repeats.some(([x]) => x.includes(w.slice(0, 2).join(' ')) || x.includes(w.slice(1).join(' ')))) repeats.push([g, n]);
+  });
+  const [lo, hi] = lang === 'vi' ? [150, 240] : [115, 170];
+  const pace = clamp(wpm < lo ? 100 - (lo - wpm) * 1.2 : wpm > hi ? 100 - (wpm - hi) * 1.2 : 100);
+  const confScore = r.conf > 0 ? clamp((r.conf - 0.5) / 0.42 * 100) : null;
+  const clarity = clamp((confScore != null ? 0.55 * pace + 0.45 * confScore : pace) - 12 * tabooN);
+  let structure = PREP_KEYS.reduce((a, k) => a + (mk[k].length ? 25 : 0), 0);
+  if (mk.sequence.length) structure = Math.min(100, structure + 10);
+  const over = r.speech - cfg.secs; let conc = 100;
+  if (over > cfg.secs * 0.15) conc -= Math.min(40, over / cfg.secs * 80);
+  conc -= Math.min(30, repeats.reduce((a, [, n]) => a + (n - 1) * 8, 0));
+  if (words > 60 && new Set(toks).size / words < 0.35) conc -= 10;
+  const conciseness = clamp(conc);
+  const short = cfg.minSecs && r.speech < cfg.minSecs;
+  const fluency = clamp(100 - Math.min(55, fpm * 6) - Math.min(35, ppm * 7) - (short ? 15 : 0));
+  const skills = { clarity, structure, conciseness, fluency };
+  const overall = Math.round((clarity + structure + conciseness + fluency) / 4);
+  const tips = [];
+  const topF = Object.entries(fill.found).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([w, n]) => `“${w}” ×${n}`).join(', ');
+  if (fpm >= 3) tips.push(t('tip_fillers', { n: fill.total, top: topF }));
+  PREP_KEYS.forEach(k => { if (!mk[k].length) tips.push(t('tip_' + k)); });
+  if (longP >= 2) tips.push(t('tip_pauses', { n: longP }));
+  repeats.slice(0, 1).forEach(([g, n]) => tips.push(t('tip_repeat', { g, n })));
+  if (over > cfg.secs * 0.15) tips.push(t('tip_over', { s: Math.round(over) }));
+  if (short) tips.push(t('tip_short', { s: Math.round(r.speech) }));
+  if (wpm > hi + 15) tips.push(t('tip_fast', { w: wpm })); else if (wpm < lo - 20) tips.push(t('tip_slow', { w: wpm }));
+  if (tabooN) tips.push(t('tip_taboo', { w: Object.keys(tab).join(', ') }));
+  if (!tips.length) tips.push(t('tip_good'));
+  return { words, wpm, fill, longP, mk, tab, repeats, skills, overall, tips, speech: r.speech };
+}
+
+/* ============================== articulation: talk card ============================== */
+let T = null;        // current talk card {cfg, last}
+let prepTick = null;
+const NOTES = {};
+const D = { step: 0, idx: null, remain: 300, timer: null, last: null };
+function talkHTML(cfg) {
+  T = { cfg, last: T && T.cfg && T.cfg.key === cfg.key ? T.last : null };
+  return `<section class="card talk">
+    <div class="meta"><span class="badge">${t('m_' + cfg.kind)}</span><span class="badge">${t('target', { s: fmtTime(cfg.secs) })}</span></div>
+    <div class="topic" lang="${S.lang}">${esc(cfg.topic)}</div>
+    ${cfg.sub ? `<div class="intro">${esc(cfg.sub)}</div>` : ''}
+    ${cfg.taboo ? `<div class="taboo">${t('taboo')} ${cfg.taboo.map(w => `<span>${esc(w)}</span>`).join('')}</div>` : ''}
+    ${cfg.hint ? `<div class="tip">💡 ${esc(cfg.hint)}</div>` : ''}
+    ${cfg.extra || ''}
+    ${cfg.video ? `<video id="cam" class="cam hidden" playsinline muted autoplay></video>` : ''}
+    <div class="bigtimer" id="tTimer">${fmtTime(cfg.secs)}</div>
+    <div class="controls" style="justify-content:center"><button class="btn primary" id="talkBtn" data-act="talkRec">${cfg.video ? t('startVideo') : t('startTalk')}</button></div>
+    <div class="meter"><i id="lvl"></i></div>
+    <div class="live" id="live"></div>
+    <div id="talkResult">${T.last ? (cfg.defer ? deferHTML(T.last) : resultHTML(T.last)) : ''}</div>
+  </section>`;
+}
+async function talkRec() {
+  if (Rec.active) return talkFinish();
+  if (!T) return;
+  stopAudio(); clearInterval(prepTick); prepTick = null;
+  const cfg = T.cfg; const tok = ++recToken;
+  $('#talkResult').innerHTML = ''; $('#live').textContent = t('listening');
+  try {
+    await Rec.start({
+      lang: S.lang, video: cfg.video, maxSec: cfg.hardStop ? cfg.secs : (cfg.maxSec || cfg.secs * 3),
+      onStream: (st, isV) => { const v = $('#cam'); if (v && isV) { v.srcObject = st; v.classList.remove('hidden'); v.play().catch(() => { }); } },
+      onInterim: txt => { const l = $('#live'); if (l && tok === recToken) l.textContent = txt ? (txt.length > 220 ? '…' + txt.slice(-220) : txt) : t('listening'); },
+      onLevel: v => { const l = $('#lvl'); if (l) l.style.width = (v * 100).toFixed(0) + '%'; },
+      onEnd: () => { if (tok === recToken) talkFinish(); }
+    });
+  } catch (e) { $('#live').textContent = ''; return toast(t('micDenied')); }
+  const b = $('#talkBtn'); if (b) { b.textContent = t('stopTalk'); b.classList.add('rec'); b.classList.remove('primary'); }
+  const t0 = Date.now(); let beeped = false;
+  clearInterval(talkTick);
+  talkTick = setInterval(() => {
+    const rem = cfg.secs - (Date.now() - t0) / 1000; const el = $('#tTimer');
+    if (el) { el.textContent = fmtTime(rem); el.classList.toggle('over', rem < 0); }
+    if (rem <= 0 && !beeped) { beeped = true; tone(990, 0.25, 0.2); }
+  }, 250);
+}
+async function talkFinish() {
+  if (!Rec.active || !T) return;
+  const tok = recToken; clearInterval(talkTick); talkTick = null;
+  const b = $('#talkBtn'); if (b) { b.disabled = true; b.textContent = t('busy'); }
+  const r = await Rec.stop();
+  if (tok !== recToken || !T) return;
+  const cfg = T.cfg;
+  const v = $('#cam'); if (v) { v.srcObject = null; v.classList.add('hidden'); }
+  if (b) { b.disabled = false; b.classList.remove('rec'); b.classList.add('primary'); b.textContent = cfg.video ? t('startVideo') : t('startTalk'); }
+  const lv = $('#lvl'); if (lv) lv.style.width = '0';
+  const lt = $('#live'); if (lt) lt.textContent = '';
+  const tt = $('#tTimer'); if (tt) { tt.textContent = fmtTime(cfg.secs); tt.classList.remove('over'); }
+  let A = null, err = null;
+  if (!r.srOk || (r.srError && !r.transcript && !['no-speech', 'aborted'].includes(r.srError))) err = srErrMsg(r);
+  else if (!r.transcript) err = t('noSpeech');
+  else A = analyze(r, cfg, S.lang);
+  const L = { r, A, err, cfg, lang: S.lang, review: {} };
+  T.last = L;
+  if (A && !A.tooShort && !cfg.defer) L.ts = store.add({ lang: S.lang, mode: cfg.kind, id: cfg.key, title: cfg.topic.slice(0, 80), score: A.overall, skills: A.skills, wpm: A.wpm, fillers: A.fill.total, sec: Math.round(r.speech) });
+  if (cfg.onDone) cfg.onDone(L);
+  const box = $('#talkResult'); if (box) box.innerHTML = cfg.defer ? deferHTML(L) : resultHTML(L);
+}
+function mediaHTML(r) {
+  if (!r.url) return '';
+  return r.isVideo ? `<video class="play" controls playsinline src="${r.url}"></video>` : `<audio controls src="${r.url}" style="width:100%;margin:6px 0 10px"></audio>`;
+}
+function deferHTML(L) { return `<div class="result">${mediaHTML(L.r)}<div class="notice">${t('recordedOk', { s: Math.round(L.r.total) })}</div></div>`; }
+function trxHTML(r, lang) {
+  const fl = [...new Set(FILLERS[lang].map(nPhrase))].sort((a, b) => b.length - a.length);
+  return (r.chunks && r.chunks.length ? r.chunks : [r.transcript]).map(c => {
+    let s = ' ' + norm(c).join(' ') + ' ';
+    fl.forEach(p => { s = s.split(' ' + p + ' ').join(' \u0001' + p.replace(/ /g, '\u0003') + '\u0002 '); });
+    return '<div>' + esc(s.trim()).replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>').replace(/\u0003/g, ' ') + '</div>';
+  }).join('');
+}
+function resultHTML(L) {
+  const { r, A, err } = L;
+  let h = `<div class="result">${mediaHTML(r)}`;
+  if (err) return h + `<div class="notice err">${esc(err)}</div></div>`;
+  if (A.tooShort) return h + `<div class="notice">${t('tooShort')}</div>${r.transcript ? `<div class="trx">${esc(r.transcript)}</div>` : ''}</div>`;
+  const wl = L.lang === 'vi' ? 'vi' : 'en';
+  h += `<div class="score-row"><div class="ring" style="--p:${A.overall};--c:${skColor(A.overall)}" title="${t('overall')}"><b>${A.overall}</b></div>
+    <div class="stats">
+      <div class="stat"><small>${t('durationVs')}</small><b>${fmtTime(A.speech)}</b> <small style="display:inline">/ ${fmtTime(L.cfg.secs)}</small></div>
+      <div class="stat"><small>${t('words_' + wl)}</small><b>${A.words}</b> <small style="display:inline">· ${A.wpm} ${t('wpm_' + wl)}</small></div>
+      <div class="stat" title="${esc(t('fillerNote'))}"><small>${t('fillers')}</small><b>${A.fill.total}</b></div>
+      <div class="stat"><small>${t('longPauses')}</small><b>${A.longP}</b></div>
+    </div></div>
+    <div class="skills">${Object.entries(A.skills).map(([k, v]) => `<div class="skill"><div class="sk-h"><span>${t('sk_' + k)}</span><span>${v}</span></div><div class="bar"><i style="width:${v}%;background:${skColor(v)}"></i></div><small>${t('skd_' + k)}</small></div>`).join('')}</div>
+    <div class="sec-title">${t('structCheck')}</div>
+    <div class="checks">${[...PREP_KEYS, 'sequence'].map(k => { const f = A.mk[k]; return `<span class="${f.length ? 'yes' : k === 'sequence' ? 'opt' : ''}">${f.length ? '✓' : '✗'} ${t(PREP_LABEL[k])}${f.length ? ': “' + esc(f[0]) + '”' : ''}</span>`; }).join('')}</div>
+    ${A.repeats.length ? `<div class="sec-title">${t('repeats')}</div><div class="checks">${A.repeats.map(([g, n]) => `<span>“${esc(g)}” ×${n}</span>`).join('')}</div>` : ''}
+    <div class="sec-title">${t('tips')}</div><ul class="fixes">${A.tips.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+    <div class="sec-title">${t('transcript')}</div><div class="trx" lang="${L.lang}">${trxHTML(r, L.lang)}</div>
+    <p style="color:var(--muted);font-size:12px;margin:6px 0 0">ⓘ ${t('fillerNote')}</p>
+    ${reviewHTML(L)}</div>`;
+  return h;
+}
+function reviewHTML(L) {
+  const rv = L.review || {};
+  const q = k => `<div class="qrow"><span>${t(k)}</span><div class="seg sm"><button data-act="rv" data-v="${k}:1" class="${rv[k] === 1 ? 'on' : ''}">${t('yes')}</button><button data-act="rv" data-v="${k}:0" class="${rv[k] === 0 ? 'on' : ''}">${t('no')}</button></div></div>`;
+  return `<div class="sec-title">${t('selfReview')}</div>${q('q1')}${q('q2')}${q('q3')}
+    <textarea id="rvNote" style="min-height:70px;margin-top:8px" placeholder="${esc(t('improve'))}">${esc(rv.note || '')}</textarea>
+    <div class="controls">${L.cfg.defer ? '' : `<button class="btn" data-act="rvSave">${t('saveReview')}</button>`}${L.r.transcript ? `<button class="btn" data-act="copyAI">${t('copyAI')}</button>` : ''}</div>`;
+}
+function curL() { return S.tab === 'today' ? D.last : T && T.last; }
+function copyText(txt) {
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch { } ta.remove(); toast(t('copied')); };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(() => toast(t('copied')), fallback); else fallback();
+}
+
+/* ---------- articulation views ---------- */
+function pickIdx(key, n) { let i = S[key][S.lang] || 0; if (i >= n || i < 0) i = 0; S[key][S.lang] = i; return i; }
+const rerollBtn = kind => `<button class="btn sm" data-act="reroll" data-v="${kind}">${t('newTopic')}</button>`;
+const customRow = kind => `<div class="row2"><input type="text" id="ct_${kind}" placeholder="${esc(t('customTopic'))}" value="${esc(S.topicOverride[kind + S.lang] || '')}"><button class="btn sm" data-act="ctUse" data-v="${kind}">${t('use')}</button></div>`;
+function prepCards(key) {
+  const n = NOTES[key] || (NOTES[key] = {});
+  return `<div class="prep">${PREP_KEYS.map(k => `<label>${t(PREP_LABEL[k])}<textarea data-note="${k}" data-key="${esc(key)}" lang="${S.lang}" placeholder="${esc(t('ph' + k[0].toUpperCase() + k.slice(1)))}">${esc(n[k] || '')}</textarea></label>`).join('')}</div>`;
+}
+function renderMinute() {
+  const L = ARTIC[S.lang]; const i = pickIdx('mi', L.topics.length);
+  const topic = S.topicOverride['minute' + S.lang] || L.topics[i];
+  return `<p class="intro">${t('minuteIntro')}</p><div class="toolbar">${rerollBtn('minute')}</div>${customRow('minute')}` +
+    talkHTML({ kind: 'minute', key: 'minute:' + topic, topic, hint: t('minuteHint'), secs: 60, hardStop: true, minSecs: 45 });
+}
+function renderPrep() {
+  const L = ARTIC[S.lang]; const i = pickIdx('pi', L.claims.length);
+  const topic = S.topicOverride['prep' + S.lang] || L.claims[i];
+  return `<p class="intro">${t('prepIntro')}</p><div class="toolbar">${rerollBtn('prep')}<button class="btn sm" data-act="prepTimer" id="prepTimerBtn">${t('prepTimer')}</button></div>${customRow('prep')}` +
+    talkHTML({ kind: 'prep', key: 'prep:' + topic, topic, hint: t('prepHint'), extra: prepCards('prep:' + topic), secs: 90, maxSec: 240 });
+}
+function renderEli5() {
+  const L = ARTIC[S.lang]; const i = pickIdx('ei', L.concepts.length); const c = L.concepts[i];
+  const aud = L.audiences[(i + (S.audShift || 0)) % L.audiences.length];
+  return `<p class="intro">${t('eli5Intro')}</p><div class="toolbar">${rerollBtn('eli5')}</div>` +
+    talkHTML({ kind: 'eli5', key: 'eli5:' + c.c + aud, topic: t('eli5Ask', { c: c.c }), sub: t('eli5For', { a: aud }), taboo: c.taboo, secs: 60, maxSec: 180 });
+}
+function renderReview() {
+  const L = ARTIC[S.lang]; if (S.ri == null || S.ri >= L.topics.length) S.ri = Math.floor(Math.random() * L.topics.length);
+  const topic = S.topicOverride['review' + S.lang] || L.topics[S.ri];
+  return `<p class="intro">${t('reviewIntro')}</p><div class="toolbar">${rerollBtn('review')}</div>${customRow('review')}` +
+    talkHTML({ kind: 'review', key: 'review:' + topic, topic, hint: t('prepHint'), secs: 120, maxSec: 300, video: true });
+}
+function stopDTimer() { clearInterval(D.timer); D.timer = null; }
+function renderToday() {
+  const L = ARTIC[S.lang];
+  if (D.idx == null || D.idx >= L.claims.length) D.idx = Math.floor(Math.random() * L.claims.length);
+  const topic = L.claims[D.idx]; const key = 'daily:' + S.lang + ':' + topic;
+  const hist = store.get().history;
+  const doneToday = hist.some(h => h.mode === 'daily' && dayKey(h.t) === dayKey(Date.now()));
+  const intro = `<details class="card" style="margin-bottom:12px" ${hist.length ? '' : 'open'}><summary style="cursor:pointer;font-weight:800">${S.ui === 'vi' ? 'Articulation Training là gì?' : 'What is articulation training?'}</summary><p>${t('whatIs')}</p>
+    <div class="skills" style="margin:8px 0">${['clarity', 'structure', 'conciseness', 'fluency'].map(k => `<div class="skill"><div class="sk-h"><span>${t('sk_' + k)}</span></div><small>${t('skd_' + k)}</small></div>`).join('')}</div>
+    <div class="ba"><div><b>😕 ${t('before')}</b>${t('beforeEx')}</div><div><b>✅ ${t('after')}</b>${t('afterEx')}</div></div></details>`;
+  const steps = `<div class="steps">${[0, 1, 2].map(k => `<button data-act="dStep" data-v="${k}" class="${D.step === k ? 'on' : ''} ${D.step > k ? 'done' : ''}"><b>${t('step' + (k + 1))}</b><small>${t('min5')}</small></button>`).join('')}</div>`;
+  const timer = `<div class="row2" style="justify-content:space-between"><div class="bigtimer" id="dTimer" style="font-size:30px;margin:0">${fmtTime(D.remain)}</div><button class="btn sm" data-act="dTimer" id="dTimerBtn">${D.timer ? t('timerPause') : t('timerStart')}</button></div>`;
+  let body;
+  if (D.step === 0) body = `<section class="card"><div class="tip">💡 ${t('step1Hint')}</div><div class="topic" lang="${S.lang}">${esc(topic)}</div><div class="toolbar">${rerollBtn('daily')}</div>${prepCards(key)}${timer}<div class="controls"><button class="btn primary" data-act="dStep" data-v="1">${t('nextStep')}</button></div></section>`;
+  else if (D.step === 1) body = `<div class="tip">💡 ${t('step2Hint')}</div>${timer}` + talkHTML({ kind: 'daily', key, topic, secs: 90, maxSec: 240, video: true, defer: true, onDone: L2 => { D.last = L2; } }) +
+    `<div class="controls"><button class="btn ghost" data-act="dStep" data-v="0">${t('prevStep')}</button><button class="btn primary" data-act="dStep" data-v="2">${t('nextStep')}</button></div>`;
+  else body = `<div class="tip">💡 ${t('step3Hint')}</div>${timer}<section class="card"><div class="topic" lang="${S.lang}">${esc(topic)}</div>${D.last ? resultHTML(D.last) : `<div class="notice">${t('noRecording')}</div>`}
+    <div class="controls"><button class="btn ghost" data-act="dStep" data-v="1">${t('prevStep')}</button>${doneToday ? `<div class="notice" style="margin:0">${t('dayDone')}</div>` : `<button class="btn primary" data-act="finishDay">${t('finishDay')}</button>`}</div></section>`;
+  return intro + (doneToday && D.step === 0 ? `<div class="notice">${t('dayDone')}</div>` : '') + steps + body;
+}
+const VTABS = ['warmup', 'twister', 'pairs', 'read'];
+function renderVoice() {
+  if (!VTABS.includes(S.vtab)) S.vtab = 'twister';
+  return `<p class="intro">${t('voiceIntro')}</p><div class="chips subtabs">${VTABS.map(k => `<button class="chip ${S.vtab === k ? 'on' : ''}" data-act="vtab" data-v="${k}">${t('tab_' + k)}</button>`).join('')}</div>` +
+    { warmup: renderWarmup, twister: renderTwister, pairs: renderPairs, read: renderRead }[S.vtab]();
+}
+
+/* ============================== events ============================== */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  const a = el.dataset.act, v = el.dataset.v;
+  switch (a) {
+    case 'lang': if (S.lang !== v) { stopAll(); S.lang = v; PG = null; S.editCustom = false; D.step = 0; D.last = null; D.remain = 300; D.idx = null; saveS(); render(); } break;
+    case 'ui': if (S.ui !== v) { stopAll(); S.ui = v; saveS(); render(); } break;
+    case 'tab': stopAll(); S.tab = v; if (v !== 'warmup' && W.i >= WARMUPS.length) W.i = -1; saveS(); render(); break;
+    case 'level': abortRec(); stopAudio(); S.level = +v; S.tw[S.lang] = 0; saveS(); renderMain(); break;
+    case 'tw': {
+      abortRec(); stopAudio(); const n = twList().length; let i = S.tw[S.lang];
+      if (v === 'rand') { if (n > 1) { let r; do { r = Math.floor(Math.random() * n); } while (r === i); i = r; } } else i = (i + Number(v) + n) % n;
+      S.tw[S.lang] = i; saveS(); renderMain(); break;
+    }
+    case 'vtab': stopAll(); S.vtab = v; if (v !== 'warmup' && W.i >= WARMUPS.length) W.i = -1; saveS(); renderMain(); break;
+    case 'talkRec': talkRec(); break;
+    case 'reroll': {
+      abortRec(); const L = ARTIC[S.lang]; const rnd = (n, cur) => { if (n < 2) return 0; let r; do { r = Math.floor(Math.random() * n); } while (r === cur); return r; };
+      if (v === 'minute') S.mi[S.lang] = rnd(L.topics.length, S.mi[S.lang]);
+      else if (v === 'prep') S.pi[S.lang] = rnd(L.claims.length, S.pi[S.lang]);
+      else if (v === 'eli5') { S.ei[S.lang] = rnd(L.concepts.length, S.ei[S.lang]); S.audShift = Math.floor(Math.random() * 4); }
+      else if (v === 'review') S.ri = rnd(L.topics.length, S.ri);
+      else if (v === 'daily') { D.idx = rnd(L.claims.length, D.idx); D.last = null; }
+      delete S.topicOverride[v + S.lang]; saveS(); renderMain(); break;
+    }
+    case 'ctUse': { const inp = $('#ct_' + v); const val = inp ? inp.value.trim() : ''; if (!val) return; abortRec(); S.topicOverride[v + S.lang] = val.slice(0, 200); renderMain(); break; }
+    case 'prepTimer': {
+      if (prepTick) { clearInterval(prepTick); prepTick = null; el.textContent = t('prepTimer'); break; }
+      let rem = 60; el.textContent = '⏱ ' + fmtTime(rem);
+      prepTick = setInterval(() => { rem--; const b = $('#prepTimerBtn'); if (b) b.textContent = '⏱ ' + fmtTime(rem); if (rem <= 0) { clearInterval(prepTick); prepTick = null; tone(990, 0.25, 0.2); toast(t('prepGo')); if (b) b.textContent = t('prepTimer'); } }, 1000);
+      break;
+    }
+    case 'rv': { const L = curL(); if (!L) break; const [k, val] = v.split(':'); L.review[k] = +val; $$(`[data-act="rv"][data-v^="${k}:"]`).forEach(b => b.classList.toggle('on', b.dataset.v === v)); break; }
+    case 'rvSave': { const L = curL(); if (!L) break; L.review.note = ($('#rvNote') || {}).value || ''; const { q1, q2, q3, note } = L.review; if (L.ts) store.patchAt(L.ts, { review: { q1, q2, q3 }, note: note.trim() || undefined }); toast(t('saved')); break; }
+    case 'copyAI': { const L = curL(); if (!L || !L.r.transcript) break; copyText(t('aiPrompt', { ex: t('m_' + L.cfg.kind), topic: L.cfg.topic, sec: Math.round(L.r.speech), tr: L.r.transcript })); break; }
+    case 'dStep': abortRec(); stopDTimer(); D.step = +v; D.remain = 300; renderMain(); window.scrollTo({ top: 0, behavior: 'smooth' }); break;
+    case 'dTimer':
+      if (D.timer) { stopDTimer(); el.textContent = t('timerStart'); }
+      else { if (D.remain <= 0) D.remain = 300; el.textContent = t('timerPause'); D.timer = setInterval(() => { D.remain--; const e2 = $('#dTimer'); if (e2) { e2.textContent = fmtTime(Math.max(D.remain, 0)); e2.classList.toggle('over', D.remain <= 0); } if (D.remain <= 0) { stopDTimer(); tone(990, 0.3, 0.2); const b = $('#dTimerBtn'); if (b) b.textContent = t('timerStart'); } }, 1000); }
+      break;
+    case 'finishDay': {
+      const L = D.last; const A = L && L.A && !L.A.tooShort ? L.A : null; const note = (($('#rvNote') || {}).value || '').trim();
+      const topic = ARTIC[S.lang].claims[D.idx];
+      store.add({ lang: S.lang, mode: 'daily', id: 'daily', title: topic.slice(0, 80), score: A ? A.overall : undefined, skills: A ? A.skills : undefined, wpm: A ? A.wpm : undefined, sec: L ? Math.round(L.r.speech) : 0, review: L ? { q1: L.review.q1, q2: L.review.q2, q3: L.review.q3 } : undefined, note: note || undefined });
+      stopDTimer(); tone(880, 0.15, 0.15); setTimeout(() => tone(1320, 0.2, 0.15), 160); renderMain(); break;
+    }
+    case 'listen': listen(); break;
+    case 'rec': toggleRec(); break;
+    case 'play': playRec(); break;
+    case 'self': store.add({ lang: S.lang, mode: P.mode, id: P.item.id, title: (P.item.title || P.item.text).slice(0, 60), score: +v, self: true }); toast(t('saved')); $$('[data-act="self"]').forEach(b => b.disabled = true); break;
+    case 'rd': abortRec(); stopAudio(); S.rd[S.lang] = v === 'custom' ? 'custom' : +v; S.editCustom = false; saveS(); renderMain(); break;
+    case 'useCustom': { const txt = ($('#customTxt').value || '').trim(); if (!txt) return; S.custom[S.lang] = txt.slice(0, 5000); S.editCustom = false; saveS(); renderMain(); break; }
+    case 'editCustom': abortRec(); S.editCustom = true; renderMain(); break;
+    case 'pg': pgStart(+v); break;
+    case 'pgBack': abortRec(); stopAudio(); PG = null; renderMain(); break;
+    case 'pgMode': abortRec(); stopAudio(); pgStart(PG.gi, v); break;
+    case 'pgAgain': pgStart(PG.gi); break;
+    case 'pgListen': pgSpeak(); break;
+    case 'pgRec': pgRec(); break;
+    case 'pgPick': if (!PG.answered) { PG.picked = v; pgAnswer(v === PG.target, v === PG.target ? t('correct') : t('wrongPick', { w: PG.target })); } break;
+    case 'pgNext': pgNext(); break;
+    case 'pgSkip': abortRec(); PG.answered = true; PG.ok = false; PG.msg = ''; pgNext(); break;
+    case 'wuStart': getCtx(); W.i = 0; wuStep(); break;
+    case 'wuPause': W.paused = !W.paused; if (W.paused) { Metro.stop(); if (HAS_TTS) speechSynthesis.cancel(); } else if (WARMUPS[W.i].metro) Metro.start(WARMUPS[W.i].metro); el.textContent = W.paused ? t('resume') : t('pause'); break;
+    case 'wuSkip': wuAdvance(); break;
+    case 'wuReset': wuStop(); Metro.stop(); stopAudio(); W.i = -1; renderMain(); break;
+    case 'jump': jump(v); break;
+    case 'clear': if (confirm(t('confirmClear'))) { store.clear(); render(); } break;
+  }
+});
+document.addEventListener('input', e => {
+  const id = e.target.id;
+  if (e.target.dataset && e.target.dataset.note) { const k = e.target.dataset.key; (NOTES[k] = NOTES[k] || {})[e.target.dataset.note] = e.target.value; return; }
+  if (id === 'rvNote') { const L = curL(); if (L) L.review.note = e.target.value; return; }
+  if (id === 'rate') { S.rate = +e.target.value; $('#rateV').textContent = S.rate.toFixed(2) + '×'; saveS(); }
+  if (id === 'bpm') { S.bpm = +e.target.value; $('#bpmV').textContent = S.bpm; if (Metro.running && S.metro) Metro.start(S.bpm); saveS(); }
+});
+document.addEventListener('change', e => {
+  const id = e.target.id;
+  if (id === 'repeat') { abortRec(); stopAudio(); S.repeat = e.target.checked; saveS(); renderMain(); }
+  if (id === 'metro') { S.metro = e.target.checked; S.metro ? Metro.start(S.bpm) : Metro.stop(); }
+  if (id === 'speakGuide') { S.speakGuide = e.target.checked; if (!S.speakGuide && HAS_TTS) speechSynthesis.cancel(); saveS(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.closest('textarea,input,select') || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (['today', 'minute', 'prep', 'eli5', 'review'].includes(S.tab)) {
+    if (e.code === 'Space' && $('#talkBtn') && !$('#talkBtn').disabled) { e.preventDefault(); talkRec(); }
+  } else if (view() === 'twister' || view() === 'read') {
+    if (!$('#recBtn')) return;
+    if (e.code === 'Space') { e.preventDefault(); if (!$('#recBtn').disabled) toggleRec(); }
+    else if (e.key === 'l' || e.key === 'L') listen();
+    else if (e.key === 'ArrowRight' && view() === 'twister') $('[data-act="tw"][data-v="1"]').click();
+    else if (e.key === 'ArrowLeft' && view() === 'twister') $('[data-act="tw"][data-v="-1"]').click();
+  } else if (view() === 'pairs' && PG && PG.state !== 'done') {
+    if (e.code === 'Space') { e.preventDefault(); if (PG.mode === 'say' && !PG.answered) pgRec(); else if (PG.answered) pgNext(); }
+    else if (e.key === 'l' || e.key === 'L') pgSpeak();
+    else if (e.key === 'ArrowRight' && PG.answered) pgNext();
+  }
+});
+if (HAS_TTS) { loadVoices(); speechSynthesis.onvoiceschanged = () => { loadVoices(); renderNotices(); }; }
+render();
+</script>
+</body>
+</html>
