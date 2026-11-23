@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0d1020" />
+<meta name="description" content="Luyện phát âm & nói rõ ý bằng tiếng Việt / English. AI chấm điểm chạy ngay trên trình duyệt, không gửi giọng nói lên server." />
 <title>Articulation Trainer · Luyện phát âm</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗣️</text></svg>">
 <style>
@@ -33,6 +35,8 @@ nav.tabs button.on{color:#fff;border-color:transparent;background:linear-gradien
 .btn:active:not(:disabled){transform:scale(.97)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn.primary{background:linear-gradient(135deg,var(--acc),#5b8cff);border-color:transparent;color:#fff}
+.btn.primary:hover:not(:disabled){background:linear-gradient(135deg,#8d72ff,#6c98ff)}
+.btn.rec:hover:not(:disabled){background:linear-gradient(135deg,#f43f5e,#fb7185)}
 .btn.rec{background:linear-gradient(135deg,#f43f5e,#fb7185);border-color:transparent;color:#fff;animation:pulse 1.2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 #f43f5e88}50%{box-shadow:0 0 0 10px #f43f5e00}}
 .btn.sm{padding:6px 11px;font-size:14px}
@@ -173,11 +177,59 @@ video.play{width:100%;max-width:420px;border-radius:14px;background:#000;display
 .ba b{display:block;margin-bottom:4px}
 .row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
 .row2 input[type=text]{flex:1;min-width:180px;background:#0f1430;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit}
+
+/* ---- v2: bigger controls, AI chip, dialogs, coach ---- */
+:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
+.btn{min-height:46px;padding:11px 18px;font-size:16px}
+.btn.sm{min-height:40px}
+.chip{min-height:38px}
+nav.tabs button,.seg button{min-height:42px}
+.seg.sm button{min-height:34px}
+.practice .controls .btn.primary,.practice .controls .btn.rec,#talkBtn{min-height:58px;font-size:18px;padding:12px 26px;border-radius:14px}
+.aichip{display:inline-flex;align-items:center;gap:7px;min-height:42px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:7px 14px;font:inherit;font-weight:700;cursor:pointer;font-size:14px}
+.aichip i{width:9px;height:9px;border-radius:50%;background:#64708f;display:inline-block}
+.aichip.ready i{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.aichip.loading i{background:var(--near);animation:pulse 1.2s infinite}
+.aichip.error i{background:var(--bad)}
+.iconbtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-weight:800;cursor:pointer}
+.modal{position:fixed;inset:0;z-index:50;background:#05071099;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.modal.hidden{display:none}
+.sheet{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;max-width:560px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 20px 70px #000a}
+.sheet h2{margin:0 0 6px;font-size:22px}
+.sheet p{margin:8px 0;color:#cdd2f5}
+.sheet .x{float:right}
+.sheet ol{padding-left:0;list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:10px}
+.sheet ol li{display:flex;gap:12px;align-items:flex-start;background:var(--panel2);border-radius:12px;padding:12px}
+.sheet ol li b.n{flex:0 0 30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#5b8cff);display:grid;place-items:center;color:#fff}
+.sheet .controls .btn{flex:1 1 150px}
+.pbar{height:12px;border-radius:99px;background:#0f1430;overflow:hidden;margin:10px 0 4px}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .3s}
+.kv{font-size:13.5px;color:var(--muted);margin:4px 0}
+.warn{background:#3a2a0c;border:1px solid #7a5a12;color:#ffe2a8;border-radius:12px;padding:10px 12px;font-size:14px;margin:10px 0}
+.coach{margin-top:14px;background:#14213d;border:1px solid #2b4a7a;border-radius:14px;padding:12px 14px}
+.coach .sec-title{margin:0 0 6px}
+.coach-body{white-space:pre-wrap;color:#e3ecff}
+.coach small{display:block;color:var(--muted);margin-top:8px}
+.steps-dots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.steps-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.steps-dots i.on{background:var(--acc2)}
+@media(max-width:720px){
+ .wrap{padding:10px 12px 90px}
+ header{padding-bottom:8px}
+ .brand{font-size:17px}.brand .sub{display:none}
+ .hdr-right{width:100%;justify-content:space-between}
+ nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0;margin:0 -12px 12px;padding-left:12px;padding-right:12px}
+ .practice .controls .btn{flex:1 1 45%}
+ .practice .controls #recBtn,#talkBtn{flex:1 1 100%;order:-1}
+ .card{padding:16px}
+}
 </style>
 </head>
 <body>
 <div class="wrap" id="app"></div>
 <div id="toast"></div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Articulation Trainer"></div>
+<script src="ai.js"></script>
 <script>
 'use strict';
 /* ============================== helpers ============================== */
@@ -280,6 +332,28 @@ const I18N = {
     skillsAvg: 'Kỹ năng diễn đạt (TB 30 ngày)', notes: 'Điểm cần cải thiện đã ghi', noNotes: 'Chưa có ghi chú.',
     m_minute: 'Nói 1 phút', m_prep: 'Cấu trúc ý', m_eli5: 'Giải thích đơn giản', m_review: 'Quay & xem lại', m_daily: 'Buổi 15 phút',
     aiPrompt: 'Đây là lời nói của tôi (bài tập: {ex}, chủ đề: “{topic}”, {sec} giây), do máy nhận diện giọng nói ghi lại:\n\n“{tr}”\n\nHãy nhận xét theo 4 tiêu chí: Rõ ràng, Cấu trúc, Ngắn gọn, Trôi chảy. Chỉ ra 2 điểm quan trọng nhất cần cải thiện, rồi viết lại một phiên bản tốt hơn theo khung Quan điểm → Lý do → Ví dụ → Kết luận, giữ đúng ý của tôi.',
+
+    aiChipOff: 'AI: tắt', aiChipLoading: 'AI: đang tải {p}%', aiChipReady: 'AI: sẵn sàng', aiChipErr: 'AI: lỗi', aiChipWake: 'AI: khởi động…',
+    aiTitle: '🤖 AI chấm điểm trên máy bạn',
+    aiDesc: 'Bật để trình duyệt tự nghe và nhận xét giọng nói của bạn, không cần mạng sau lần tải đầu.',
+    aiPrivacy: '🔒 Giọng nói được xử lý ngay trên thiết bị, không gửi lên server nào. Chỉ có file model được tải về một lần (≈{mb} MB: Whisper nhận diện giọng{coach}) rồi lưu cache.',
+    aiCoachPart: ' + Qwen3-0.6B nhận xét', aiNoCoach: 'Thiết bị này không có WebGPU đầy đủ nên chỉ bật nhận diện giọng trên máy (điểm từng từ + mẹo vẫn có), không có khung nhận xét AI.',
+    aiWeak: '⚠️ AI trong trình duyệt là model nhỏ nên kém chính xác hơn ChatGPT / Claude / Gemini. Muốn kết quả tốt hơn, bấm “Copy hướng dẫn chấm” rồi dán vào AI của bạn.',
+    aiEnable: 'Bật & tải AI (≈{mb} MB)', aiDisable: 'Tắt AI', aiClear: 'Xoá model đã tải', aiClose: 'Đóng',
+    aiDevGPU: 'Thiết bị: WebGPU (nhanh)', aiDevWasm: 'Thiết bị: WASM (chậm hơn nhưng vẫn dùng được)',
+    aiUnsupported: 'Trình duyệt này không chạy được AI on-device. Bạn vẫn dùng được nhận diện giọng nói của trình duyệt và nút Copy hướng dẫn chấm.',
+    aiLoading: 'Đang tải model… {p}% ({m}). Đừng đóng tab.', aiReadyMsg: '✅ AI sẵn sàng (khởi động {s}s)', aiErrMsg: 'Không tải được AI: {e}',
+    aiRunErr: 'AI trên máy không nhận diện được âm thanh. Thử lại, hoặc tắt AI trong mục “AI”.',
+    aiCoachTitle: '🤖 Nhận xét của AI (bản nhẹ)', aiCoachWait: 'AI đang viết nhận xét…', aiCoachFail: 'AI không tạo được nhận xét lần này.',
+    aiCoachNote: 'AI nhỏ chạy trên máy bạn nên có thể sai. Cần chính xác hơn: copy hướng dẫn chấm và dán vào AI của bạn.',
+    copyPractice: '📋 Copy hướng dẫn chấm', helpBtn: 'Hướng dẫn',
+    privacyAI: 'Tiến độ chỉ lưu trên trình duyệt của bạn. AI on-device đang bật: giọng nói được xử lý trên máy, không gửi đi đâu.',
+    obH1: 'Chào mừng! Luyện nói rõ ràng trong 3 bước', obS1: 'Chọn bài', obS1d: 'Hôm nay / Câu xoắn lưỡi / Cặp âm dễ nhầm / Đọc to.',
+    obS2: 'Bấm 🎙 và nói', obS2d: 'Nghe mẫu trước, rồi ghi âm. Bấm lại để dừng và chấm.', obS3: 'Xem điểm & sửa', obS3d: 'Từ đúng màu xanh, từ sai màu đỏ. Nghe lại giọng mình và luyện lại.',
+    obNext: 'Tiếp tục', obH2: 'Chọn cách chấm điểm', obAIyes: 'Bật AI trên máy (riêng tư)', obAIno: 'Dùng mặc định, để sau',
+    obDefault: 'Mặc định dùng nhận diện giọng nói của trình duyệt (Chrome/Safari có thể gửi âm thanh tới Google/Apple). AI on-device thì không gửi gì, nhưng cần tải ≈{mb} MB một lần.',
+    aiPromptPractice: 'Tôi đang luyện phát âm ({lang}). Câu mẫu: “{target}”\nMáy nhận diện giọng tôi là: “{heard}”\nĐộ chính xác ước tính: {score}%.\n\nHãy chấm phát âm của tôi trên thang 100, chỉ ra từng từ sai hoặc thiếu, giải thích cách đặt lưỡi / môi / hơi (và thanh điệu nếu là tiếng Việt) để sửa, rồi cho tôi 3 bài tập ngắn. Lưu ý: bạn chỉ thấy văn bản do máy nhận diện, hãy nói rõ chỗ nào chưa chắc chắn.',
+
     voiceIntro: 'Luyện phát âm & khẩu hình (voice training) — bổ trợ cho articulation.',
     camOff: 'Không mở được camera — chuyển sang chỉ ghi âm.', noWeakVoice: 'Mục này theo dõi các bài luyện phát âm (tab 🗣 Phát âm).'
   },
@@ -372,6 +446,28 @@ const I18N = {
     skillsAvg: 'Articulation skills (30-day avg)', notes: 'Your improvement notes', noNotes: 'No notes yet.',
     m_minute: '1-minute talk', m_prep: 'Structure', m_eli5: 'Explain simply', m_review: 'Record & review', m_daily: '15-min session',
     aiPrompt: 'Here is what I said (exercise: {ex}, topic: “{topic}”, {sec} seconds), transcribed by speech recognition:\n\n“{tr}”\n\nPlease give feedback on four criteria: Clarity, Structure, Conciseness, Fluency. Point out the 2 most important things to improve, then rewrite a better version using Point → Reason → Example → Conclusion while keeping my ideas.',
+
+    aiChipOff: 'AI: off', aiChipLoading: 'AI: loading {p}%', aiChipReady: 'AI: ready', aiChipErr: 'AI: error', aiChipWake: 'AI: starting…',
+    aiTitle: '🤖 AI scoring on your device',
+    aiDesc: 'Turn it on and your browser listens to and coaches your speech itself — no network needed after the first download.',
+    aiPrivacy: '🔒 Your voice is processed on this device and never sent to any server. Only the model files are downloaded once (≈{mb} MB: Whisper for speech{coach}) and cached.',
+    aiCoachPart: ' + Qwen3-0.6B for feedback', aiNoCoach: 'This device lacks full WebGPU, so only on-device speech recognition is enabled (per-word scores and tips still work) — no AI feedback box.',
+    aiWeak: '⚠️ The in-browser AI is a small model, so it is less accurate than ChatGPT / Claude / Gemini. For better results use “Copy scoring prompt” and paste it into your own AI.',
+    aiEnable: 'Turn on & download AI (≈{mb} MB)', aiDisable: 'Turn AI off', aiClear: 'Delete downloaded models', aiClose: 'Close',
+    aiDevGPU: 'Device: WebGPU (fast)', aiDevWasm: 'Device: WASM (slower but works)',
+    aiUnsupported: 'This browser cannot run on-device AI. You can still use the browser speech recognition and the Copy scoring prompt button.',
+    aiLoading: 'Downloading models… {p}% ({m}). Keep this tab open.', aiReadyMsg: '✅ AI ready (started in {s}s)', aiErrMsg: 'Could not load AI: {e}',
+    aiRunErr: 'On-device AI could not transcribe the audio. Try again, or switch AI off in the “AI” panel.',
+    aiCoachTitle: '🤖 AI feedback (lightweight)', aiCoachWait: 'AI is writing feedback…', aiCoachFail: 'AI could not write feedback this time.',
+    aiCoachNote: 'A small model running on your device — it can be wrong. For better accuracy copy the scoring prompt into your own AI.',
+    copyPractice: '📋 Copy scoring prompt', helpBtn: 'Guide',
+    privacyAI: 'Progress is stored only in your browser. On-device AI is on: your voice is processed locally and sent nowhere.',
+    obH1: 'Welcome! Speak clearly in 3 steps', obS1: 'Pick an exercise', obS1d: 'Today / Tongue twisters / Sound pairs / Read aloud.',
+    obS2: 'Tap 🎙 and speak', obS2d: 'Listen to the model first, then record. Tap again to stop and score.', obS3: 'See score & fix', obS3d: 'Correct words turn green, wrong ones red. Replay yourself and try again.',
+    obNext: 'Continue', obH2: 'Choose how to score', obAIyes: 'Turn on on-device AI (private)', obAIno: 'Use default, decide later',
+    obDefault: 'By default the browser speech recognition is used (Chrome/Safari may send audio to Google/Apple). On-device AI sends nothing but needs a one-time ≈{mb} MB download.',
+    aiPromptPractice: 'I am practising pronunciation ({lang}). Target sentence: “{target}”\nA speech recogniser heard me say: “{heard}”\nEstimated accuracy: {score}%.\n\nScore my pronunciation out of 100, point out each wrong or missing word, explain how to place the tongue / lips / breath (and tones for Vietnamese) to fix it, then give me 3 short drills. Note: you only see recogniser text, so say where you are unsure.',
+
     voiceIntro: 'Pronunciation & mouth-shape drills (voice training) — a companion to articulation.',
     camOff: 'Could not open the camera — recording audio only.', noWeakVoice: 'This tracks your pronunciation drills (🗣 Pronunciation tab).'
   }
@@ -704,7 +800,7 @@ const Rec = {
   active: false, stopping: null,
   async start(o) {
     this.o = o; this.final = []; this.alts = []; this.confs = []; this.pauses = []; this.sess = {}; this.firstVoice = 0; this.lastVoice = 0; this.isVideo = false;
-    this.srError = null; this.srBlocked = false; this.srRunning = false; this.stopping = null;
+    this.useAI = !!(window.AI && AI.ready()); this.srError = null; this.srBlocked = false; this.srRunning = false; this.stopping = null;
     const aud = { echoCancellation: true, noiseSuppression: true };
     if (o.video) {
       try { this.stream = await navigator.mediaDevices.getUserMedia({ audio: aud, video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 960 } } }); this.isVideo = true; }
@@ -732,7 +828,7 @@ const Rec = {
       this.raf = requestAnimationFrame(loop);
     };
     loop();
-    if (SRClass) this.startSR();
+    if (SRClass && !this.useAI) this.startSR();
   },
   flush() {
     Object.keys(this.sess).map(Number).sort((a, b) => a - b).forEach(k => { this.final.push(this.sess[k].t); this.alts.push(this.sess[k].alts); if (this.sess[k].c) this.confs.push(this.sess[k].c); });
@@ -776,11 +872,15 @@ const Rec = {
       this.srDone = null; this.flush();
       try { this.src && this.src.disconnect(); } catch { }
       this.stream.getTracks().forEach(tr => tr.stop());
-      const url = this.chunks.length ? URL.createObjectURL(new Blob(this.chunks, { type: (this.mr && this.mr.mimeType) || 'audio/webm' })) : null;
+      const blob = this.chunks.length ? new Blob(this.chunks, { type: (this.mr && this.mr.mimeType) || 'audio/webm' }) : null;
+      const url = blob ? URL.createObjectURL(blob) : null;
+      let aiText = null, aiErr = null;
+      if (this.useAI && blob) { try { aiText = await AI.transcribe(blob, this.o.lang); } catch (e) { console.warn('AI ASR', e); aiErr = 'ai'; } }
+      else if (this.useAI) aiText = '';
       const total = (t1 - this.t0) / 1000;
       const speech = this.lastVoice > this.firstVoice ? (this.lastVoice - this.firstVoice) / 1000 + 0.2 : total;
       const conf = this.confs.length ? this.confs.reduce((a, b) => a + b, 0) / this.confs.length : 0;
-      return { transcript: this.final.join(' ').replace(/\s+/g, ' ').trim(), chunks: this.final.map(x => x.trim()).filter(Boolean), pauses: this.pauses.slice(), conf, isVideo: this.isVideo, alts: this.alts.flat(), total, speech: Math.min(speech, total), url, srOk: !!SRClass && !this.srBlocked, srError: this.srError };
+      return { transcript: aiText != null ? aiText : this.final.join(' ').replace(/\s+/g, ' ').trim(), chunks: aiText != null ? (aiText ? [aiText] : []) : this.final.map(x => x.trim()).filter(Boolean), pauses: this.pauses.slice(), conf, isVideo: this.isVideo, alts: aiText != null ? (aiText ? [aiText] : []) : this.alts.flat(), total, speech: Math.min(speech, total), url, srOk: this.useAI ? !aiErr : !!SRClass && !this.srBlocked, srError: aiErr || this.srError, ai: this.useAI };
     })();
     return this.stopping;
   }
@@ -799,6 +899,7 @@ function stopAudio() { if (HAS_TTS) speechSynthesis.cancel(); if (player) { play
 function stopAll() { stopAudio(); abortRec(); wuStop(); Metro.stop(); S.metro = false; clearInterval(prepTick); prepTick = null; stopDTimer(); }
 function srErrMsg(r) {
   const L = t('lang_' + S.lang);
+  if (r.srError === 'ai') return t('aiRunErr');
   if (r.srError === 'network') return t('srNetwork');
   if (r.srError === 'language-not-supported') return t('srLang', { lang: L });
   if (r.srError === 'not-allowed' || r.srError === 'service-not-allowed' || r.srError === 'start') return t('srBlocked');
@@ -819,6 +920,8 @@ function render() {
         <button data-act="lang" data-v="vi" class="${S.lang === 'vi' ? 'on' : ''}">🇻🇳 Tiếng Việt</button>
       </div>
       <div class="streak" title="${t('streakDays')}">🔥 ${streak()}</div>
+      <button class="aichip" id="aichip" data-act="aiOpen"></button>
+      <button class="iconbtn" data-act="help" aria-label="? ${t('helpBtn')}" title="${t('helpBtn')}">?</button>
     </div>
   </header>
   <div id="notices"></div>
@@ -827,14 +930,14 @@ function render() {
   <footer>
     <div class="row">${t('uiLang')}: <div class="seg sm"><button data-act="ui" data-v="vi" class="${S.ui === 'vi' ? 'on' : ''}">Tiếng Việt</button><button data-act="ui" data-v="en" class="${S.ui === 'en' ? 'on' : ''}">English</button></div></div>
     <div>⌨️ ${t('shortcuts')}</div>
-    <div>🔒 ${t('privacy')}</div>
+    <div id="privTxt">🔒 ${AI.ready() ? t('privacyAI') : t('privacy')}</div>
   </footer>`;
-  renderMain();
+  renderMain(); updateChip();
 }
 function renderNotices() {
   const box = $('#notices'); if (!box) return;
   const out = [];
-  if (!SRClass && S.tab !== 'progress' && view() !== 'warmup') out.push(`<div class="notice">${t('noSR')}</div>`);
+  if (!SRClass && !(AI.ready() || AI.st.enabled) && S.tab !== 'progress' && view() !== 'warmup') out.push(`<div class="notice">${t('noSR')}</div>`);
   if (HAS_TTS && voices.length && !pickVoice(S.lang) && S.tab === 'voice')
     out.push(`<div class="notice">${t('noVoice', { lang: t('lang_' + S.lang), hint: S.lang === 'vi' ? 'Linh (Tiếng Việt)' : 'Samantha / Ava (English)' })}</div>`);
   box.innerHTML = out.join('');
@@ -953,9 +1056,13 @@ async function finishRec() {
     <div class="legend"><span style="--c:var(--ok)">${t('lg_ok')}</span><span style="--c:var(--near)">${t('lg_near')}</span>${S.lang === 'vi' ? `<span style="--c:var(--tone)">${t('lg_tone')}</span>` : ''}<span style="--c:var(--bad)">${t('lg_sub')} / ${t('lg_miss')}</span></div>
     <div class="heardbox"><small style="color:var(--muted)">${t('heard')}:</small> ${esc(r.transcript)}</div>
     ${errs ? `<div class="sec-title">${t('fixes')}</div><ul class="fixes">${errs}</ul>` : ''}
+    <div class="controls"><button class="btn" data-act="copyP">${t('copyPractice')}</button></div>
   </div>`;
+  LASTP = t('aiPromptPractice', { lang: t('lang_' + S.lang), target: P.target.replace(/\n/g, ' '), heard: r.transcript, score: res.score });
+  if (res.errors.length) runCoach(box.querySelector('.result'), practiceFacts(P.target.replace(/\n/g, ' '), r.transcript, res, wpm), 'Write 2 short sentences in {ui} for the learner: name the word(s) they mispronounced and give one tip to fix it.');
   store.add({ lang: S.lang, mode: P.mode, id: P.item.id, title: (P.item.title || P.item.text).slice(0, 60), score: res.score, wpm, sec: Math.round(r.speech), rep: !!(S.repeat && P.mode === 'twister') });
 }
+let LASTP = '';
 function selfRateHTML() {
   return `<div style="margin-top:10px">${t('selfRate')}</div><div class="controls">
     <button class="btn sm" data-act="self" data-v="40">${t('rate1')}</button>
@@ -1317,6 +1424,7 @@ async function talkFinish() {
   if (A && !A.tooShort && !cfg.defer) L.ts = store.add({ lang: S.lang, mode: cfg.kind, id: cfg.key, title: cfg.topic.slice(0, 80), score: A.overall, skills: A.skills, wpm: A.wpm, fillers: A.fill.total, sec: Math.round(r.speech) });
   if (cfg.onDone) cfg.onDone(L);
   const box = $('#talkResult'); if (box) box.innerHTML = cfg.defer ? deferHTML(L) : resultHTML(L);
+  if (box && A && !A.tooShort && !cfg.defer) runCoach(box.querySelector('.result'), talkFacts(L), 'Write 2 short sentences in {ui} for the speaker: one thing they did well, then the single most useful thing to improve.');
 }
 function mediaHTML(r) {
   if (!r.url) return '';
@@ -1432,6 +1540,16 @@ document.addEventListener('click', e => {
   const a = el.dataset.act, v = el.dataset.v;
   switch (a) {
     case 'lang': if (S.lang !== v) { stopAll(); S.lang = v; PG = null; S.editCustom = false; D.step = 0; D.last = null; D.remain = 300; D.idx = null; saveS(); render(); } break;
+    case 'aiOpen': openAI(); break;
+    case 'aiOn': AI.enable().catch(() => { }); break;
+    case 'aiOff': AI.disable(); break;
+    case 'aiClear': AI.clearCache().then(() => openAI()); break;
+    case 'help': openOB(0); break;
+    case 'mclose': closeModal(); break;
+    case 'obNext': openOB(1); break;
+    case 'obAI': obDone(); AI.enable().catch(() => { }); openAI(); break;
+    case 'obSkip': obDone(); closeModal(); break;
+    case 'copyP': copyText(LASTP); break;
     case 'ui': if (S.ui !== v) { stopAll(); S.ui = v; saveS(); render(); } break;
     case 'tab': stopAll(); S.tab = v; if (v !== 'warmup' && W.i >= WARMUPS.length) W.i = -1; saveS(); render(); break;
     case 'level': abortRec(); stopAudio(); S.level = +v; S.tw[S.lang] = 0; saveS(); renderMain(); break;
@@ -1525,6 +1643,79 @@ document.addEventListener('keydown', e => {
     else if (e.key === 'ArrowRight' && PG.answered) pgNext();
   }
 });
+
+/* ============================== on-device AI: UI + coach ============================== */
+const OB_KEY = 'artic.onboard';
+function modal(html) { const m = $('#modal'); m.innerHTML = `<div class="sheet">${html}</div>`; m.classList.remove('hidden'); const b = m.querySelector('button'); b && b.focus(); }
+function closeModal() { $('#modal').classList.add('hidden'); $('#modal').innerHTML = ''; }
+const modalOpen = () => !$('#modal').classList.contains('hidden');
+function aiMB() { return (AI.st.support && AI.st.support.mb) || 700; }
+function updateChip() {
+  const c = $('#aichip'); if (!c) return; const a = AI.st;
+  const cls = a.state === 'ready' ? 'ready' : a.state === 'loading' ? 'loading' : a.state === 'error' ? 'error' : '';
+  c.className = 'aichip ' + cls;
+  c.innerHTML = '<i></i>' + (a.state === 'ready' ? t('aiChipReady') : a.state === 'loading' ? t('aiChipLoading', { p: a.pct }) : a.state === 'error' ? t('aiChipErr') : t('aiChipOff'));
+}
+function aiSheetHTML() {
+  const a = AI.st, sup = a.support || {}, mb = aiMB();
+  let status = '', btns = '';
+  if (a.state === 'unsupported' || (a.support && !sup.wasm)) status = `<div class="warn">${t('aiUnsupported')}</div>`;
+  else {
+    status = `<div class="kv">${sup.webgpu ? t('aiDevGPU') : t('aiDevWasm')}</div>`;
+    if (a.state === 'loading') status += `<div class="pbar"><i style="width:${a.pct}%"></i></div><div class="kv" id="aiProg">${t('aiLoading', { p: a.pct, m: a.msg || '0 MB' })}</div>`;
+    else if (a.state === 'ready') status += `<div class="kv" style="color:var(--ok)">${t('aiReadyMsg', { s: (a.loadMs / 1000).toFixed(1) })}</div>`;
+    else if (a.state === 'error') status += `<div class="notice err">${t('aiErrMsg', { e: esc(a.msg) })}</div>`;
+    btns = a.state === 'ready' ? `<button class="btn" data-act="aiOff">${t('aiDisable')}</button><button class="btn ghost" data-act="aiClear">${t('aiClear')}</button>`
+      : a.state === 'loading' ? '' : `<button class="btn primary" data-act="aiOn">${t('aiEnable', { mb })}</button>`;
+  }
+  return `<button class="btn sm ghost x" data-act="mclose" aria-label="✕ ${t('aiClose')}">✕</button><h2>${t('aiTitle')}</h2><p>${t('aiDesc')}</p><p>${t('aiPrivacy', { mb, coach: (AI.st.support && AI.st.support.coach) ? t('aiCoachPart') : '' })}</p><div class="warn">${t('aiWeak')}</div>${sup.wasm && !sup.coach ? `<div class="kv">${t('aiNoCoach')}</div>` : ''}${status}<div class="controls">${btns}<button class="btn" data-act="mclose">${t('aiClose')}</button></div>`;
+}
+async function openAI() { await AI.detect(); modal(aiSheetHTML()); }
+function openOB(step) {
+  if (step === 0) modal(`<h2>${t('obH1')}</h2><ol>
+    <li><b class="n">1</b><div><b>${t('obS1')}</b><br><small>${t('obS1d')}</small></div></li>
+    <li><b class="n">2</b><div><b>${t('obS2')}</b><br><small>${t('obS2d')}</small></div></li>
+    <li><b class="n">3</b><div><b>${t('obS3')}</b><br><small>${t('obS3d')}</small></div></li></ol>
+    <div class="controls"><button class="btn primary" data-act="obNext">${t('obNext')} →</button></div><div class="steps-dots"><i class="on"></i><i></i></div>`);
+  else AI.detect().then(() => modal(`<h2>${t('obH2')}</h2><p>${t('obDefault', { mb: aiMB() })}</p><div class="warn">${t('aiWeak')}</div>
+    <div class="controls"><button class="btn primary" data-act="obAI">${t('obAIyes')}</button><button class="btn" data-act="obSkip">${t('obAIno')}</button></div><div class="steps-dots"><i></i><i class="on"></i></div>`));
+}
+function obDone() { localStorage.setItem(OB_KEY, '1'); }
+AI.on(a => {
+  updateChip();
+  if (modalOpen() && $('#modal .pbar')) { const f = $('#modal .pbar i'); if (f) f.style.width = a.pct + '%'; const g = $('#aiProg'); if (g) g.textContent = t('aiLoading', { p: a.pct, m: a.msg || '0 MB' }); }
+  if (a.state !== 'loading' && modalOpen() && $('#modal h2') && $('#modal h2').textContent === t('aiTitle')) $('#modal .sheet').innerHTML = aiSheetHTML();
+  if (a.state === 'ready' || a.state === 'off') { const f = $('#privTxt'); if (f) f.textContent = '🔒 ' + (a.state === 'ready' ? t('privacyAI') : t('privacy')); renderNotices(); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOpen()) closeModal(); });
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+function practiceFacts(target, heard, res, wpm) {
+  const errs = res.errors.slice(0, 6).map(e => e.cls === 'miss' ? `"${e.word}" (missed)` : `"${e.word}" (heard "${e.heard}")`).join('; ') || 'none';
+  return `Language practised: ${S.lang === 'vi' ? 'Vietnamese' : 'English'}.\nTarget text: "${target.slice(0, 300)}"\nRecogniser heard: "${heard.slice(0, 300)}"\nAccuracy: ${res.score}%. Speed: ${wpm} words/min.\nWords to fix: ${errs}.`;
+}
+function talkFacts(L) {
+  const A = L.A;
+  return `Language practised: ${L.lang === 'vi' ? 'Vietnamese' : 'English'}. Exercise: ${L.cfg.kind}. Topic: "${L.cfg.topic}".\nTranscript: "${L.r.transcript.slice(0, 700)}"\nOverall score ${A.overall}/100; ${A.wpm} words/min; filler words: ${A.fill.total}; long pauses: ${A.longP}; repeated phrases: ${A.repeats.length}.\nKnown issues: ${A.tips.slice(0, 2).join(' ')}`;
+}
+async function runCoach(host, facts, task) {
+  if (!host || !AI.coachReady()) return;
+  const box = document.createElement('div'); box.className = 'coach';
+  box.innerHTML = `<div class="sec-title">${t('aiCoachTitle')}</div><div class="coach-body">${t('aiCoachWait')}</div><small>${t('aiCoachNote')}</small>`;
+  host.appendChild(box); const body = box.querySelector('.coach-body');
+  const ui = S.ui === 'vi' ? 'Vietnamese' : 'English';
+  const msgs = [
+    { role: 'system', content: `You are a friendly pronunciation and speaking coach. Write in ${ui}.` },
+    { role: 'user', content: `${facts}\n\n${task.replace('{ui}', ui)} Do not add anything else.` }
+  ];
+  let acc = '';
+  try {
+    const out = await AI.coach(msgs, tk => { acc += tk; if (box.isConnected) body.textContent = acc.replace(/\*+/g, ''); }, 140);
+    if (box.isConnected) body.textContent = (out || '').replace(/\*+/g, '').trim() || t('aiCoachFail');
+  } catch (e) { if (box.isConnected) body.textContent = t('aiCoachFail'); }
+}
+if (AI.st.enabled) AI.enable().catch(() => { });
+if (!localStorage.getItem(OB_KEY)) setTimeout(() => openOB(0), 400);
 if (HAS_TTS) { loadVoices(); speechSynthesis.onvoiceschanged = () => { loadVoices(); renderNotices(); }; }
 render();
 </script>
