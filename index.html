@@ -11,10 +11,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#0d1020" />
-<meta name="description" content="TalkFit: luyện phát âm & nói rõ ý bằng tiếng Việt / English. AI chấm điểm chạy ngay trên trình duyệt, không gửi giọng nói lên server." />
+<meta name="description" content="TalkFit: luyện phát âm & nói rõ ý bằng tiếng Việt / English. Nói xong là có điểm và nhận xét ngay, miễn phí." />
 <title>TalkFit – Luyện nói rõ mỗi ngày</title>
 <meta property="og:title" content="TalkFit – Luyện nói rõ mỗi ngày" />
-<meta property="og:description" content="Luyện phát âm và nói rõ ý bằng tiếng Việt / English. AI chấm điểm chạy ngay trên trình duyệt, không gửi giọng nói lên server." />
+<meta property="og:description" content="Luyện phát âm và nói rõ ý bằng tiếng Việt / English. Nói xong là có điểm và nhận xét ngay, miễn phí." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://cuonglph11.github.io/articulation-training/" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗣️</text></svg>">
@@ -305,7 +305,7 @@ const I18N = {
     none: 'Chưa có dữ liệu — luyện vài câu là có thống kê ngay!', clear: '🗑 Xoá dữ liệu', confirmClear: 'Xoá toàn bộ tiến độ? Không thể hoàn tác.', practiceBtn: 'Luyện', byLang: 'Điểm TB theo ngôn ngữ (30 ngày)', less: 'Ít', more: 'Nhiều', times: 'lượt', noWeak: 'Chưa có bài nào dưới 85% — giỏi lắm!',
     m_twister: 'Xoắn lưỡi', m_read: 'Đọc to', m_pairs: 'Cặp âm', m_warmup: 'Khởi động',
     shortcuts: 'Phím tắt: Space = ghi âm/dừng · L = nghe mẫu · → = câu tiếp',
-    privacy: 'Tiến độ chỉ lưu trên trình duyệt của bạn. Khi chấm điểm, trình duyệt gửi âm thanh tới dịch vụ nhận diện giọng nói của trình duyệt (Google/Apple).',
+    privacy: 'Tiến độ luyện tập chỉ lưu trên máy của bạn.',
     lang_en: 'tiếng Anh', lang_vi: 'tiếng Việt'    ,
     tab_today: '⭐ Hôm nay', tab_minute: '⏱ Nói 1 phút', tab_prep: '🧱 Cấu trúc ý', tab_eli5: '🧒 Giải thích đơn giản', tab_review: '🎥 Quay & xem lại', tab_voice: '🗣 Phát âm',
     sk_clarity: 'Rõ ràng', sk_structure: 'Cấu trúc', sk_conciseness: 'Ngắn gọn', sk_fluency: 'Trôi chảy',
@@ -338,7 +338,7 @@ const I18N = {
     fillerNote: 'Máy nhận diện có thể tự lọc bớt “ừm/à”, nên số thật có thể cao hơn — hãy nghe lại.',
     structCheck: 'Khung cấu trúc', repeats: 'Cụm lặp lại', tips: 'Gợi ý cải thiện', transcript: 'Lời nói (mỗi dòng là một đoạn giữa các lần ngắt)',
     selfReview: 'Tự đánh giá', q1: 'Có lan man không?', q2: 'Có lặp ý không?', q3: 'Có truyền tải đúng thông điệp không?', yes: 'Có', no: 'Không',
-    improve: '1–2 điểm cần cải thiện lần sau…', saveReview: '💾 Lưu đánh giá', copyAI: '📋 Copy để nhờ AI nhận xét', copied: 'Đã copy! Dán vào ChatGPT/Claude để nhận góp ý chi tiết.',
+    improve: '1–2 điểm cần cải thiện lần sau…', saveReview: '💾 Lưu đánh giá', copyAI: '📋 Copy hướng dẫn', copied: 'Đã copy! Dán vào ChatGPT/Claude để nhận góp ý chi tiết.',
     tooShort: 'Bài nói quá ngắn để phân tích. Hãy nói ít nhất vài câu nhé.',
     tip_fillers: 'Có {n} từ đệm ({top}). Thay bằng một khoảng lặng ngắn — im lặng nửa giây nghe tự tin hơn “ừm”.',
     tip_pauses: 'Có {n} chỗ ngắt dài. Chốt sẵn ý chính và câu kết trước khi nói để không bị khựng.',
@@ -367,20 +367,20 @@ const I18N = {
     aiDevGPU: 'Thiết bị: WebGPU (nhanh)', aiDevWasm: 'Thiết bị: WASM (chậm hơn nhưng vẫn dùng được)',
     aiUnsupported: 'Trình duyệt này không chạy được AI on-device. Bạn vẫn dùng được nhận diện giọng nói của trình duyệt và nút Copy hướng dẫn chấm.',
     aiLoading: 'Đang tải model… {p}% ({m}). Đừng đóng tab.', aiReadyMsg: '✅ AI sẵn sàng (khởi động {s}s)', aiErrMsg: 'Không tải được AI: {e}. Bạn vẫn luyện bình thường bằng nhận diện giọng của trình duyệt, hoặc dùng nút sao chép prompt sau khi nói để chấm bằng AI của bạn (ChatGPT/Claude).',
-    aiRunErr: 'AI trên máy không nhận diện được âm thanh. Thử lại, hoặc tắt AI trong mục “AI”.',
-    aiCoachTitle: '🤖 Nhận xét của AI (bản nhẹ)', aiCoachWait: 'AI đang viết nhận xét…', aiCoachFail: 'AI không tạo được nhận xét lần này.',
-    aiCoachNote: 'AI nhỏ chạy trên máy bạn nên có thể sai. Cần chính xác hơn: copy hướng dẫn chấm và dán vào AI của bạn.',
-    copyPractice: '📋 Copy hướng dẫn chấm', helpBtn: 'Hướng dẫn',
+    aiRunErr: 'Chưa nghe rõ lần này. Bạn thử nói lại nhé.',
+    aiPrep: 'Đang chuẩn bị chấm điểm… lần đầu hơi lâu một chút.', aiFallback: 'Chấm bằng trợ lý AI của bạn: sau khi nói, bấm “Copy hướng dẫn” rồi dán vào ChatGPT, Claude hoặc Gemini.', obStart: 'Bắt đầu luyện',
+    aiCoachTitle: '🤖 Nhận xét của AI', aiCoachWait: 'AI đang viết nhận xét…', aiCoachFail: 'AI không tạo được nhận xét lần này.',
+    aiCoachNote: 'Nhận xét tự động nên có thể chưa hoàn toàn chính xác. Cần kỹ hơn: bấm “Copy hướng dẫn” và dán vào trợ lý AI của bạn.',
+    copyPractice: '📋 Copy hướng dẫn', helpBtn: 'Hướng dẫn',
     leadTitle: '📧 Gửi kết quả về email', leadDesc: 'Nhận bản tóm tắt buổi luyện này trong hộp thư để xem lại.', leadEmail: 'Email', leadName: 'Tên (không bắt buộc)', leadPhone: 'SĐT (không bắt buộc)',
     leadConsent: 'Tôi đồng ý nhận kết quả và gợi ý luyện nói qua email. Có thể huỷ bất cứ lúc nào.', leadSend: 'Gửi kết quả', leadSending: 'Đang gửi…',
     leadOk: '✅ Đã gửi! Kiểm tra hộp thư (cả mục Spam).', leadQueued: '✅ Đã lưu. Kết quả sẽ được gửi sau.', leadInvalid: 'Email chưa hợp lệ.', leadRate: 'Bạn đã gửi nhiều lần hôm nay, thử lại ngày mai nhé.', leadErr: 'Không gửi được, thử lại sau.',
     leadSum: 'TalkFit – Kết quả luyện nói', analyticsNote: ' Thống kê truy cập ẩn danh qua Google Analytics (không gồm giọng nói, email).',
 
-    privacyAI: 'Tiến độ chỉ lưu trên trình duyệt của bạn. AI on-device đang bật: giọng nói được xử lý trên máy, không gửi đi đâu.',
+    privacyAI: 'Giọng nói của bạn không rời khỏi máy.',
     obH1: 'Chào mừng! Luyện nói rõ ràng trong 3 bước', obS1: 'Chọn bài', obS1d: 'Hôm nay / Câu xoắn lưỡi / Cặp âm dễ nhầm / Đọc to.',
     obS2: 'Bấm 🎙 và nói', obS2d: 'Nghe mẫu trước, rồi ghi âm. Bấm lại để dừng và chấm.', obS3: 'Xem điểm & sửa', obS3d: 'Từ đúng màu xanh, từ sai màu đỏ. Nghe lại giọng mình và luyện lại.',
-    obNext: 'Tiếp tục', obH2: 'Chọn cách chấm điểm', obAIyes: 'Bật AI trên máy (riêng tư)', obAIno: 'Dùng mặc định, để sau',
-    obDefault: 'Mặc định dùng nhận diện giọng nói của trình duyệt (Chrome/Safari có thể gửi âm thanh tới Google/Apple). AI on-device thì không gửi gì, nhưng cần tải ≈{mb} MB một lần.',
+    obNext: 'Tiếp tục',
     aiPromptPractice: 'Tôi đang luyện phát âm ({lang}). Câu mẫu: “{target}”\nMáy nhận diện giọng tôi là: “{heard}”\nĐộ chính xác ước tính: {score}%.\n\nHãy chấm phát âm của tôi trên thang 100, chỉ ra từng từ sai hoặc thiếu, giải thích cách đặt lưỡi / môi / hơi (và thanh điệu nếu là tiếng Việt) để sửa, rồi cho tôi 3 bài tập ngắn. Lưu ý: bạn chỉ thấy văn bản do máy nhận diện, hãy nói rõ chỗ nào chưa chắc chắn.',
 
     voiceIntro: 'Luyện phát âm & khẩu hình (voice training) — bổ trợ cho articulation.',
@@ -393,7 +393,7 @@ const I18N = {
     lvl0: 'All', lvl1: 'Easy', lvl2: 'Medium', lvl3: 'Hard', random: 'Random',
     focus: 'Focus', best: 'Best',
     listen: '🔊 Listen', record: '🎙 Record & score', stop: '⏹ Stop & score', busy: '⏳ Scoring…', playback: '▶ Play my recording',
-    speed: 'Model speed', repeat3: 'Repeat ×3 (challenge)', metronome: 'Metronome',
+    speed: 'Example speed', repeat3: 'Repeat ×3 (challenge)', metronome: 'Metronome',
     listening: 'Listening… go ahead 🎙',
     accuracy: 'Accuracy', wpm_en: 'words/min', wpm_vi: 'syllables/min', duration: 'Speaking time', heard: 'What it heard', fixes: 'To fix',
     heardAs: 'heard as', missed: 'dropped / missing', toneErr: 'wrong tone', nearErr: 'close',
@@ -414,7 +414,7 @@ const I18N = {
     speakGuide: 'Read instructions aloud', warmupDone: 'Warm-up complete! Your articulators are ready.', goTwister: '🌀 Go to tongue twisters', ready: 'Ready?',
     pairsIntro: 'Train sounds that are easy to confuse. 🎙 Say: pronounce the highlighted word and the app checks what it heard. 👂 Listen: the app says one word, you pick it. 10 items per round.',
     modeSay: '🎙 Say', modeHear: '👂 Listen & pick', back: '‹ All groups',
-    sayThis: 'Say the highlighted word:', whichHeard: 'Which word did you hear?', play: '🔊 Play', sayRec: '🎙 Speak', listenTarget: '🔊 Model',
+    sayThis: 'Say the highlighted word:', whichHeard: 'Which word did you hear?', play: '🔊 Play', sayRec: '🎙 Speak', listenTarget: '🔊 Example',
     correct: 'Correct! ✓', wrongSaid: 'Heard as “{w}” ✗', wrongPick: 'Not quite ✗ — it said “{w}”', unclear: 'Heard: “{w}” — no match, try again.',
     next: 'Next ⏭', skipRound: 'Skip', round: 'Item {i}/{n}', correctCount: '{c} correct',
     pairDone: 'Round complete! Score: {s}%', again: '↻ New round', otherGroup: 'Pick another group',
@@ -424,7 +424,7 @@ const I18N = {
     none: 'No data yet — practise a few lines to see stats!', clear: '🗑 Clear data', confirmClear: 'Delete all progress? This cannot be undone.', practiceBtn: 'Practise', byLang: 'Average by language (30 days)', less: 'Less', more: 'More', times: 'sessions', noWeak: 'Nothing under 85% — great job!',
     m_twister: 'Twister', m_read: 'Read aloud', m_pairs: 'Pairs', m_warmup: 'Warm-up',
     shortcuts: 'Shortcuts: Space = record/stop · L = listen · → = next',
-    privacy: 'Progress is stored only in your browser. When scoring, the browser sends audio to its speech service (Google/Apple).',
+    privacy: 'Your practice progress is stored only on your device.',
     lang_en: 'English', lang_vi: 'Vietnamese'    ,
     tab_today: '⭐ Today', tab_minute: '⏱ 1-minute talk', tab_prep: '🧱 Structure', tab_eli5: '🧒 Explain simply', tab_review: '🎥 Record & review', tab_voice: '🗣 Pronunciation',
     sk_clarity: 'Clarity', sk_structure: 'Structure', sk_conciseness: 'Conciseness', sk_fluency: 'Fluency',
@@ -457,7 +457,7 @@ const I18N = {
     fillerNote: 'Speech recognition may silently drop “um/uh”, so the real count can be higher — listen back.',
     structCheck: 'Structure check', repeats: 'Repeated phrases', tips: 'How to improve', transcript: 'What you said (one line per stretch between pauses)',
     selfReview: 'Self-review', q1: 'Did I ramble?', q2: 'Did I repeat myself?', q3: 'Did my message land?', yes: 'Yes', no: 'No',
-    improve: '1–2 things to improve next time…', saveReview: '💾 Save review', copyAI: '📋 Copy for AI feedback', copied: 'Copied! Paste into ChatGPT/Claude for detailed feedback.',
+    improve: '1–2 things to improve next time…', saveReview: '💾 Save review', copyAI: '📋 Copy instructions', copied: 'Copied! Paste into ChatGPT/Claude for detailed feedback.',
     tooShort: 'Too short to analyse. Say at least a few sentences.',
     tip_fillers: '{n} fillers ({top}). Replace them with a short pause — half a second of silence sounds more confident than “um”.',
     tip_pauses: '{n} long pauses. Decide your main point and closing line before you start.',
@@ -486,20 +486,20 @@ const I18N = {
     aiDevGPU: 'Device: WebGPU (fast)', aiDevWasm: 'Device: WASM (slower but works)',
     aiUnsupported: 'This browser cannot run on-device AI. You can still use the browser speech recognition and the Copy scoring prompt button.',
     aiLoading: 'Downloading models… {p}% ({m}). Keep this tab open.', aiReadyMsg: '✅ AI ready (started in {s}s)', aiErrMsg: 'Could not load AI: {e}. You can still practise with the browser speech recognition, or use the copy-prompt button after speaking to score with your own AI (ChatGPT/Claude).',
-    aiRunErr: 'On-device AI could not transcribe the audio. Try again, or switch AI off in the “AI” panel.',
-    aiCoachTitle: '🤖 AI feedback (lightweight)', aiCoachWait: 'AI is writing feedback…', aiCoachFail: 'AI could not write feedback this time.',
-    aiCoachNote: 'A small model running on your device — it can be wrong. For better accuracy copy the scoring prompt into your own AI.',
-    copyPractice: '📋 Copy scoring prompt', helpBtn: 'Guide',
+    aiRunErr: 'Could not hear that clearly. Please try again.',
+    aiPrep: 'Getting scoring ready… the first time takes a little longer.', aiFallback: 'Score with your own AI assistant: after speaking, tap “Copy instructions” and paste them into ChatGPT, Claude or Gemini.', obStart: 'Start practising',
+    aiCoachTitle: '🤖 AI feedback', aiCoachWait: 'AI is writing feedback…', aiCoachFail: 'AI could not write feedback this time.',
+    aiCoachNote: 'Automatic feedback can be imperfect. For a closer look, tap “Copy instructions” and paste them into your own AI assistant.',
+    copyPractice: '📋 Copy instructions', helpBtn: 'Guide',
     leadTitle: '📧 Email me this result', leadDesc: 'Get a summary of this session in your inbox to review later.', leadEmail: 'Email', leadName: 'Name (optional)', leadPhone: 'Phone (optional)',
     leadConsent: 'I agree to receive my results and speaking tips by email. Unsubscribe anytime.', leadSend: 'Send result', leadSending: 'Sending…',
     leadOk: '✅ Sent! Check your inbox (and Spam).', leadQueued: '✅ Saved. Your result will be sent later.', leadInvalid: 'Please enter a valid email.', leadRate: 'Too many requests today, try again tomorrow.', leadErr: 'Could not send, please try later.',
     leadSum: 'TalkFit – Speaking practice result', analyticsNote: ' Anonymous visit stats via Google Analytics (never your voice or email).',
 
-    privacyAI: 'Progress is stored only in your browser. On-device AI is on: your voice is processed locally and sent nowhere.',
+    privacyAI: 'Your voice never leaves your device.',
     obH1: 'Welcome! Speak clearly in 3 steps', obS1: 'Pick an exercise', obS1d: 'Today / Tongue twisters / Sound pairs / Read aloud.',
-    obS2: 'Tap 🎙 and speak', obS2d: 'Listen to the model first, then record. Tap again to stop and score.', obS3: 'See score & fix', obS3d: 'Correct words turn green, wrong ones red. Replay yourself and try again.',
-    obNext: 'Continue', obH2: 'Choose how to score', obAIyes: 'Turn on on-device AI (private)', obAIno: 'Use default, decide later',
-    obDefault: 'By default the browser speech recognition is used (Chrome/Safari may send audio to Google/Apple). On-device AI sends nothing but needs a one-time ≈{mb} MB download.',
+    obS2: 'Tap 🎙 and speak', obS2d: 'Listen to the example first, then record. Tap again to stop and score.', obS3: 'See score & fix', obS3d: 'Correct words turn green, wrong ones red. Replay yourself and try again.',
+    obNext: 'Continue',
     aiPromptPractice: 'I am practising pronunciation ({lang}). Target sentence: “{target}”\nA speech recogniser heard me say: “{heard}”\nEstimated accuracy: {score}%.\n\nScore my pronunciation out of 100, point out each wrong or missing word, explain how to place the tongue / lips / breath (and tones for Vietnamese) to fix it, then give me 3 short drills. Note: you only see recogniser text, so say where you are unsure.',
 
     voiceIntro: 'Pronunciation & mouth-shape drills (voice training) — a companion to articulation.',
@@ -697,6 +697,7 @@ const PREP_KEYS = ['point', 'reason', 'example', 'conclusion'];
 const PREP_LABEL = { point: 'pPoint', reason: 'pReason', example: 'pExample', conclusion: 'pConclusion', sequence: 'pSequence' };
 
 /* ============================== state & storage ============================== */
+const DEBUG = /[?&]debug=1/.test(location.search); // technical AI panel/chip only with ?debug=1
 function loadJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }
 const S = Object.assign({ lang: 'en', ui: 'vi', tab: 'today', vtab: 'twister', mi: { en: 0, vi: 0 }, pi: { en: 0, vi: 0 }, ei: { en: 0, vi: 0 }, level: 0, rate: 0.9, bpm: 90, repeat: false, speakGuide: true, tw: { en: 0, vi: 0 }, rd: { en: 0, vi: 0 }, custom: { en: '', vi: '' } }, loadJSON(SET_KEY, {}));
 S.metro = false; S.editCustom = false; S.topicOverride = {};
@@ -954,7 +955,7 @@ function render() {
         <button data-act="lang" data-v="vi" class="${S.lang === 'vi' ? 'on' : ''}">🇻🇳 Tiếng Việt</button>
       </div>
       <div class="streak" title="${t('streakDays')}">🔥 ${streak()}</div>
-      <button class="aichip" id="aichip" data-act="aiOpen"></button>
+      ${DEBUG ? '<button class="aichip" id="aichip" data-act="aiOpen"></button>' : ''}
       <button class="iconbtn" data-act="help" aria-label="? ${t('helpBtn')}" title="${t('helpBtn')}">?</button>
     </div>
   </header>
@@ -964,14 +965,17 @@ function render() {
   <footer>
     <div class="row">${t('uiLang')}: <div class="seg sm"><button data-act="ui" data-v="vi" class="${S.ui === 'vi' ? 'on' : ''}">Tiếng Việt</button><button data-act="ui" data-v="en" class="${S.ui === 'en' ? 'on' : ''}">English</button></div></div>
     <div>⌨️ ${t('shortcuts')}</div>
-    <div id="privTxt">🔒 ${AI.ready() ? t('privacyAI') : t('privacy')}${t('analyticsNote')}</div>
+    <div id="privTxt">🔒 ${AI.ready() ? t('privacyAI') : t('privacy')}</div>
   </footer>`;
   renderMain(); updateChip();
 }
 function renderNotices() {
   const box = $('#notices'); if (!box) return;
   const out = [];
-  if (!SRClass && !(AI.ready() || AI.st.enabled) && S.tab !== 'progress' && view() !== 'warmup') out.push(`<div class="notice">${t('noSR')}</div>`);
+  const a = AI.st, aiFailed = a.state === 'error' || a.state === 'unsupported';
+  if (a.state === 'loading') out.push(`<div class="notice">${t('aiPrep')}<div class="pbar"><i style="width:${Math.max(a.pct, 6)}%"></i></div></div>`);
+  else if (aiFailed) out.push(`<div class="notice">${t('aiFallback')}</div>`);
+  else if (!SRClass && !(AI.ready() || a.enabled) && S.tab !== 'progress' && view() !== 'warmup') out.push(`<div class="notice">${t('noSR')}</div>`);
   if (HAS_TTS && voices.length && !pickVoice(S.lang) && S.tab === 'voice')
     out.push(`<div class="notice">${t('noVoice', { lang: t('lang_' + S.lang), hint: S.lang === 'vi' ? 'Linh (Tiếng Việt)' : 'Samantha / Ava (English)' })}</div>`);
   box.innerHTML = out.join('');
@@ -1579,10 +1583,8 @@ document.addEventListener('click', e => {
     case 'aiOn': AI.enable().catch(() => { }); break;
     case 'aiOff': AI.disable(); break;
     case 'aiClear': AI.clearCache().then(() => openAI()); break;
-    case 'help': openOB(0); break;
+    case 'help': openOB(); break;
     case 'mclose': closeModal(); break;
-    case 'obNext': openOB(1); break;
-    case 'obAI': obDone(); AI.enable().catch(() => { }); openAI(); break;
     case 'obSkip': obDone(); closeModal(); break;
     case 'copyP': copyText(LASTP); break;
     case 'ui': if (S.ui !== v) { stopAll(); S.ui = v; saveS(); render(); } break;
@@ -1706,21 +1708,19 @@ function aiSheetHTML() {
   return `<button class="btn sm ghost x" data-act="mclose" aria-label="✕ ${t('aiClose')}">✕</button><h2>${t('aiTitle')}</h2><p>${t('aiDesc')}</p><p>${t('aiPrivacy', { mb, coach: (AI.st.support && AI.st.support.coach) ? t('aiCoachPart') : '' })}</p><div class="warn">${t('aiWeak')}</div>${sup.wasm && !sup.coach ? `<div class="kv">${t('aiNoCoach')}</div>` : ''}${status}<div class="controls">${btns}<button class="btn" data-act="mclose">${t('aiClose')}</button></div>`;
 }
 async function openAI() { await AI.detect(); modal(aiSheetHTML()); }
-function openOB(step) {
-  if (step === 0) modal(`<div class="ob"><button class="btn sm ghost x" data-act="obSkip" aria-label="✕ ${t('aiClose')}">✕</button></div><h2>${t('obH1')}</h2><ol>
+function openOB() {
+  modal(`<div class="ob"><button class="btn sm ghost x" data-act="obSkip" aria-label="✕ ${t('aiClose')}">✕</button></div><h2>${t('obH1')}</h2><ol>
     <li><b class="n">1</b><div><b>${t('obS1')}</b><br><small>${t('obS1d')}</small></div></li>
     <li><b class="n">2</b><div><b>${t('obS2')}</b><br><small>${t('obS2d')}</small></div></li>
     <li><b class="n">3</b><div><b>${t('obS3')}</b><br><small>${t('obS3d')}</small></div></li></ol>
-    <div class="controls"><button class="btn primary" data-act="obNext">${t('obNext')} →</button></div><div class="steps-dots"><i class="on"></i><i></i></div>`);
-  else AI.detect().then(() => modal(`<div class="ob"><button class="btn sm ghost x" data-act="obSkip" aria-label="✕ ${t('aiClose')}">✕</button></div><h2>${t('obH2')}</h2><p>${t('obDefault', { mb: aiMB() })}</p><div class="warn">${t('aiWeak')}</div>
-    <div class="controls"><button class="btn primary" data-act="obAI">${t('obAIyes')}</button><button class="btn" data-act="obSkip">${t('obAIno')}</button></div><div class="steps-dots"><i></i><i class="on"></i></div>`));
+    <div class="controls"><button class="btn primary" data-act="obSkip">${t('obStart')} →</button></div>`);
 }
 function obDone() { localStorage.setItem(OB_KEY, '1'); }
 AI.on(a => {
-  updateChip();
-  if (modalOpen() && $('#modal .pbar')) { const f = $('#modal .pbar i'); if (f) f.style.width = a.pct + '%'; const g = $('#aiProg'); if (g) g.textContent = t('aiLoading', { p: a.pct, m: a.msg || '0 MB' }); }
+  updateChip(); renderNotices();
+  if (DEBUG && modalOpen() && $('#modal .pbar')) { const f = $('#modal .pbar i'); if (f) f.style.width = a.pct + '%'; const g = $('#aiProg'); if (g) g.textContent = t('aiLoading', { p: a.pct, m: a.msg || '0 MB' }); }
   if (a.state !== 'loading' && modalOpen() && $('#modal h2') && $('#modal h2').textContent === t('aiTitle')) $('#modal .sheet').innerHTML = aiSheetHTML();
-  if (a.state === 'ready' || a.state === 'off') { const f = $('#privTxt'); if (f) f.textContent = '🔒 ' + (a.state === 'ready' ? t('privacyAI') : t('privacy')) + t('analyticsNote'); renderNotices(); }
+  if (a.state === 'ready' || a.state === 'off') { const f = $('#privTxt'); if (f) f.textContent = '🔒 ' + (a.state === 'ready' ? t('privacyAI') : t('privacy')); renderNotices(); }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOpen()) closeModal(); });
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
@@ -1750,7 +1750,11 @@ async function runCoach(host, facts, task) {
   } catch (e) { if (box.isConnected) body.textContent = t('aiCoachFail'); }
 }
 if (AI.st.enabled) AI.enable().catch(() => { });
-if (!localStorage.getItem(OB_KEY)) setTimeout(() => openOB(0), 400);
+else document.addEventListener('pointerdown', () => {
+  const c = navigator.connection || {};
+  if (AI.st.state === 'off' && !AI.st.enabled && !c.saveData && c.type !== 'cellular') AI.enable().catch(() => { });
+}, { once: true });
+if (!localStorage.getItem(OB_KEY)) setTimeout(() => openOB(), 400);
 
 /* ============================== lead capture (email result) ============================== */
 const LEADS_URL = 'https://script.google.com/macros/s/AKfycbxNdYrxnQsotDGW7lx-UfaDKya5MqN6UO0AxPkFLoTEzoc4VsVExnPdTlG0GZqyI5sFKw/exec';
