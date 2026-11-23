@@ -1091,7 +1091,7 @@ async function finishRec() {
     <div class="heardbox"><small style="color:var(--muted)">${t('heard')}:</small> ${esc(r.transcript)}</div>
     ${errs ? `<div class="sec-title">${t('fixes')}</div><ul class="fixes">${errs}</ul>` : ''}
     <div class="controls"><button class="btn" data-act="copyP">${t('copyPractice')}</button></div>
-    ${leadHTML(practiceSummary(res, wpm, r))}
+    ${leadHTML(practiceSummary(res, wpm, r), { score: res.score, mode: P.mode, metrics: [['Accuracy', res.score + '%'], ['Speed', wpm + ' wpm'], ['Duration', r.speech.toFixed(1) + 's']], tips: res.errors.slice(0, 5).map(e => e.cls === 'miss' ? `${e.word}: missed` : `${e.word}: heard "${e.heard}"`) })}
   </div>`;
   LASTP = t('aiPromptPractice', { lang: t('lang_' + S.lang), target: P.target.replace(/\n/g, ' '), heard: r.transcript, score: res.score });
   if (res.errors.length) runCoach(box.querySelector('.result'), practiceFacts(P.target.replace(/\n/g, ' '), r.transcript, res, wpm), 'Write 2 short sentences in {ui} for the learner: name the word(s) they mispronounced and give one tip to fix it.');
@@ -1494,7 +1494,7 @@ function resultHTML(L) {
     <div class="sec-title">${t('tips')}</div><ul class="fixes">${A.tips.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
     <div class="sec-title">${t('transcript')}</div><div class="trx" lang="${L.lang}">${trxHTML(r, L.lang)}</div>
     <p style="color:var(--muted);font-size:12px;margin:6px 0 0">ⓘ ${t('fillerNote')}</p>
-    ${reviewHTML(L)}${leadHTML(talkSummary(L))}</div>`;
+    ${reviewHTML(L)}${leadHTML(talkSummary(L), { score: L.A.overall, mode: L.cfg.kind, metrics: [['Overall', L.A.overall + '/100'], ['Speed', L.A.wpm + ' wpm'], ['Filler words', String(L.A.fill.total)], ['Long pauses', String(L.A.longP)], ...Object.entries(L.A.skills).map(([k, v]) => [t('sk_' + k), String(v)])], tips: L.A.tips.slice() })}</div>`;
   return h;
 }
 function reviewHTML(L) {
@@ -1754,7 +1754,7 @@ if (!localStorage.getItem(OB_KEY)) setTimeout(() => openOB(0), 400);
 
 /* ============================== lead capture (email result) ============================== */
 const LEADS_URL = 'https://script.google.com/macros/s/AKfycbxNdYrxnQsotDGW7lx-UfaDKya5MqN6UO0AxPkFLoTEzoc4VsVExnPdTlG0GZqyI5sFKw/exec';
-let LEADSUM = '';
+let LEADSUM = '', LEADDATA = {};
 function practiceSummary(res, wpm, r) {
   const errs = res.errors.slice(0, 8).map(e => e.cls === 'miss' ? `${e.word} (missed)` : `${e.word} (heard "${e.heard}")`).join(', ') || '-';
   return [`${t('leadSum')} — ${t('lang_' + S.lang)}`, `${(P.item && (P.item.title || P.item.text) || '').slice(0, 120)}`, `Accuracy: ${res.score}%`, `Speed: ${wpm} wpm`, `Heard: ${r.transcript.slice(0, 300)}`, `To fix: ${errs}`].join('\n');
@@ -1763,8 +1763,8 @@ function talkSummary(L) {
   const A = L.A;
   return [`${t('leadSum')} — ${t('lang_' + L.lang)}`, `Topic: ${L.cfg.topic}`, `Overall: ${A.overall}/100`, `Speed: ${A.wpm} wpm · fillers: ${A.fill.total} · long pauses: ${A.longP}`, 'Tips:', ...A.tips.map(x => '- ' + x), `Transcript: ${L.r.transcript.slice(0, 600)}`].join('\n');
 }
-function leadHTML(summary) {
-  LEADSUM = summary.slice(0, 2000);
+function leadHTML(summary, data) {
+  LEADSUM = summary.slice(0, 2000); LEADDATA = data || {};
   return `<form class="lead" id="leadForm" novalidate>
     <h3>${t('leadTitle')}</h3><p>${t('leadDesc')}</p>
     <div class="f">
@@ -1780,7 +1780,7 @@ function leadHTML(summary) {
 async function submitLead(o) {
   const res = await fetch(LEADS_URL, {
     method: 'POST', // no Content-Type header on purpose: avoids a CORS preflight Apps Script cannot answer
-    body: JSON.stringify({ email: o.email, name: o.name, phone: o.phone, summary: LEADSUM, consent: o.consent, utm: location.search.slice(1), website: document.getElementById('hp').value })
+    body: JSON.stringify({ score: LEADDATA.score, mode: LEADDATA.mode, metrics: LEADDATA.metrics, tips: LEADDATA.tips, email: o.email, name: o.name, phone: o.phone, summary: LEADSUM, consent: o.consent, utm: location.search.slice(1), website: document.getElementById('hp').value })
   });
   return res.json();
 }
