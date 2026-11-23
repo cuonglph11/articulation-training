@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="vi">
 <head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CT2DMSHW4N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-CT2DMSHW4N');
+</script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#0d1020" />
@@ -223,6 +230,19 @@ nav.tabs button,.seg button{min-height:42px}
  .practice .controls #recBtn,#talkBtn{flex:1 1 100%;order:-1}
  .card{padding:16px}
 }
+
+.lead{margin-top:16px;background:#162033;border:1px solid #2b4a7a;border-radius:14px;padding:14px}
+.lead h3{margin:0 0 4px;font-size:17px}
+.lead p{margin:4px 0 10px;color:#cdd2f5;font-size:14.5px}
+.lead .f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lead label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:650}
+.lead input[type=email],.lead input[type=text],.lead input[type=tel]{background:#0f1430;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;min-height:46px}
+.lead .em{grid-column:1/-1}
+.lead .chk{flex-direction:row;align-items:flex-start;gap:8px;font-weight:500;margin:10px 0}
+.lead .chk input{margin-top:4px;width:20px;height:20px}
+.lead .msg{margin-top:8px;font-weight:650}
+.lead .msg.ok{color:#86efac}.lead .msg.bad{color:#fda4af}
+@media(max-width:720px){.lead .f{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -347,6 +367,11 @@ const I18N = {
     aiCoachTitle: '🤖 Nhận xét của AI (bản nhẹ)', aiCoachWait: 'AI đang viết nhận xét…', aiCoachFail: 'AI không tạo được nhận xét lần này.',
     aiCoachNote: 'AI nhỏ chạy trên máy bạn nên có thể sai. Cần chính xác hơn: copy hướng dẫn chấm và dán vào AI của bạn.',
     copyPractice: '📋 Copy hướng dẫn chấm', helpBtn: 'Hướng dẫn',
+    leadTitle: '📧 Gửi kết quả về email', leadDesc: 'Nhận bản tóm tắt buổi luyện này trong hộp thư để xem lại.', leadEmail: 'Email', leadName: 'Tên (không bắt buộc)', leadPhone: 'SĐT (không bắt buộc)',
+    leadConsent: 'Tôi đồng ý nhận kết quả và gợi ý luyện nói qua email. Có thể huỷ bất cứ lúc nào.', leadSend: 'Gửi kết quả', leadSending: 'Đang gửi…',
+    leadOk: '✅ Đã gửi! Kiểm tra hộp thư (cả mục Spam).', leadQueued: '✅ Đã lưu. Kết quả sẽ được gửi sau.', leadInvalid: 'Email chưa hợp lệ.', leadRate: 'Bạn đã gửi nhiều lần hôm nay, thử lại ngày mai nhé.', leadErr: 'Không gửi được, thử lại sau.',
+    leadSum: 'Kết quả luyện nói', analyticsNote: ' Thống kê truy cập ẩn danh qua Google Analytics (không gồm giọng nói, email).',
+
     privacyAI: 'Tiến độ chỉ lưu trên trình duyệt của bạn. AI on-device đang bật: giọng nói được xử lý trên máy, không gửi đi đâu.',
     obH1: 'Chào mừng! Luyện nói rõ ràng trong 3 bước', obS1: 'Chọn bài', obS1d: 'Hôm nay / Câu xoắn lưỡi / Cặp âm dễ nhầm / Đọc to.',
     obS2: 'Bấm 🎙 và nói', obS2d: 'Nghe mẫu trước, rồi ghi âm. Bấm lại để dừng và chấm.', obS3: 'Xem điểm & sửa', obS3d: 'Từ đúng màu xanh, từ sai màu đỏ. Nghe lại giọng mình và luyện lại.',
@@ -461,6 +486,11 @@ const I18N = {
     aiCoachTitle: '🤖 AI feedback (lightweight)', aiCoachWait: 'AI is writing feedback…', aiCoachFail: 'AI could not write feedback this time.',
     aiCoachNote: 'A small model running on your device — it can be wrong. For better accuracy copy the scoring prompt into your own AI.',
     copyPractice: '📋 Copy scoring prompt', helpBtn: 'Guide',
+    leadTitle: '📧 Email me this result', leadDesc: 'Get a summary of this session in your inbox to review later.', leadEmail: 'Email', leadName: 'Name (optional)', leadPhone: 'Phone (optional)',
+    leadConsent: 'I agree to receive my results and speaking tips by email. Unsubscribe anytime.', leadSend: 'Send result', leadSending: 'Sending…',
+    leadOk: '✅ Sent! Check your inbox (and Spam).', leadQueued: '✅ Saved. Your result will be sent later.', leadInvalid: 'Please enter a valid email.', leadRate: 'Too many requests today, try again tomorrow.', leadErr: 'Could not send, please try later.',
+    leadSum: 'Speaking practice result', analyticsNote: ' Anonymous visit stats via Google Analytics (never your voice or email).',
+
     privacyAI: 'Progress is stored only in your browser. On-device AI is on: your voice is processed locally and sent nowhere.',
     obH1: 'Welcome! Speak clearly in 3 steps', obS1: 'Pick an exercise', obS1d: 'Today / Tongue twisters / Sound pairs / Read aloud.',
     obS2: 'Tap 🎙 and speak', obS2d: 'Listen to the model first, then record. Tap again to stop and score.', obS3: 'See score & fix', obS3d: 'Correct words turn green, wrong ones red. Replay yourself and try again.',
@@ -675,7 +705,7 @@ function saveS() {
 }
 const store = {
   get() { const d = loadJSON(LS_KEY, null); return d && Array.isArray(d.history) ? d : { history: [] }; },
-  add(e) { const d = this.get(); const ts = Date.now(); d.history.push({ t: ts, ...e }); if (d.history.length > 1000) d.history = d.history.slice(-1000); localStorage.setItem(LS_KEY, JSON.stringify(d)); const st = $('.streak'); if (st) st.textContent = '🔥 ' + streak(); return ts; },
+  add(e) { try { window.gtag && gtag('event', 'practice_complete', { mode: e.mode, lang: e.lang, score: e.score }); } catch { } const d = this.get(); const ts = Date.now(); d.history.push({ t: ts, ...e }); if (d.history.length > 1000) d.history = d.history.slice(-1000); localStorage.setItem(LS_KEY, JSON.stringify(d)); const st = $('.streak'); if (st) st.textContent = '🔥 ' + streak(); return ts; },
   patchAt(ts, obj) { const d = this.get(); const e = d.history.find(h => h.t === ts); if (!e) return; Object.assign(e, obj); localStorage.setItem(LS_KEY, JSON.stringify(d)); },
   clear() { localStorage.removeItem(LS_KEY); }
 };
@@ -930,7 +960,7 @@ function render() {
   <footer>
     <div class="row">${t('uiLang')}: <div class="seg sm"><button data-act="ui" data-v="vi" class="${S.ui === 'vi' ? 'on' : ''}">Tiếng Việt</button><button data-act="ui" data-v="en" class="${S.ui === 'en' ? 'on' : ''}">English</button></div></div>
     <div>⌨️ ${t('shortcuts')}</div>
-    <div id="privTxt">🔒 ${AI.ready() ? t('privacyAI') : t('privacy')}</div>
+    <div id="privTxt">🔒 ${AI.ready() ? t('privacyAI') : t('privacy')}${t('analyticsNote')}</div>
   </footer>`;
   renderMain(); updateChip();
 }
@@ -1057,6 +1087,7 @@ async function finishRec() {
     <div class="heardbox"><small style="color:var(--muted)">${t('heard')}:</small> ${esc(r.transcript)}</div>
     ${errs ? `<div class="sec-title">${t('fixes')}</div><ul class="fixes">${errs}</ul>` : ''}
     <div class="controls"><button class="btn" data-act="copyP">${t('copyPractice')}</button></div>
+    ${leadHTML(practiceSummary(res, wpm, r))}
   </div>`;
   LASTP = t('aiPromptPractice', { lang: t('lang_' + S.lang), target: P.target.replace(/\n/g, ' '), heard: r.transcript, score: res.score });
   if (res.errors.length) runCoach(box.querySelector('.result'), practiceFacts(P.target.replace(/\n/g, ' '), r.transcript, res, wpm), 'Write 2 short sentences in {ui} for the learner: name the word(s) they mispronounced and give one tip to fix it.');
@@ -1459,7 +1490,7 @@ function resultHTML(L) {
     <div class="sec-title">${t('tips')}</div><ul class="fixes">${A.tips.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
     <div class="sec-title">${t('transcript')}</div><div class="trx" lang="${L.lang}">${trxHTML(r, L.lang)}</div>
     <p style="color:var(--muted);font-size:12px;margin:6px 0 0">ⓘ ${t('fillerNote')}</p>
-    ${reviewHTML(L)}</div>`;
+    ${reviewHTML(L)}${leadHTML(talkSummary(L))}</div>`;
   return h;
 }
 function reviewHTML(L) {
@@ -1685,7 +1716,7 @@ AI.on(a => {
   updateChip();
   if (modalOpen() && $('#modal .pbar')) { const f = $('#modal .pbar i'); if (f) f.style.width = a.pct + '%'; const g = $('#aiProg'); if (g) g.textContent = t('aiLoading', { p: a.pct, m: a.msg || '0 MB' }); }
   if (a.state !== 'loading' && modalOpen() && $('#modal h2') && $('#modal h2').textContent === t('aiTitle')) $('#modal .sheet').innerHTML = aiSheetHTML();
-  if (a.state === 'ready' || a.state === 'off') { const f = $('#privTxt'); if (f) f.textContent = '🔒 ' + (a.state === 'ready' ? t('privacyAI') : t('privacy')); renderNotices(); }
+  if (a.state === 'ready' || a.state === 'off') { const f = $('#privTxt'); if (f) f.textContent = '🔒 ' + (a.state === 'ready' ? t('privacyAI') : t('privacy')) + t('analyticsNote'); renderNotices(); }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOpen()) closeModal(); });
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
@@ -1716,6 +1747,54 @@ async function runCoach(host, facts, task) {
 }
 if (AI.st.enabled) AI.enable().catch(() => { });
 if (!localStorage.getItem(OB_KEY)) setTimeout(() => openOB(0), 400);
+
+/* ============================== lead capture (email result) ============================== */
+const LEADS_URL = 'https://script.google.com/macros/s/AKfycbxNdYrxnQsotDGW7lx-UfaDKya5MqN6UO0AxPkFLoTEzoc4VsVExnPdTlG0GZqyI5sFKw/exec';
+let LEADSUM = '';
+function practiceSummary(res, wpm, r) {
+  const errs = res.errors.slice(0, 8).map(e => e.cls === 'miss' ? `${e.word} (missed)` : `${e.word} (heard "${e.heard}")`).join(', ') || '-';
+  return [`${t('leadSum')} — ${t('lang_' + S.lang)}`, `${(P.item && (P.item.title || P.item.text) || '').slice(0, 120)}`, `Accuracy: ${res.score}%`, `Speed: ${wpm} wpm`, `Heard: ${r.transcript.slice(0, 300)}`, `To fix: ${errs}`].join('\n');
+}
+function talkSummary(L) {
+  const A = L.A;
+  return [`${t('leadSum')} — ${t('lang_' + L.lang)}`, `Topic: ${L.cfg.topic}`, `Overall: ${A.overall}/100`, `Speed: ${A.wpm} wpm · fillers: ${A.fill.total} · long pauses: ${A.longP}`, 'Tips:', ...A.tips.map(x => '- ' + x), `Transcript: ${L.r.transcript.slice(0, 600)}`].join('\n');
+}
+function leadHTML(summary) {
+  LEADSUM = summary.slice(0, 2000);
+  return `<form class="lead" id="leadForm" novalidate>
+    <h3>${t('leadTitle')}</h3><p>${t('leadDesc')}</p>
+    <div class="f">
+      <label class="em">${t('leadEmail')}<input type="email" name="email" required autocomplete="email" inputmode="email" placeholder="you@example.com"></label>
+      <label>${t('leadName')}<input type="text" name="name" autocomplete="name"></label>
+      <label>${t('leadPhone')}<input type="tel" name="phone" autocomplete="tel"></label>
+    </div>
+    <input id="hp" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+    <label class="chk"><input type="checkbox" name="consent"> <span>${t('leadConsent')}</span></label>
+    <button class="btn primary" type="submit">${t('leadSend')}</button>
+    <div class="msg" role="status"></div></form>`;
+}
+async function submitLead(o) {
+  const res = await fetch(LEADS_URL, {
+    method: 'POST', // no Content-Type header on purpose: avoids a CORS preflight Apps Script cannot answer
+    body: JSON.stringify({ email: o.email, name: o.name, phone: o.phone, summary: LEADSUM, consent: o.consent, utm: location.search.slice(1), website: document.getElementById('hp').value })
+  });
+  return res.json();
+}
+document.addEventListener('submit', async e => {
+  const f = e.target; if (f.id !== 'leadForm') return; e.preventDefault();
+  const msg = f.querySelector('.msg'), btn = f.querySelector('button[type=submit]');
+  const email = f.email.value.trim();
+  const bad = k => { msg.className = 'msg bad'; msg.textContent = t(k); };
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { bad('leadInvalid'); f.email.focus(); return; }
+  btn.disabled = true; msg.className = 'msg'; msg.textContent = t('leadSending');
+  try {
+    const r = await submitLead({ email, name: f.name.value.trim(), phone: f.phone.value.trim(), consent: f.consent.checked });
+    if (r && r.ok) {
+      try { gtag('event', 'generate_lead'); } catch { }
+      msg.className = 'msg ok'; msg.textContent = t(r.mailed ? 'leadOk' : 'leadQueued'); f.querySelectorAll('input').forEach(x => x.disabled = true);
+    } else { btn.disabled = false; bad(r && r.error === 'invalid_email' ? 'leadInvalid' : r && r.error === 'rate_limited' ? 'leadRate' : 'leadErr'); }
+  } catch (err) { btn.disabled = false; bad('leadErr'); }
+});
 if (HAS_TTS) { loadVoices(); speechSynthesis.onvoiceschanged = () => { loadVoices(); renderNotices(); }; }
 render();
 </script>
