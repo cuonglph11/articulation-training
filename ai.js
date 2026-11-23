@@ -5,7 +5,7 @@
   const LOADED = 'artic.ai.loaded'; // models have been downloaded at least once
   const MB = { coach: 780, gpu: 210, wasm: 80 }; // approx. first-run download (Whisper [+ Qwen3 coach])
   const listeners = [];
-  let worker = null, seq = 0, initP = null;
+  let worker = null, seq = 0, initP = null, stall = null, lastProg = 0;
   const pending = new Map();
   const files = {};                 // file -> {loaded,total}
   const st = {
@@ -38,6 +38,7 @@
   function onMsg(e) {
     const m = e.data;
     if (m.type === 'progress') {
+      lastProg = Date.now();
       files[m.stage + ':' + m.file] = { loaded: m.status === 'done' ? (files[m.stage + ':' + m.file]?.total || m.total) : m.loaded, total: m.total || files[m.stage + ':' + m.file]?.total || 0 };
       let l = 0, t = 0; Object.values(files).forEach(f => { l += f.loaded; t += f.total; });
       const expect = (st.support?.mb || 600) * 1e6;
@@ -62,14 +63,25 @@
       try {
         worker = new Worker('ai-worker.js', { type: 'module' });
         worker.onmessage = onMsg;
-        worker.onerror = (e) => { console.warn('AI worker error', e.message); };
+        worker.onerror = (e) => { const err = new Error(e.message || 'worker failed to start (blocked CDN or unsupported browser)'); pending.forEach(p => p.reject(err)); pending.clear(); };
+        stall = setInterval(() => { if (st.state === 'loading' && Date.now() - lastProg > 60000) { pending.forEach(p => p.reject(new Error('download stalled — check your connection'))); pending.clear(); } }, 5000);
+        lastProg = Date.now();
         if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => { });
-        const r = await send({ type: 'init', device: st.device, f16: sup.f16 });
+        let r;
+        try { r = await send({ type: 'init', device: st.device, f16: sup.f16 }); }
+        catch (e1) {
+          if (st.device !== 'webgpu') throw e1;
+          // WebGPU present but failing (e.g. Safari/older drivers): retry on WASM instead of giving up
+          console.warn('WebGPU init failed, retrying on WASM:', e1.message);
+          worker.terminate(); worker = new Worker('ai-worker.js', { type: 'module' }); worker.onmessage = onMsg; pending.clear();
+          st.device = 'wasm'; st.support.coach = false; st.support.mb = MB.wasm; lastProg = Date.now();
+          r = await send({ type: 'init', device: 'wasm', f16: false });
+        }
         st.info = r.info; st.loadMs = performance.now() - t0;
         localStorage.setItem(LOADED, '1');
-        st.state = 'ready'; st.pct = 100; emit();
+        clearInterval(stall); st.state = 'ready'; st.pct = 100; emit();
       } catch (err) {
-        st.state = 'error'; st.msg = String(err.message || err); initP = null;
+        clearInterval(stall); st.state = 'error'; st.msg = String(err.message || err); initP = null;
         if (worker) { worker.terminate(); worker = null; }
         emit(); throw err;
       }

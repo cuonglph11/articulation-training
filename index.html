@@ -6,13 +6,17 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-CT2DMSHW4N');
+  gtag('config', 'G-CT2DMSHW4N', { app_name: 'TalkFit' });
 </script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#0d1020" />
-<meta name="description" content="Luyện phát âm & nói rõ ý bằng tiếng Việt / English. AI chấm điểm chạy ngay trên trình duyệt, không gửi giọng nói lên server." />
-<title>Articulation Trainer · Luyện phát âm</title>
+<meta name="description" content="TalkFit: luyện phát âm & nói rõ ý bằng tiếng Việt / English. AI chấm điểm chạy ngay trên trình duyệt, không gửi giọng nói lên server." />
+<title>TalkFit – Luyện nói rõ mỗi ngày</title>
+<meta property="og:title" content="TalkFit – Luyện nói rõ mỗi ngày" />
+<meta property="og:description" content="Luyện phát âm và nói rõ ý bằng tiếng Việt / English. AI chấm điểm chạy ngay trên trình duyệt, không gửi giọng nói lên server." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://cuonglph11.github.io/articulation-training/" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗣️</text></svg>">
 <style>
 :root{--bg:#0d1020;--panel:#151a30;--panel2:#1c2240;--line:#2a3158;--text:#e8ebff;--muted:#9aa1c8;--acc:#7c5cff;--acc2:#22d3ee;--ok:#22c55e;--near:#f59e0b;--tone:#c084fc;--bad:#f43f5e;--r:16px}
@@ -248,7 +252,7 @@ nav.tabs button,.seg button{min-height:42px}
 <body>
 <div class="wrap" id="app"></div>
 <div id="toast"></div>
-<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Articulation Trainer"></div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="TalkFit"></div>
 <script src="ai.js"></script>
 <script>
 'use strict';
@@ -264,7 +268,7 @@ const ROUNDS = 10;
 /* ============================== i18n ============================== */
 const I18N = {
   vi: {
-    appName: 'Articulation Training', tagline: 'Luyện nói rõ ý · Tiếng Anh & Tiếng Việt',
+    appName: 'TalkFit', tagline: 'Luyện nói rõ mỗi ngày · Tiếng Anh & Tiếng Việt',
     practiceLang: 'Ngôn ngữ luyện', uiLang: 'Ngôn ngữ giao diện',
     tab_warmup: '🔥 Khởi động', tab_twister: '🌀 Câu xoắn lưỡi', tab_pairs: '🎯 Cặp âm dễ nhầm', tab_read: '📖 Đọc to', tab_progress: '📈 Tiến độ',
     lvl0: 'Tất cả', lvl1: 'Dễ', lvl2: 'Vừa', lvl3: 'Khó', random: 'Ngẫu nhiên',
@@ -306,7 +310,7 @@ const I18N = {
     tab_today: '⭐ Hôm nay', tab_minute: '⏱ Nói 1 phút', tab_prep: '🧱 Cấu trúc ý', tab_eli5: '🧒 Giải thích đơn giản', tab_review: '🎥 Quay & xem lại', tab_voice: '🗣 Phát âm',
     sk_clarity: 'Rõ ràng', sk_structure: 'Cấu trúc', sk_conciseness: 'Ngắn gọn', sk_fluency: 'Trôi chảy',
     skd_clarity: 'Tốc độ vừa phải, máy nghe rõ, không lạm dụng thuật ngữ', skd_structure: 'Có quan điểm, lý do, ví dụ, kết luận', skd_conciseness: 'Đúng thời lượng, không lặp ý', skd_fluency: 'Ít từ đệm (ừm, à, kiểu…), ít ngắt quãng dài',
-    whatIs: 'Articulation Training là luyện biến suy nghĩ trong đầu thành lời nói rõ ràng, mạch lạc, có cấu trúc và dễ hiểu. Gợi ý: luyện 15 phút mỗi ngày.',
+    whatIs: 'Luyện articulation (nói rõ ràng) là luyện biến suy nghĩ trong đầu thành lời nói rõ ràng, mạch lạc, có cấu trúc và dễ hiểu. Gợi ý: luyện 15 phút mỗi ngày.',
     before: 'Trước khi luyện', after: 'Sau khi luyện',
     beforeEx: '“Mình nghĩ AI sẽ ảnh hưởng đến ngành software engineering, vì hiện tại AI code khá tốt rồi, nhưng mà mình nghĩ vẫn còn nhiều vấn đề, ví dụ như chất lượng code, rồi maintainability…”',
     afterEx: '“Mình nghĩ AI sẽ thay đổi ngành software engineering theo hai hướng. Thứ nhất, chi phí viết code sẽ giảm đáng kể. Thứ hai, vai trò của kỹ sư sẽ dịch chuyển từ người viết code sang người thiết kế giải pháp và kiểm soát chất lượng.”',
@@ -370,7 +374,7 @@ const I18N = {
     leadTitle: '📧 Gửi kết quả về email', leadDesc: 'Nhận bản tóm tắt buổi luyện này trong hộp thư để xem lại.', leadEmail: 'Email', leadName: 'Tên (không bắt buộc)', leadPhone: 'SĐT (không bắt buộc)',
     leadConsent: 'Tôi đồng ý nhận kết quả và gợi ý luyện nói qua email. Có thể huỷ bất cứ lúc nào.', leadSend: 'Gửi kết quả', leadSending: 'Đang gửi…',
     leadOk: '✅ Đã gửi! Kiểm tra hộp thư (cả mục Spam).', leadQueued: '✅ Đã lưu. Kết quả sẽ được gửi sau.', leadInvalid: 'Email chưa hợp lệ.', leadRate: 'Bạn đã gửi nhiều lần hôm nay, thử lại ngày mai nhé.', leadErr: 'Không gửi được, thử lại sau.',
-    leadSum: 'Kết quả luyện nói', analyticsNote: ' Thống kê truy cập ẩn danh qua Google Analytics (không gồm giọng nói, email).',
+    leadSum: 'TalkFit – Kết quả luyện nói', analyticsNote: ' Thống kê truy cập ẩn danh qua Google Analytics (không gồm giọng nói, email).',
 
     privacyAI: 'Tiến độ chỉ lưu trên trình duyệt của bạn. AI on-device đang bật: giọng nói được xử lý trên máy, không gửi đi đâu.',
     obH1: 'Chào mừng! Luyện nói rõ ràng trong 3 bước', obS1: 'Chọn bài', obS1d: 'Hôm nay / Câu xoắn lưỡi / Cặp âm dễ nhầm / Đọc to.',
@@ -383,7 +387,7 @@ const I18N = {
     camOff: 'Không mở được camera — chuyển sang chỉ ghi âm.', noWeakVoice: 'Mục này theo dõi các bài luyện phát âm (tab 🗣 Phát âm).'
   },
   en: {
-    appName: 'Articulation Training', tagline: 'Say what you mean, clearly · English & Vietnamese',
+    appName: 'TalkFit', tagline: 'Speak clearly, every day · English & Vietnamese',
     practiceLang: 'Practice language', uiLang: 'Interface language',
     tab_warmup: '🔥 Warm-up', tab_twister: '🌀 Tongue twisters', tab_pairs: '🎯 Minimal pairs', tab_read: '📖 Read aloud', tab_progress: '📈 Progress',
     lvl0: 'All', lvl1: 'Easy', lvl2: 'Medium', lvl3: 'Hard', random: 'Random',
@@ -489,7 +493,7 @@ const I18N = {
     leadTitle: '📧 Email me this result', leadDesc: 'Get a summary of this session in your inbox to review later.', leadEmail: 'Email', leadName: 'Name (optional)', leadPhone: 'Phone (optional)',
     leadConsent: 'I agree to receive my results and speaking tips by email. Unsubscribe anytime.', leadSend: 'Send result', leadSending: 'Sending…',
     leadOk: '✅ Sent! Check your inbox (and Spam).', leadQueued: '✅ Saved. Your result will be sent later.', leadInvalid: 'Please enter a valid email.', leadRate: 'Too many requests today, try again tomorrow.', leadErr: 'Could not send, please try later.',
-    leadSum: 'Speaking practice result', analyticsNote: ' Anonymous visit stats via Google Analytics (never your voice or email).',
+    leadSum: 'TalkFit – Speaking practice result', analyticsNote: ' Anonymous visit stats via Google Analytics (never your voice or email).',
 
     privacyAI: 'Progress is stored only in your browser. On-device AI is on: your voice is processed locally and sent nowhere.',
     obH1: 'Welcome! Speak clearly in 3 steps', obS1: 'Pick an exercise', obS1d: 'Today / Tongue twisters / Sound pairs / Read aloud.',
@@ -940,7 +944,7 @@ function srErrMsg(r) {
 const TABS = ['today', 'minute', 'prep', 'eli5', 'review', 'voice', 'progress'];
 function render() {
   document.documentElement.lang = S.ui;
-  document.title = t('appName') + ' · Articulation';
+  document.title = S.ui === 'vi' ? 'TalkFit – Luyện nói rõ mỗi ngày' : 'TalkFit – Speak clearly, every day';
   $('#app').innerHTML = `
   <header>
     <div class="brand"><div class="logo">🗣️</div><div><div>${t('appName')}</div><div class="sub">${t('tagline')}</div></div></div>
@@ -1678,7 +1682,7 @@ document.addEventListener('keydown', e => {
 /* ============================== on-device AI: UI + coach ============================== */
 const OB_KEY = 'artic.onboard';
 function modal(html) { const m = $('#modal'); m.innerHTML = `<div class="sheet">${html}</div>`; m.classList.remove('hidden'); const b = m.querySelector('button'); b && b.focus(); }
-function closeModal() { $('#modal').classList.add('hidden'); $('#modal').innerHTML = ''; }
+function closeModal() { if ($('#modal .ob')) obDone(); $('#modal').classList.add('hidden'); $('#modal').innerHTML = ''; }
 const modalOpen = () => !$('#modal').classList.contains('hidden');
 function aiMB() { return (AI.st.support && AI.st.support.mb) || 700; }
 function updateChip() {
@@ -1703,12 +1707,12 @@ function aiSheetHTML() {
 }
 async function openAI() { await AI.detect(); modal(aiSheetHTML()); }
 function openOB(step) {
-  if (step === 0) modal(`<h2>${t('obH1')}</h2><ol>
+  if (step === 0) modal(`<div class="ob"><button class="btn sm ghost x" data-act="obSkip" aria-label="✕ ${t('aiClose')}">✕</button></div><h2>${t('obH1')}</h2><ol>
     <li><b class="n">1</b><div><b>${t('obS1')}</b><br><small>${t('obS1d')}</small></div></li>
     <li><b class="n">2</b><div><b>${t('obS2')}</b><br><small>${t('obS2d')}</small></div></li>
     <li><b class="n">3</b><div><b>${t('obS3')}</b><br><small>${t('obS3d')}</small></div></li></ol>
     <div class="controls"><button class="btn primary" data-act="obNext">${t('obNext')} →</button></div><div class="steps-dots"><i class="on"></i><i></i></div>`);
-  else AI.detect().then(() => modal(`<h2>${t('obH2')}</h2><p>${t('obDefault', { mb: aiMB() })}</p><div class="warn">${t('aiWeak')}</div>
+  else AI.detect().then(() => modal(`<div class="ob"><button class="btn sm ghost x" data-act="obSkip" aria-label="✕ ${t('aiClose')}">✕</button></div><h2>${t('obH2')}</h2><p>${t('obDefault', { mb: aiMB() })}</p><div class="warn">${t('aiWeak')}</div>
     <div class="controls"><button class="btn primary" data-act="obAI">${t('obAIyes')}</button><button class="btn" data-act="obSkip">${t('obAIno')}</button></div><div class="steps-dots"><i></i><i class="on"></i></div>`));
 }
 function obDone() { localStorage.setItem(OB_KEY, '1'); }
