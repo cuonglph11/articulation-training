@@ -8,6 +8,7 @@ env.useBrowserCache = true;
 if (env.backends && env.backends.onnx) env.backends.onnx.logSeverityLevel = 4; // silence ORT warnings (they show up as console errors)
 
 const ASR_MODEL = 'onnx-community/whisper-base';
+const ASR_TINY = 'onnx-community/whisper-tiny'; // ~40 MB q8: used on iPhone/iPad (tab memory limit)
 const LLM_MODEL = 'onnx-community/Qwen3-0.6B-ONNX';
 
 let asr = null, llm = null, cfg = null;
@@ -22,9 +23,9 @@ function progressFor(stage) {
 
 async function init(c) {
   cfg = c;
-  const gpu = c.device === 'webgpu';
+  const gpu = c.device === 'webgpu' && !c.light;
   if (!asr) {
-    asr = await pipeline('automatic-speech-recognition', ASR_MODEL, {
+    asr = await pipeline('automatic-speech-recognition', c.light ? ASR_TINY : ASR_MODEL, {
       device: gpu ? 'webgpu' : 'wasm',
       dtype: gpu ? { encoder_model: 'fp32', decoder_model_merged: 'q4' } : { encoder_model: 'q8', decoder_model_merged: 'q8' },
       session_options: { logSeverityLevel: 4 }, progress_callback: progressFor('asr'),

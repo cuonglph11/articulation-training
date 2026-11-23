@@ -3,15 +3,20 @@
 (function () {
   const KEY = 'artic.ai';           // '1' once the user switched AI on
   const LOADED = 'artic.ai.loaded'; // models have been downloaded at least once
-  const MB = { coach: 780, gpu: 210, wasm: 80 }; // approx. first-run download (Whisper [+ Qwen3 coach])
+  const BUSY = 'artic.ai.busy';   // set while models load; still set on next start => tab was killed (out of memory)
+  const MB = { coach: 780, gpu: 210, wasm: 80, tiny: 45 };
+  // iPhone/iPad Safari kills tabs at ~1 GB: never WebGPU/LLM there, tiny Whisper only, never auto-start
+  const LIGHT = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  const crashed = localStorage.getItem(BUSY) === '1';
+  if (crashed) { localStorage.removeItem(BUSY); localStorage.removeItem(KEY); } // approx. first-run download (Whisper [+ Qwen3 coach])
   const listeners = [];
   let worker = null, seq = 0, initP = null, stall = null, lastProg = 0;
   const pending = new Map();
   const files = {};                 // file -> {loaded,total}
   const st = {
-    enabled: localStorage.getItem(KEY) === '1',
-    state: 'off',                   // off | loading | ready | error | unsupported
-    pct: 0, msg: '', device: null, f16: false, support: null, info: null, loadMs: 0,
+    enabled: !LIGHT && localStorage.getItem(KEY) === '1',
+    state: crashed ? 'error' : 'off',                   // off | loading | ready | error | unsupported
+    pct: 0, msg: crashed ? 'CRASH: the previous model load ran out of memory and the tab was closed by the browser' : '', light: LIGHT, device: null, f16: false, support: null, info: null, loadMs: 0,
   };
   const emit = () => listeners.forEach(f => { try { f(st); } catch { } });
 
@@ -19,10 +24,10 @@
     if (st.support) return st.support;
     let webgpu = false, f16 = false;
     try {
-      if (navigator.gpu) { const a = await navigator.gpu.requestAdapter(); if (a) { webgpu = true; f16 = a.features.has('shader-f16'); } }
+      if (!LIGHT && navigator.gpu) { const a = await navigator.gpu.requestAdapter(); if (a) { webgpu = true; f16 = a.features.has('shader-f16'); } }
     } catch { }
     const wasm = typeof WebAssembly === 'object' && typeof Worker !== 'undefined';
-    st.support = { webgpu, f16, wasm, coach: webgpu && f16, mb: webgpu && f16 ? MB.coach : webgpu ? MB.gpu : MB.wasm };
+    st.support = { webgpu, f16, wasm, coach: webgpu && f16, light: LIGHT, mb: LIGHT ? MB.tiny : webgpu && f16 ? MB.coach : webgpu ? MB.gpu : MB.wasm };
     st.device = webgpu ? 'webgpu' : wasm ? 'wasm' : null;
     st.f16 = f16;
     return st.support;
@@ -54,11 +59,12 @@
 
   async function enable() {
     if (initP) return initP;
-    localStorage.setItem(KEY, '1'); st.enabled = true;
+    if (!LIGHT) localStorage.setItem(KEY, '1'); st.enabled = true;
     initP = (async () => {
       const sup = await detect();
       if (!sup.wasm) { st.state = 'unsupported'; emit(); throw new Error('unsupported'); }
       st.state = 'loading'; st.pct = 0; st.msg = ''; emit();
+      localStorage.setItem(BUSY, '1');
       const t0 = performance.now();
       try {
         worker = new Worker('ai-worker.js', { type: 'module' });
@@ -68,7 +74,7 @@
         lastProg = Date.now();
         if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => { });
         let r;
-        try { r = await send({ type: 'init', device: st.device, f16: sup.f16 }); }
+        try { r = await send({ type: 'init', device: st.device, f16: sup.f16, light: LIGHT }); }
         catch (e1) {
           if (st.device !== 'webgpu') throw e1;
           // WebGPU present but failing (e.g. Safari/older drivers): retry on WASM instead of giving up
@@ -78,10 +84,10 @@
           r = await send({ type: 'init', device: 'wasm', f16: false });
         }
         st.info = r.info; st.loadMs = performance.now() - t0;
-        localStorage.setItem(LOADED, '1');
+        localStorage.setItem(LOADED, '1'); localStorage.removeItem(BUSY);
         clearInterval(stall); st.state = 'ready'; st.pct = 100; emit();
       } catch (err) {
-        clearInterval(stall); st.state = 'error'; st.msg = String(err.message || err); initP = null;
+        clearInterval(stall); localStorage.removeItem(BUSY); st.state = 'error'; st.msg = String(err.message || err); initP = null;
         if (worker) { worker.terminate(); worker = null; }
         emit(); throw err;
       }
@@ -90,7 +96,7 @@
   }
 
   function disable() {
-    localStorage.removeItem(KEY); st.enabled = false; st.state = 'off'; st.pct = 0; initP = null;
+    localStorage.removeItem(KEY); localStorage.removeItem(BUSY); st.enabled = false; st.state = 'off'; st.pct = 0; initP = null;
     if (worker) { worker.terminate(); worker = null; }
     pending.forEach(p => p.reject(new Error('aborted'))); pending.clear();
     emit();

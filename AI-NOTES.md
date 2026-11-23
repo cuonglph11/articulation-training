@@ -11,3 +11,6 @@ All AI runs **in the user's browser** (static site, no backend). Voice never lea
 Findings (Chrome 158, Apple GPU): Qwen2.5-0.5B-Instruct was incoherent on WebGPU (q4/q4f16/fp16) and Qwen3-0.6B on WASM was slow and rambled, so the AI feedback box is shown only when WebGPU+f16 is available. Without it, Whisper still replaces the browser (Google/Apple) speech recognition and the per-word scoring/tips work as before.
 
 Files: `ai.js` (client, capability detection, progress, API), `ai-worker.js` (module worker, models). Switching AI off never loads the library.
+
+## iPhone/iPad (CHRI-285)
+Safari kills tabs over ~1 GB ("A problem repeatedly occurred"). On iOS/iPadOS (and devices with deviceMemory ≤ 2) `ai.js` forces "light" mode: no WebGPU, no Qwen coach, `whisper-tiny` q8 on WASM (≈45 MB), never auto-enabled from localStorage. Models load only after the user taps the AI button. A `artic.ai.busy` flag is set during load; if it is still set on next start the tab was killed, so AI is turned off with an explanatory error instead of crash-looping. On any init error the app falls back to browser speech recognition / copy-prompt.
