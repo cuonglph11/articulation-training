@@ -11,10 +11,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#0d1020" />
-<meta name="description" content="TalkFit: luyện phát âm & nói rõ ý bằng tiếng Việt / English. Nói xong là có điểm và nhận xét ngay, miễn phí." />
-<title>TalkFit – Luyện nói rõ mỗi ngày</title>
-<meta property="og:title" content="TalkFit – Luyện nói rõ mỗi ngày" />
-<meta property="og:description" content="Luyện phát âm và nói rõ ý bằng tiếng Việt / English. Nói xong là có điểm và nhận xét ngay, miễn phí." />
+<meta name="description" content="TalkFit: luyện kỹ năng nói bằng tiếng Việt / English. Giải thích đơn giản, cấu trúc ý rõ ràng, có AI nhận xét ngay sau khi bạn nói." />
+<title>TalkFit – Luyện kỹ năng nói mỗi ngày</title>
+<meta property="og:title" content="TalkFit – Luyện kỹ năng nói mỗi ngày" />
+<meta property="og:description" content="Luyện kỹ năng nói: giải thích đơn giản, cấu trúc ý rõ ràng, có AI nhận xét ngay. Miễn phí." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://cuonglph11.github.io/articulation-training/" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗣️</text></svg>">
@@ -197,6 +197,11 @@ video.play{width:100%;max-width:420px;border-radius:14px;background:#000;display
 nav.tabs button,.seg button{min-height:42px}
 .seg.sm button{min-height:34px}
 .practice .controls .btn.primary,.practice .controls .btn.rec,#talkBtn{min-height:58px;font-size:18px;padding:12px 26px;border-radius:14px}
+.hero{margin:6px 0 12px;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(56,189,248,.10))}
+.hero h1{margin:0 0 4px;font-size:20px}.hero p{margin:0 0 10px;color:var(--muted,#aab3d1);font-size:14px}
+.hero .hb{display:flex;gap:8px;flex-wrap:wrap}.hero .hb button{min-height:40px}
+nav.tabs button[data-v=voice]{opacity:.7;font-weight:600}
+@media(max-width:600px){.hero{padding:10px 12px;margin:4px 0 8px}.hero h1{font-size:17px}.hero p{font-size:13px;margin:0}.hero .hb{display:none}}
 .aichip{display:inline-flex;align-items:center;gap:7px;min-height:42px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:7px 14px;font:inherit;font-weight:700;cursor:pointer;font-size:14px}
 .aichip i{width:9px;height:9px;border-radius:50%;background:#64708f;display:inline-block}
 .aichip.ready i{background:var(--ok);box-shadow:0 0 8px var(--ok)}
@@ -279,7 +284,8 @@ const ROUNDS = 10;
 /* ============================== i18n ============================== */
 const I18N = {
   vi: {
-    appName: 'TalkFit', tagline: 'Luyện nói rõ mỗi ngày · Tiếng Anh & Tiếng Việt',
+    appName: 'TalkFit', tagline: 'Luyện kỹ năng nói mỗi ngày · Tiếng Anh & Tiếng Việt',
+    heroT: 'Luyện kỹ năng nói', heroD: 'Giải thích điều phức tạp thật đơn giản và sắp xếp ý rõ ràng. Nói xong là có điểm và nhận xét ngay.', whatT: 'Luyện nói hiệu quả thế nào?',
     practiceLang: 'Ngôn ngữ luyện', uiLang: 'Ngôn ngữ giao diện',
     tab_warmup: '🔥 Khởi động', tab_twister: '🌀 Câu xoắn lưỡi', tab_pairs: '🎯 Cặp âm dễ nhầm', tab_read: '📖 Đọc to', tab_progress: '📈 Tiến độ',
     lvl0: 'Tất cả', lvl1: 'Dễ', lvl2: 'Vừa', lvl3: 'Khó', random: 'Ngẫu nhiên',
@@ -321,7 +327,7 @@ const I18N = {
     tab_today: '⭐ Hôm nay', tab_minute: '⏱ Nói 1 phút', tab_prep: '🧱 Cấu trúc ý', tab_eli5: '🧒 Giải thích đơn giản', tab_review: '🎥 Quay & xem lại', tab_voice: '🗣 Phát âm',
     sk_clarity: 'Rõ ràng', sk_structure: 'Cấu trúc', sk_conciseness: 'Ngắn gọn', sk_fluency: 'Trôi chảy',
     skd_clarity: 'Tốc độ vừa phải, máy nghe rõ, không lạm dụng thuật ngữ', skd_structure: 'Có quan điểm, lý do, ví dụ, kết luận', skd_conciseness: 'Đúng thời lượng, không lặp ý', skd_fluency: 'Ít từ đệm (ừm, à, kiểu…), ít ngắt quãng dài',
-    whatIs: 'Luyện articulation (nói rõ ràng) là luyện biến suy nghĩ trong đầu thành lời nói rõ ràng, mạch lạc, có cấu trúc và dễ hiểu. Gợi ý: luyện 15 phút mỗi ngày.',
+    whatIs: 'Luyện nói là biến suy nghĩ trong đầu thành lời rõ ràng, mạch lạc, có cấu trúc và dễ hiểu. Hãy bắt đầu với Giải thích đơn giản và Cấu trúc ý. Gợi ý: luyện 15 phút mỗi ngày.',
     before: 'Trước khi luyện', after: 'Sau khi luyện',
     beforeEx: '“Mình nghĩ AI sẽ ảnh hưởng đến ngành software engineering, vì hiện tại AI code khá tốt rồi, nhưng mà mình nghĩ vẫn còn nhiều vấn đề, ví dụ như chất lượng code, rồi maintainability…”',
     afterEx: '“Mình nghĩ AI sẽ thay đổi ngành software engineering theo hai hướng. Thứ nhất, chi phí viết code sẽ giảm đáng kể. Thứ hai, vai trò của kỹ sư sẽ dịch chuyển từ người viết code sang người thiết kế giải pháp và kiểm soát chất lượng.”',
@@ -389,7 +395,7 @@ const I18N = {
     leadSum: 'TalkFit – Kết quả luyện nói', analyticsNote: ' Thống kê truy cập ẩn danh qua Google Analytics (không gồm giọng nói, email).',
 
     privacyAI: 'Giọng nói của bạn không rời khỏi máy.',
-    obH1: 'Chào mừng! Luyện nói rõ ràng trong 3 bước', obS1: 'Chọn bài', obS1d: 'Hôm nay / Câu xoắn lưỡi / Cặp âm dễ nhầm / Đọc to.',
+    obH1: 'Chào mừng! Luyện kỹ năng nói trong 3 bước', obS1: 'Chọn bài', obS1d: 'Giải thích đơn giản · Cấu trúc ý · Nói 1 phút. Muốn luyện âm thì có mục Phát âm.',
     obS2: 'Bấm 🎙 và nói', obS2d: 'Nghe mẫu trước, rồi ghi âm. Bấm lại để dừng và chấm.', obS3: 'Xem điểm & sửa', obS3d: 'Từ đúng màu xanh, từ sai màu đỏ. Nghe lại giọng mình và luyện lại.',
     obNext: 'Tiếp tục',
     aiPromptPractice: 'Tôi đang luyện phát âm ({lang}). Câu mẫu: “{target}”\nMáy nhận diện giọng tôi là: “{heard}”\nĐộ chính xác ước tính: {score}%.\n\nHãy chấm phát âm của tôi trên thang 100, chỉ ra từng từ sai hoặc thiếu, giải thích cách đặt lưỡi / môi / hơi (và thanh điệu nếu là tiếng Việt) để sửa, rồi cho tôi 3 bài tập ngắn. Lưu ý: bạn chỉ thấy văn bản do máy nhận diện, hãy nói rõ chỗ nào chưa chắc chắn.',
@@ -398,7 +404,8 @@ const I18N = {
     camOff: 'Không mở được camera — chuyển sang chỉ ghi âm.', noWeakVoice: 'Mục này theo dõi các bài luyện phát âm (tab 🗣 Phát âm).'
   },
   en: {
-    appName: 'TalkFit', tagline: 'Speak clearly, every day · English & Vietnamese',
+    appName: 'TalkFit', tagline: 'Train your speaking skills every day · English & Vietnamese',
+    heroT: 'Train your speaking skills', heroD: 'Explain complex things simply and structure your ideas clearly. Speak, then get a score and feedback right away.', whatT: 'How does speaking practice work?',
     practiceLang: 'Practice language', uiLang: 'Interface language',
     tab_warmup: '🔥 Warm-up', tab_twister: '🌀 Tongue twisters', tab_pairs: '🎯 Minimal pairs', tab_read: '📖 Read aloud', tab_progress: '📈 Progress',
     lvl0: 'All', lvl1: 'Easy', lvl2: 'Medium', lvl3: 'Hard', random: 'Random',
@@ -440,7 +447,7 @@ const I18N = {
     tab_today: '⭐ Today', tab_minute: '⏱ 1-minute talk', tab_prep: '🧱 Structure', tab_eli5: '🧒 Explain simply', tab_review: '🎥 Record & review', tab_voice: '🗣 Pronunciation',
     sk_clarity: 'Clarity', sk_structure: 'Structure', sk_conciseness: 'Conciseness', sk_fluency: 'Fluency',
     skd_clarity: 'Steady pace, clearly recognised, little jargon', skd_structure: 'Point, reason, example, conclusion', skd_conciseness: 'On time, no repeated ideas', skd_fluency: 'Few fillers (um, like…), few long pauses',
-    whatIs: 'Articulation training turns the thoughts in your head into speech that is clear, coherent, structured and easy to follow. Aim for 15 minutes a day.',
+    whatIs: 'Speaking practice turns the thoughts in your head into speech that is clear, coherent, structured and easy to follow. Start with Explain simply and Structure. Aim for 15 minutes a day.',
     before: 'Before training', after: 'After training',
     beforeEx: '“I think AI will affect software engineering, because AI writes pretty good code now, but I think there are still a lot of problems, like code quality, and maintainability…”',
     afterEx: '“I think AI will change software engineering in two ways. First, the cost of writing code will drop sharply. Second, engineers will shift from writing code to designing solutions and controlling quality.”',
@@ -508,7 +515,7 @@ const I18N = {
     leadSum: 'TalkFit – Speaking practice result', analyticsNote: ' Anonymous visit stats via Google Analytics (never your voice or email).',
 
     privacyAI: 'Your voice never leaves your device.',
-    obH1: 'Welcome! Speak clearly in 3 steps', obS1: 'Pick an exercise', obS1d: 'Today / Tongue twisters / Sound pairs / Read aloud.',
+    obH1: 'Welcome! Train your speaking in 3 steps', obS1: 'Pick an exercise', obS1d: 'Explain simply · Structure · 1-minute talk. Pronunciation drills have their own tab.',
     obS2: 'Tap 🎙 and speak', obS2d: 'Listen to the example first, then record. Tap again to stop and score.', obS3: 'See score & fix', obS3d: 'Correct words turn green, wrong ones red. Replay yourself and try again.',
     obNext: 'Continue',
     aiPromptPractice: 'I am practising pronunciation ({lang}). Target sentence: “{target}”\nA speech recogniser heard me say: “{heard}”\nEstimated accuracy: {score}%.\n\nScore my pronunciation out of 100, point out each wrong or missing word, explain how to place the tongue / lips / breath (and tones for Vietnamese) to fix it, then give me 3 short drills. Note: you only see recogniser text, so say where you are unsure.',
@@ -710,7 +717,7 @@ const PREP_LABEL = { point: 'pPoint', reason: 'pReason', example: 'pExample', co
 /* ============================== state & storage ============================== */
 const DEBUG = /[?&]debug=1/.test(location.search); // technical AI panel/chip only with ?debug=1
 function loadJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }
-const S = Object.assign({ lang: 'en', ui: 'vi', tab: 'today', vtab: 'twister', mi: { en: 0, vi: 0 }, pi: { en: 0, vi: 0 }, ei: { en: 0, vi: 0 }, level: 0, rate: 0.9, bpm: 90, repeat: false, speakGuide: true, tw: { en: 0, vi: 0 }, rd: { en: 0, vi: 0 }, custom: { en: '', vi: '' } }, loadJSON(SET_KEY, {}));
+const S = Object.assign({ lang: 'en', ui: 'vi', tab: 'eli5', vtab: 'twister', mi: { en: 0, vi: 0 }, pi: { en: 0, vi: 0 }, ei: { en: 0, vi: 0 }, level: 0, rate: 0.9, bpm: 90, repeat: false, speakGuide: true, tw: { en: 0, vi: 0 }, rd: { en: 0, vi: 0 }, custom: { en: '', vi: '' } }, loadJSON(SET_KEY, {}));
 S.metro = false; S.editCustom = false; S.topicOverride = {};
 if (['warmup', 'twister', 'pairs', 'read'].includes(S.tab)) { S.vtab = S.tab; S.tab = 'voice'; }
 if (!['today', 'minute', 'prep', 'eli5', 'review', 'voice', 'progress'].includes(S.tab)) S.tab = 'today';
@@ -953,7 +960,7 @@ function srErrMsg(r) {
 }
 
 /* ============================== rendering ============================== */
-const TABS = ['today', 'minute', 'prep', 'eli5', 'review', 'voice', 'progress'];
+const TABS = ['eli5', 'prep', 'today', 'minute', 'review', 'progress', 'voice']; // core speaking skills first, pronunciation last
 function render() {
   document.documentElement.lang = S.ui;
   document.title = S.ui === 'vi' ? 'TalkFit – Luyện nói rõ mỗi ngày' : 'TalkFit – Speak clearly, every day';
@@ -970,6 +977,7 @@ function render() {
       <button class="iconbtn" data-act="help" aria-label="? ${t('helpBtn')}" title="${t('helpBtn')}">?</button>
     </div>
   </header>
+  <section class="hero"><h1>${t('heroT')}</h1><p>${t('heroD')}</p><div class="hb"><button class="btn primary" data-act="tab" data-v="eli5">${t('tab_eli5')}</button><button class="btn" data-act="tab" data-v="prep">${t('tab_prep')}</button></div></section>
   <div id="notices"></div>
   <nav class="tabs">${TABS.map(k => `<button data-act="tab" data-v="${k}" class="${S.tab === k ? 'on' : ''}">${t('tab_' + k)}</button>`).join('')}</nav>
   <main id="main"></main>
@@ -1566,7 +1574,7 @@ function renderToday() {
   const topic = L.claims[D.idx]; const key = 'daily:' + S.lang + ':' + topic;
   const hist = store.get().history;
   const doneToday = hist.some(h => h.mode === 'daily' && dayKey(h.t) === dayKey(Date.now()));
-  const intro = `<details class="card" style="margin-bottom:12px" ${hist.length ? '' : 'open'}><summary style="cursor:pointer;font-weight:800">${S.ui === 'vi' ? 'Articulation Training là gì?' : 'What is articulation training?'}</summary><p>${t('whatIs')}</p>
+  const intro = `<details class="card" style="margin-bottom:12px" ${hist.length ? '' : 'open'}><summary style="cursor:pointer;font-weight:800">${t('whatT')}</summary><p>${t('whatIs')}</p>
     <div class="skills" style="margin:8px 0">${['clarity', 'structure', 'conciseness', 'fluency'].map(k => `<div class="skill"><div class="sk-h"><span>${t('sk_' + k)}</span></div><small>${t('skd_' + k)}</small></div>`).join('')}</div>
     <div class="ba"><div><b>😕 ${t('before')}</b>${t('beforeEx')}</div><div><b>✅ ${t('after')}</b>${t('afterEx')}</div></div></details>`;
   const steps = `<div class="steps">${[0, 1, 2].map(k => `<button data-act="dStep" data-v="${k}" class="${D.step === k ? 'on' : ''} ${D.step > k ? 'done' : ''}"><b>${t('step' + (k + 1))}</b><small>${t('min5')}</small></button>`).join('')}</div>`;
