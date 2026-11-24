@@ -256,6 +256,7 @@ nav.tabs button[data-v=voice]{opacity:.7;font-weight:600}
 .camshare{display:flex;align-items:flex-start;gap:10px;margin:10px 0;font-weight:650;font-size:14.5px;cursor:pointer}
 .camshare input{width:22px;height:22px;margin-top:2px;flex:none}
 .camshare small{display:block;color:var(--muted);font-weight:500;font-size:12.5px;margin-top:2px}
+.lead .leadnote{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
 .svbox{margin-top:16px;background:linear-gradient(135deg,#1b1745,#10304a);border:1px solid #4b46b8;border-radius:14px;padding:14px}
 .svbox h3{margin:0 0 4px;font-size:17px}.svbox p{margin:4px 0 10px;color:#cdd2f5;font-size:14.5px}
 .svprev{display:block;width:100%;max-width:300px;aspect-ratio:9/16;max-height:520px;margin:10px auto;border-radius:14px;background:#000}
@@ -392,7 +393,8 @@ const I18N = {
     leadTitle: '📧 Gửi kết quả về email', leadDesc: 'Nhận bản tóm tắt buổi luyện này trong hộp thư để xem lại.', leadEmail: 'Email', leadName: 'Tên (không bắt buộc)', leadPhone: 'SĐT (không bắt buộc)',
     leadConsent: 'Tôi đồng ý nhận kết quả và gợi ý luyện nói qua email. Có thể huỷ bất cứ lúc nào.', leadSend: 'Gửi kết quả', leadSending: 'Đang gửi…',
     leadOk: '✅ Đã gửi! Kiểm tra hộp thư (cả mục Spam).', leadQueued: '✅ Đã lưu. Kết quả sẽ được gửi sau.', leadInvalid: 'Email chưa hợp lệ.', leadRate: 'Bạn đã gửi nhiều lần hôm nay, thử lại ngày mai nhé.', leadErr: 'Không gửi được, thử lại sau.',
-    leadSum: 'TalkFit – Kết quả luyện nói', analyticsNote: ' Thống kê truy cập ẩn danh qua Google Analytics (không gồm giọng nói, email).',
+    leadSum: 'TalkFit – Kết quả luyện nói', leadStored: 'Email, tên, SĐT và tóm tắt buổi luyện được lưu để gửi kết quả cho bạn.',
+analyticsNote: ' Thống kê truy cập ẩn danh qua Google Analytics (không gồm giọng nói, email).',
 
     privacyAI: 'Giọng nói của bạn không rời khỏi máy.',
     obH1: 'Chào mừng! Luyện kỹ năng nói trong 3 bước', obS1: 'Chọn bài', obS1d: 'Giải thích đơn giản · Cấu trúc ý · Nói 1 phút. Muốn luyện âm thì có mục Phát âm.',
@@ -512,7 +514,8 @@ const I18N = {
     leadTitle: '📧 Email me this result', leadDesc: 'Get a summary of this session in your inbox to review later.', leadEmail: 'Email', leadName: 'Name (optional)', leadPhone: 'Phone (optional)',
     leadConsent: 'I agree to receive my results and speaking tips by email. Unsubscribe anytime.', leadSend: 'Send result', leadSending: 'Sending…',
     leadOk: '✅ Sent! Check your inbox (and Spam).', leadQueued: '✅ Saved. Your result will be sent later.', leadInvalid: 'Please enter a valid email.', leadRate: 'Too many requests today, try again tomorrow.', leadErr: 'Could not send, please try later.',
-    leadSum: 'TalkFit – Speaking practice result', analyticsNote: ' Anonymous visit stats via Google Analytics (never your voice or email).',
+    leadSum: 'TalkFit – Speaking practice result', leadStored: 'Your email, name, phone and a summary of this session are stored so we can send you the results.',
+analyticsNote: ' Anonymous visit stats via Google Analytics (never your voice or email).',
 
     privacyAI: 'Your voice never leaves your device.',
     obH1: 'Welcome! Train your speaking in 3 steps', obS1: 'Pick an exercise', obS1d: 'Explain simply · Structure · 1-minute talk. Pronunciation drills have their own tab.',
@@ -1800,7 +1803,8 @@ function leadHTML(summary, data) {
     <input id="hp" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
     <label class="chk"><input type="checkbox" name="consent"> <span>${t('leadConsent')}</span></label>
     <button class="btn primary" type="submit">${t('leadSend')}</button>
-    <div class="msg" role="status"></div></form>`;
+    <div class="msg" role="status"></div>
+    <p class="leadnote">${t('leadStored')}${t('analyticsNote')}</p></form>`;
 }
 async function submitLead(o) {
   const res = await fetch(LEADS_URL, {
