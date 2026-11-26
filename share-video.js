@@ -18,7 +18,7 @@
       camShare: 'Quay kèm camera để nhận video chia sẻ', camShareNote: 'Tuỳ chọn. Camera và mic chỉ xử lý trên máy bạn, không tải lên đâu cả.',
       title: '🎬 Video chia sẻ của bạn', desc: 'Dựng sẵn dạng dọc 9:16 từ chính phiên luyện này: phụ đề, điểm số, hiển thị rõ giao diện app. Dựng ngay trên máy bạn, không tải lên đâu cả.',
       make: '✨ Tạo video chia sẻ', busy: 'Đang dựng video…', rendered: 'Xong! {s}s · {f} · dựng trong {r}s', download: '⬇ Tải video', share: '📤 Chia sẻ', copy: '📋 Copy caption',
-      copied: 'Đã copy caption', err: 'Không dựng được video trên trình duyệt này. Thử Chrome hoặc Safari bản mới.', again: 'Dựng lại', capLabel: 'Caption gợi ý (đã kèm hashtag và link)',
+      copied: 'Đã copy caption', err: 'Không dựng được video trên trình duyệt này. Thử Chrome hoặc Safari bản mới.', again: 'Dựng lại', preview: 'Xem thử', capLabel: 'Caption gợi ý (đã kèm hashtag và link)',
       hook: 'Mình vừa luyện nói {d} với TalkFit', hook2: 'Xem điểm ở cuối video 👇', prompt: 'ĐỀ BÀI', score: 'Điểm TalkFit', try: 'Thử miễn phí', tag: 'Luyện nói rõ mỗi ngày', sec: '{n} giây', min: '{n} phút',
       cap: 'Mình vừa luyện nói {d} với TalkFit và được {sc}/100 điểm 🎤\nThử miễn phí, chạy ngay trên trình duyệt: {l}\n{h}', tags: '#TalkFit #luyennoi #giaotiep #thuyettrinh #noiruamoingay'
     },
@@ -26,7 +26,7 @@
       camShare: 'Record with camera to get a share video', camShareNote: 'Optional. Camera and mic are processed on your device only and never uploaded.',
       title: '🎬 Your share video', desc: 'A ready-made vertical 9:16 video of this session: captions, your score and the app on screen. Built on your device, never uploaded.',
       make: '✨ Create share video', busy: 'Building video…', rendered: 'Done! {s}s · {f} · built in {r}s', download: '⬇ Download', share: '📤 Share', copy: '📋 Copy caption',
-      copied: 'Caption copied', err: 'Could not build the video in this browser. Try a recent Chrome or Safari.', again: 'Rebuild', capLabel: 'Suggested caption (hashtags and link included)',
+      copied: 'Caption copied', err: 'Could not build the video in this browser. Try a recent Chrome or Safari.', again: 'Rebuild', preview: 'Preview', capLabel: 'Suggested caption (hashtags and link included)',
       hook: 'I just practised speaking for {d} with TalkFit', hook2: 'See my score at the end 👇', prompt: 'PROMPT', score: 'TalkFit score', try: 'Try it free', tag: 'Speak clearly, every day', sec: '{n} sec', min: '{n} min',
       cap: 'I just practised speaking for {d} with TalkFit and scored {sc}/100 🎤\nTry it free, runs right in your browser: {l}\n{h}', tags: '#TalkFit #publicspeaking #communicationskills #speakingpractice'
     }
@@ -188,7 +188,7 @@
   function loadVideo(url) {
     return new Promise((res, rej) => {
       const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = url; v.setAttribute('playsinline', '');
-      v.onerror = () => rej(new Error('video load')); v.onloadeddata = () => { v.onloadeddata = null; const done = () => res(v); v.onseeked = () => { v.onseeked = null; done(); }; try { v.currentTime = 0; } catch { done(); } setTimeout(done, 1500); };
+      const to = setTimeout(() => rej(new Error('video load timeout')), 8000); const res0 = res; res = x => { clearTimeout(to); res0(x); }; v.onerror = () => { clearTimeout(to); rej(new Error('video load')); }; v.onloadeddata = () => { v.onloadeddata = null; const done = () => res(v); v.onseeked = () => { v.onseeked = null; done(); }; try { v.currentTime = 0; } catch { done(); } setTimeout(done, 1500); };
     });
   }
   const makeCanvas = (scale) => { const c = document.createElement('canvas'); c.width = Math.round(W * scale); c.height = Math.round(H * scale); const ctx = c.getContext('2d'); ctx.scale(scale, scale); return { c, ctx }; };
@@ -277,29 +277,38 @@
 
   async function renderRealtime(job, onProg) {
     if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) throw new Error('no MediaRecorder');
-    const Ctx = window.AudioContext || window.webkitAudioContext, actx = new Ctx();
+    const Ctx = window.AudioContext || window.webkitAudioContext, actx = job.actx || new Ctx();   // job.actx is created inside the click handler (iOS only lets an AudioContext start from a user gesture)
     const buf = await decodeAudio(job.blob), D = Math.min(MAXMAIN, buf ? buf.duration : job.totalSec || 10), info = buildInfo(job, D), T = info.T;
     const url = URL.createObjectURL(job.blob);
     try {
       const vid = await loadVideo(url), scale = (window.matchMedia && matchMedia('(pointer:coarse)').matches) ? 2 / 3 : 1, { c, ctx } = makeCanvas(scale);
-      const dest = actx.createMediaStreamDestination(); let src = null;
-      if (buf) { src = actx.createBufferSource(); src.buffer = buf; src.connect(dest); }
+      const dest = actx.createMediaStreamDestination();
+      // one pre-mixed audio buffer covering the whole video (hook + voice + outro): normalised voice, quiet pad, ding
+      const sr = actx.sampleRate, pcm = new Float32Array(Math.ceil(T * sr)), off = Math.round(HOOK * sr);
+      if (buf) { const n = buf.numberOfChannels, len = Math.min(buf.length, Math.round(D * buf.sampleRate)); for (let ch = 0; ch < n; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < len; i++) { const j = off + Math.round(i * sr / buf.sampleRate); if (j < pcm.length) pcm[j] += d[i] / n; } } }
+      mixAudio(pcm, sr, off, D);
+      const abuf = actx.createBuffer(1, pcm.length, sr); abuf.copyToChannel(pcm, 0);
+      const src = actx.createBufferSource(); src.buffer = abuf; src.connect(dest);
       const stream = new MediaStream([...c.captureStream(FPS).getVideoTracks(), ...dest.stream.getAudioTracks()]);
       const cands = ['video/mp4;codecs=avc1.640033,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
       const mime = cands.find(m => MediaRecorder.isTypeSupported(m)) || '';
       const mr = new MediaRecorder(stream, { ...(mime ? { mimeType: mime } : {}), videoBitsPerSecond: Math.round(5e6 * scale * scale), audioBitsPerSecond: 96000 });
       const chunks = []; mr.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
       const stopped = new Promise(r => { mr.onstop = r; });
-      await actx.resume(); mr.start(250);
+      await Promise.race([actx.resume(), new Promise(r => setTimeout(r, 2000))]);
+      if (actx.state !== 'running') throw new Error('audio blocked');
+      mr.start(250); src.start();
       const t0 = performance.now(); let started = false;
-      await new Promise(resolve => {
+      await Promise.race([new Promise(resolve => {
         const loop = () => {
           const tk = (performance.now() - t0) / 1000; if (tk >= T) return resolve();
-          if (!started && tk >= HOOK) { started = true; vid.currentTime = 0; vid.play().catch(() => { }); if (src) src.start(); }
+          if (!started && tk >= HOOK) { started = true; vid.currentTime = 0; vid.play().catch(() => { }); }
           drawFrame(ctx, info, tk, vid); onProg(0.98 * tk / T); requestAnimationFrame(loop);
         }; loop();
-      });
-      vid.pause(); mr.stop(); await stopped; actx.close && actx.close();
+      }), new Promise((_, rej) => setTimeout(() => rej(new Error('recorder timeout')), (T + 20) * 1000))]);
+      vid.pause(); try { mr.stop(); } catch { }
+      await Promise.race([stopped, new Promise(r => setTimeout(r, 5000))]); actx.close && actx.close();
+      if (chunks.reduce((a, x) => a + x.size, 0) < 5000) throw new Error('empty recording');
       const type = (mr.mimeType || mime || 'video/webm').split(';')[0];
       return { blob: new Blob(chunks, { type }), mime: type, ext: type.includes('mp4') ? 'mp4' : 'webm', seconds: T, path: 'realtime', info };
     } finally { URL.revokeObjectURL(url); }
@@ -311,6 +320,24 @@
     catch (e) { console.warn('ShareVideo: WebCodecs path unavailable, using real-time recorder:', e && e.message); onProg(0); return renderRealtime(job, onProg); }
   }
 
+  /* Feature probe (never user-agent sniffing): the panel is only shown when this browser can really produce a video file. */
+  let support = 'unknown';
+  async function probe() {
+    try {
+      if (!document.createElement('canvas').getContext || !HTMLVideoElement.prototype.play || !(window.AudioContext || window.webkitAudioContext)) return 'no';
+      if (await pickCodecs(1)) return 'ok';
+      if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) return 'no';
+      // real-time path: record 0.6 s from a tiny canvas and require a non-empty file
+      const c = document.createElement('canvas'); c.width = 64; c.height = 64; const g = c.getContext('2d');
+      const mr = new MediaRecorder(c.captureStream(15)), ch = []; mr.ondataavailable = e => e.data.size && ch.push(e.data);
+      const done = new Promise(r => { mr.onstop = r; }); mr.start(100);
+      let n = 0; const iv = setInterval(() => { g.fillStyle = n++ % 2 ? '#fff' : '#000'; g.fillRect(0, 0, 64, 64); }, 40);
+      await new Promise(r => setTimeout(r, 700)); clearInterval(iv); mr.stop(); await Promise.race([done, new Promise(r => setTimeout(r, 2000))]);
+      return ch.reduce((a, x) => a + x.size, 0) > 0 ? 'ok' : 'no';
+    } catch { return 'no'; }
+  }
+  const probing = probe().then(r => { support = r; if (r === 'no') { if (typeof S !== 'undefined') S.camShare = false; document.querySelectorAll('.camshare, .svbox').forEach(e => e.remove()); } return r; });
+
   /* ------------------------------ UI ------------------------------ */
   function jobFrom(L) {
     const r = L.r, A = L.A;
@@ -318,28 +345,30 @@
   }
   function captionFor(L, info) { return tr('cap', { d: info ? info.dur : '', sc: L.A.overall, l: LINK + '?utm_source=user_video&utm_medium=social_share&utm_campaign=viral_loop&utm_content=caption', h: tr('tags') }); }
   function panelHTML(L) {
-    if (!L || !L.r || !L.r.isVideo || !L.r.url || !L.A || L.A.tooShort) return '';
+    if (support !== 'ok' || !L || !L.r || !L.r.isVideo || !L.r.url || !L.A || L.A.tooShort) return '';
     const o = L.sv || {};
     let body;
     if (o.busy) body = `<div class="pbar"><i id="svBar" style="width:${Math.round((o.p || 0) * 100)}%"></i></div><div class="kv" id="svMsg" role="status">${tr('busy')} ${Math.round((o.p || 0) * 100)}%</div>`;
     else if (o.url) body = `<div class="svmeta" role="status">✅ ${esc(tr('rendered', { s: Math.round(o.seconds), f: o.ext.toUpperCase(), r: (o.ms / 1000).toFixed(1) }))}</div>
-      <video class="svprev" controls playsinline src="${o.url}"></video>
+      <video class="svprev" id="svPrev" playsinline loop src="${o.url}"></video>
+      <div class="controls" style="justify-content:center"><button class="btn sm" data-sv="play">▶ ${tr('preview')}</button></div>
       <div class="controls"><button class="btn primary" data-sv="download">${tr('download')}</button>${o.canShare ? `<button class="btn" data-sv="share">${tr('share')}</button>` : ''}<button class="btn" data-sv="copy">${tr('copy')}</button><button class="btn ghost" data-sv="make">${tr('again')}</button></div>
       <label class="svcap">${tr('capLabel')}<textarea readonly rows="4" id="svCap">${esc(o.caption)}</textarea></label>`;
     else body = `<div class="controls"><button class="btn primary" data-sv="make">${tr('make')}</button></div>${o.err ? `<div class="notice err">${tr('err')}</div>` : ''}`;
     return `<div class="svbox" id="svbox"><h3>${tr('title')}</h3><p>${tr('desc')}</p>${body}</div>`;
   }
-  const camLabelHTML = () => `<label class="chk camshare"><input type="checkbox" id="camShare" ${typeof S !== 'undefined' && S.camShare ? 'checked' : ''}> <span>🎥 ${tr('camShare')}<small>${tr('camShareNote')}</small></span></label>`;
+  const camLabelHTML = () => support === 'no' ? '' : `<label class="chk camshare"><input type="checkbox" id="camShare" ${typeof S !== 'undefined' && S.camShare ? 'checked' : ''}> <span>🎥 ${tr('camShare')}<small>${tr('camShareNote')}</small></span></label>`;
 
   function refresh(L) { const el = document.getElementById('svbox'); if (el && L) el.outerHTML = panelHTML(L); }
   async function make() {
     const L = typeof curL === 'function' ? curL() : null; if (!L || !L.r || !L.r.url) return;
     if (L.sv && L.sv.busy) return;
     if (L.sv && L.sv.url) URL.revokeObjectURL(L.sv.url);
+    let actx = null; try { const Ctx = window.AudioContext || window.webkitAudioContext; actx = new Ctx(); actx.resume(); } catch { }
     L.sv = { busy: true, p: 0 }; refresh(L); track('share_video_start', { mode: L.cfg.kind, lang: L.lang });
     const t0 = performance.now();
     try {
-      const job = jobFrom(L); job.blob = await (await fetch(L.r.url)).blob();
+      const job = jobFrom(L); job.actx = actx; job.blob = await (await fetch(L.r.url)).blob();
       let lastP = 0;
       const out = await render(job, p => { L.sv.p = p; if (p - lastP < 0.02 && p < 1) return; lastP = p; const b = document.getElementById('svBar'), m = document.getElementById('svMsg'); if (b) b.style.width = Math.round(p * 100) + '%'; if (m) m.textContent = tr('busy') + ' ' + Math.round(p * 100) + '%'; });
       const ms = performance.now() - t0, file = new File([out.blob], 'talkfit-' + Date.now() + '.' + out.ext, { type: out.mime });
@@ -351,6 +380,7 @@
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-sv]'); if (!b) return; const L = typeof curL === 'function' ? curL() : null, a = b.dataset.sv;
     if (a === 'make') return make();
+    if (a === 'play') { const v = document.getElementById('svPrev'); if (v) { if (v.paused) { v.currentTime = 0; v.play().catch(() => { }); } else v.pause(); } return; }
     if (!L || !L.sv || !L.sv.blob) return;
     if (a === 'download') { const el = document.createElement('a'); el.href = L.sv.url; el.download = L.sv.file.name; document.body.appendChild(el); el.click(); el.remove(); track('share_video_download', { format: L.sv.ext }); }
     else if (a === 'share') { navigator.share({ files: [L.sv.file], text: L.sv.caption }).then(() => track('share_video_share', { format: L.sv.ext }), () => { }); }
@@ -358,5 +388,5 @@
   });
   document.addEventListener('change', e => { if (e.target.id === 'camShare' && typeof S !== 'undefined') { S.camShare = e.target.checked; if (typeof saveS === 'function') saveS(); } });
 
-  window.ShareVideo = { panelHTML, camLabelHTML, render, tr };
+  window.ShareVideo = { panelHTML, camLabelHTML, render, tr, probing, supported: () => support === 'ok' };
 })();
